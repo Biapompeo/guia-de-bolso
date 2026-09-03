@@ -38,16 +38,29 @@ python3 tools/build-single-file.py
 
 ### 2. GitHub Pages
 
-O workflow `.github/workflows/deploy.yml` liga o Pages sozinho
-(`enablement: true`) e publica a cada push — não é preciso mexer em
-Settings. O endereço aparece ao final da execução, em
-`https://<usuário>.github.io/<repositório>/`.
+Publicado em https://biapompeo.github.io/guia-de-bolso/ pelo workflow
+`.github/workflows/deploy.yml`, a cada push na `main`.
 
-> **O repositório precisa ser público.** Em repositório privado a execução
-> para em `Create Pages site failed: Resource not accessible by
-> integration`, porque GitHub Pages em repositório privado só existe nos
-> planos pagos (Pro, Team, Enterprise). Tornando o repositório público, o
-> workflow publica na próxima execução sem nenhuma outra mudança.
+Em um repositório novo há **um único passo manual, feito uma vez**: em
+**Settings → Pages → Build and deployment → Source**, escolher
+**GitHub Actions**.
+
+Esse passo não dá para automatizar. O workflow passa `enablement: true`
+para o `actions/configure-pages`, mas criar o site do Pages usa o endpoint
+`POST /repos/{owner}/{repo}/pages`, que exige permissão de administrador
+do repositório — e o `GITHUB_TOKEN` do Actions não a tem, mesmo com
+`pages: write` concedido. O sintoma é:
+
+```
+Create Pages site failed. Error: Resource not accessible by integration
+```
+
+Depois que o site existe, o `enablement: true` só encontra a configuração
+pronta e segue: todas as publicações seguintes são automáticas.
+
+> Vale também que GitHub Pages em repositório privado só existe nos planos
+> pagos. Mas não foi essa a causa do erro acima — ele acontece igual em
+> repositório público.
 
 ### 3. Qualquer outra hospedagem
 
