@@ -1,12 +1,19 @@
-# Anti-hipertensivos — guia de bolso
+# Guia de bolso — hipertensão e diabetes
 
-Aplicativo web de consulta rápida sobre anti-hipertensivos, organizado pela
-**Diretriz Brasileira de Hipertensão Arterial 2025** (SBC, SBH e SBN).
+Aplicativo web de consulta rápida. Um seletor no topo troca de assunto
+clínico; a barra inferior mostra as abas daquele assunto.
+
+- **Hipertensão** — completo, pela **Diretriz Brasileira de Hipertensão
+  Arterial 2025** (SBC, SBH e SBN).
+- **Diabetes tipo 2** — estrutura pronta, conteúdo em preparação, pela
+  **Diretriz da Sociedade Brasileira de Diabetes 2025**.
 
 Feito para o celular: instala na tela de início, abre em tela cheia e
 **funciona sem internet** depois da primeira visita.
 
 ## O que tem dentro
+
+### Hipertensão
 
 | Aba | Conteúdo |
 | --- | --- |
@@ -20,6 +27,31 @@ Feito para o celular: instala na tela de início, abre em tela cheia e
 Também: tema claro e escuro em tons confortáveis (nem branco puro, nem
 preto), busca que ignora acentos (`gestacao` acha "gestação"), estado
 lembrado entre sessões e versão para impressão.
+
+## Acrescentar um assunto
+
+Assuntos ficam em `ASSUNTOS`, no topo de `assets/app.js`. Cada um traz o
+próprio cabeçalho, o próprio aviso de rodapé e a própria lista de abas:
+
+```js
+dm: {
+  rot: "Diabetes",             // rótulo no seletor
+  titulo: "Diabetes tipo 2",   // título da página
+  fonte: "SBD 2025",           // linha acima do título
+  sub: "...",                  // subtítulo
+  rodape: "...",               // aviso ao pé da página
+  regua: false,                // a faixa de estágios é só da hipertensão
+  abas: [{ id: "dm-inicio", rot: "Em breve", icon: ICON.inicio }],
+}
+```
+
+Os `id` das abas são globais, então convém prefixá-los por assunto. Cada um
+aponta para uma função em `VIEWS`. A barra inferior se ajusta sozinha ao
+número de abas, e um `id` de aba que não pertença ao assunto cai na primeira
+aba dele em vez de quebrar.
+
+O assunto escolhido é lembrado entre sessões e aceita atalho por URL:
+`?assunto=has&aba=risco`.
 
 ## Cores
 

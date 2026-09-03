@@ -227,6 +227,14 @@ h1 {
 .icon-btn:active { transform: scale(.92); }
 .icon-btn:hover { color: var(--ink); border-color: color-mix(in srgb, var(--ink) 22%, transparent); }
 
+/* seletor de assunto clínico, acima do título */
+.seg-assunto {
+  max-width: 300px;
+  margin-bottom: 18px;
+  font-size: 13px;
+}
+.seg-assunto button { padding: 9px 6px; }
+
 /* faixa cromática dos estágios, sob o cabeçalho */
 .ruler-strip {
   display: flex;

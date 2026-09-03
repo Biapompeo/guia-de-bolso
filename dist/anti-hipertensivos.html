@@ -241,6 +241,14 @@ h1 {
 .icon-btn:active { transform: scale(.92); }
 .icon-btn:hover { color: var(--ink); border-color: color-mix(in srgb, var(--ink) 22%, transparent); }
 
+/* seletor de assunto clínico, acima do título */
+.seg-assunto {
+  max-width: 300px;
+  margin-bottom: 18px;
+  font-size: 13px;
+}
+.seg-assunto button { padding: 9px 6px; }
+
 /* faixa cromática dos estágios, sob o cabeçalho */
 .ruler-strip {
   display: flex;
@@ -1076,11 +1084,12 @@ html[data-theme="dark"] .tab[aria-selected="true"] { background: var(--surface-2
   } catch (e) {}
 </script>
 <header class="wrap hero">
+  <div class="seg seg-assunto" id="seletor-assunto" role="group" aria-label="Assunto"></div>
   <div class="hero-top">
     <div>
-      <div class="brand-mark"><span id="brand-icon"></span> DBHA 2025 · SBC · SBH · SBN</div>
-      <h1>Anti&#8209;hipertensivos</h1>
-      <p class="hero-sub">Guia de bolso para escolher, combinar e ajustar — organizado pela Diretriz Brasileira de Hipertensão Arterial de 2025.</p>
+      <div class="brand-mark"><span id="brand-icon"></span> <span id="brand-fonte"></span></div>
+      <h1 id="titulo"></h1>
+      <p class="hero-sub" id="subtitulo"></p>
     </div>
     <button id="theme-toggle" class="icon-btn" type="button" aria-label="Alternar tema"></button>
   </div>
@@ -1097,7 +1106,7 @@ html[data-theme="dark"] .tab[aria-selected="true"] { background: var(--surface-2
 </noscript>
 
 <footer class="wrap foot">
-  <p>Conteúdo de estudo baseado na Diretriz Brasileira de Hipertensão Arterial 2025 (SBC, SBH e SBN) e no PCDT de Hipertensão Arterial Sistêmica do Ministério da Saúde. Doses são referências para adulto com função renal e hepática preservadas — sempre confira antes de prescrever.</p>
+  <p id="aviso"></p>
   <div class="foot-row">
     <button id="btn-instalar" class="ghost-btn" type="button">Instalar no celular</button>
     <button class="ghost-btn" type="button" onclick="print()">Imprimir</button>
@@ -2724,25 +2733,59 @@ const ICON = {
   empty: '<svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>',
 };
 
-/* ---------- estado ---------- */
-const TABS = [
-  { id: "inicio", rot: "Início", icon: ICON.inicio },
-  { id: "risco", rot: "Risco", icon: ICON.risco },
-  { id: "classes", rot: "Classes", icon: ICON.classes },
-  { id: "combos", rot: "Combinar", icon: ICON.combos },
-  { id: "perfis", rot: "Paciente", icon: ICON.perfis },
-  { id: "emerg", rot: "EV", icon: ICON.emerg },
-];
+/* ---------- assuntos ---------- */
+/* Cada assunto clínico traz seu próprio cabeçalho e seu próprio conjunto de
+   abas. A barra de baixo mostra só as abas do assunto escolhido, então dá
+   para acrescentar um terceiro sem espremer a navegação.
+   ("tema" no resto do arquivo significa claro/escuro, não assunto.) */
+const ASSUNTOS = {
+  has: {
+    rot: "Hipertensão",
+    titulo: "Anti\u2011hipertensivos",
+    fonte: "DBHA 2025 · SBC · SBH · SBN",
+    sub: "Guia de bolso para escolher, combinar e ajustar — organizado pela Diretriz Brasileira de Hipertensão Arterial de 2025.",
+    rodape: "Conteúdo de estudo baseado na Diretriz Brasileira de Hipertensão Arterial 2025 (SBC, SBH e SBN) e no PCDT de Hipertensão Arterial Sistêmica do Ministério da Saúde. Doses são referências para adulto com função renal e hepática preservadas — sempre confira antes de prescrever.",
+    regua: true,
+    abas: [
+      { id: "inicio", rot: "Início", icon: ICON.inicio },
+      { id: "risco", rot: "Risco", icon: ICON.risco },
+      { id: "classes", rot: "Classes", icon: ICON.classes },
+      { id: "combos", rot: "Combinar", icon: ICON.combos },
+      { id: "perfis", rot: "Paciente", icon: ICON.perfis },
+      { id: "emerg", rot: "EV", icon: ICON.emerg },
+    ],
+  },
+  dm: {
+    rot: "Diabetes",
+    titulo: "Diabetes tipo 2",
+    fonte: "SBD 2025",
+    sub: "Tratamento do diabetes tipo 2 pela Diretriz da Sociedade Brasileira de Diabetes.",
+    rodape: "Conteúdo de estudo baseado na Diretriz da Sociedade Brasileira de Diabetes 2025. Doses são referências para adulto com função renal e hepática preservadas — sempre confira antes de prescrever.",
+    regua: false,
+    abas: [
+      { id: "dm-inicio", rot: "Em breve", icon: ICON.inicio },
+    ],
+  },
+};
 
 const state = {
+  assunto: store.get("assunto", "has"),
   aba: store.get("aba", "inicio"),
   aberto: null,
   grupo: store.get("grupo", "Todos"),
   busca: "",
 };
-const abaUrl = new URLSearchParams(location.search).get("aba");
-if (abaUrl && TABS.some((t) => t.id === abaUrl)) state.aba = abaUrl;
-if (!TABS.some((t) => t.id === state.aba)) state.aba = "inicio";
+
+const _url = new URLSearchParams(location.search);
+if (ASSUNTOS[_url.get("assunto")]) state.assunto = _url.get("assunto");
+if (!ASSUNTOS[state.assunto]) state.assunto = "has";
+
+const abas = () => ASSUNTOS[state.assunto].abas;
+const temAba = (id) => abas().some((t) => t.id === id);
+
+const abaUrl = _url.get("aba");
+if (abaUrl && temAba(abaUrl)) state.aba = abaUrl;
+if (!temAba(state.aba)) state.aba = abas()[0].id;
 
 const GRUPOS = ["Todos", ...new Set(CLASSES.map((c) => c.grupo))];
 if (!GRUPOS.includes(state.grupo)) state.grupo = "Todos";
@@ -3172,8 +3215,25 @@ function viewRisco() {
   </p>`;
 }
 
+/* ---------- assunto sem conteúdo ainda ---------- */
+function viewEmBreve() {
+  return `<div class="card card-pad" style="text-align:center;padding:38px 22px">
+    <div class="eyebrow" style="margin-bottom:12px">Em preparação</div>
+    <p style="font-size:14.5px;line-height:1.6;color:var(--ink);margin:0 auto;max-width:36ch">
+      A estrutura está pronta e esperando o conteúdo: classes e doses, o
+      algoritmo de escolha por risco cardiovascular, IMC e HbA1c, metas e
+      quando começar insulina.
+    </p>
+    <p style="font-size:12.5px;line-height:1.55;color:var(--faint);margin:16px auto 0;max-width:40ch">
+      O conteúdo de hipertensão deste guia foi escrito a quatro mãos com quem
+      estuda, não gerado automaticamente. O de diabetes segue o mesmo caminho.
+    </p>
+  </div>`;
+}
+
 /* ---------- render ---------- */
 const VIEWS = {
+  "dm-inicio": viewEmBreve,
   inicio: viewInicio,
   risco: viewRisco,
   classes: viewClasses,
@@ -3182,17 +3242,49 @@ const VIEWS = {
   emerg: viewEmerg,
 };
 
+function renderCabecalho() {
+  const a = ASSUNTOS[state.assunto];
+  $("#brand-fonte").textContent = a.fonte;
+  $("#titulo").innerHTML = esc(a.titulo);
+  $("#subtitulo").textContent = a.sub;
+  $("#ruler").hidden = !a.regua;
+  $("#aviso").textContent = a.rodape;
+  $("#seletor-assunto").innerHTML = Object.entries(ASSUNTOS)
+    .map(([id, v]) => `<button data-assunto="${id}" aria-pressed="${id === state.assunto}">${esc(v.rot)}</button>`)
+    .join("");
+}
+
+function renderBarra() {
+  $("#tabbar").innerHTML = abas()
+    .map((t) => `<button class="tab" role="tab" data-aba="${t.id}"
+             aria-selected="${t.id === state.aba}" aria-controls="painel">
+      ${t.icon}<span>${esc(t.rot)}</span></button>`)
+    .join("");
+}
+
 function renderAba() {
   $("#painel").innerHTML = `<div class="panel">${VIEWS[state.aba]()}</div>`;
   if (state.aba === "classes") {
     renderListaClasses();
-    const inp = $("#busca");
-    inp.value = state.busca;
+    $("#busca").value = state.busca;
   }
   document.querySelectorAll(".tab").forEach((b) => {
     b.setAttribute("aria-selected", String(b.dataset.aba === state.aba));
   });
   store.set("aba", state.aba);
+}
+
+function irParaAssunto(id) {
+  if (state.assunto === id) return;
+  state.assunto = id;
+  store.set("assunto", id);
+  state.aba = abas()[0].id;
+  state.aberto = null;
+  state.busca = "";
+  renderCabecalho();
+  renderBarra();
+  renderAba();
+  scrollTo({ top: 0 });
 }
 
 function irPara(id) {
@@ -3207,23 +3299,22 @@ function irPara(id) {
 
 /* ---------- montagem ---------- */
 function montar() {
-  $("#tabbar").innerHTML = TABS.map(
-    (t) => `<button class="tab" role="tab" data-aba="${t.id}"
-             aria-selected="${t.id === state.aba}" aria-controls="painel">
-      ${t.icon}<span>${esc(t.rot)}</span></button>`
-  ).join("");
-
   $("#ruler").innerHTML = ESTAGIOS.map(
     (e) => `<span style="background:${e.cor}"></span>`
   ).join("");
 
   $("#brand-icon").innerHTML = ICON.logo;
   aplicarTema(temaAtual());
+  renderCabecalho();
+  renderBarra();
   renderAba();
 }
 
 /* ---------- eventos ---------- */
 document.addEventListener("click", (ev) => {
+  const bt = ev.target.closest("[data-assunto]");
+  if (bt) return irParaAssunto(bt.dataset.assunto);
+
   const tab = ev.target.closest(".tab");
   if (tab) return irPara(tab.dataset.aba);
 
