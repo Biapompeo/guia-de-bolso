@@ -213,6 +213,21 @@ h1 {
   max-width: 46ch;
 }
 
+/* linha de autoria, logo abaixo do subtítulo */
+.autoria {
+  margin-top: 10px;
+  font-size: 12.5px;
+  color: var(--faint);
+  letter-spacing: .01em;
+}
+.autoria span {
+  font-family: var(--font-display);
+  font-size: 14.5px;
+  font-weight: 600;
+  color: var(--ink-2);
+  letter-spacing: -.005em;
+}
+
 .icon-btn {
   width: 40px;
   height: 40px;
@@ -984,6 +999,31 @@ h1 {
   line-height: 1.6;
   color: var(--faint);
 }
+/* assinatura, fechando o conteúdo */
+.assinatura {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  margin-bottom: 18px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid var(--line);
+}
+.assinatura-rot {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--faint);
+}
+.assinatura-nome {
+  font-family: var(--font-display);
+  font-size: 21px;
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: -.015em;
+  color: var(--ink);
+}
+
 .foot-row {
   display: flex;
   flex-wrap: wrap;

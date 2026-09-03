@@ -1,7 +1,8 @@
 # Guia de bolso — hipertensão e diabetes
 
-Aplicativo web de consulta rápida. Um seletor no topo troca de assunto
-clínico; a barra inferior mostra as abas daquele assunto.
+Aplicativo web de consulta rápida, por **Beatriz Pompeo**. Um seletor no
+topo troca de assunto clínico; a barra inferior mostra as abas daquele
+assunto.
 
 - **Hipertensão** — completo, pela **Diretriz Brasileira de Hipertensão
   Arterial 2025** (SBC, SBH e SBN).
