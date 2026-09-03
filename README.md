@@ -23,14 +23,17 @@ Também: tema claro e escuro, busca que ignora acentos (`gestacao` acha
 
 O site é estático — nenhum build, nenhuma dependência.
 
-### GitHub Pages (recomendado)
+### GitHub Pages
 
-1. No repositório, vá em **Settings → Pages**.
-2. Em **Source**, escolha **GitHub Actions**.
-3. Faça um push nesta branch. O workflow `.github/workflows/deploy.yml`
-   publica sozinho e mostra a URL ao final.
+O workflow `.github/workflows/deploy.yml` liga o Pages sozinho
+(`enablement: true`) e publica a cada push — não é preciso mexer em
+Settings. O endereço aparece ao final da execução, em
+`https://<usuário>.github.io/<repositório>/`.
 
-O endereço fica em `https://<usuário>.github.io/<repositório>/`.
+> **O repositório precisa ser público.** GitHub Pages em repositório
+> privado só existe nos planos pagos (Pro, Team, Enterprise). Em conta
+> gratuita com repositório privado a publicação falha com "Not Found",
+> por mais que o workflow esteja correto.
 
 ### Qualquer outra hospedagem
 

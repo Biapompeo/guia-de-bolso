@@ -27,6 +27,10 @@ jobs:
 
       - name: Configurar Pages
         uses: actions/configure-pages@v5
+        with:
+          # liga o Pages sozinho na primeira execução,
+          # sem precisar mexer em Settings -> Pages
+          enablement: true
 
       - name: Empacotar o site
         uses: actions/upload-pages-artifact@v3
