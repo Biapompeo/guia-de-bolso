@@ -101,6 +101,28 @@ clareando só o necessário — 4,5:1 no claro, 7:1 no escuro — sobre o fundo 
 que aquele texto realmente cai. Isso vai inline como `--c-l` e `--c-d`; o `--c` cru
 segue intacto nas trilhas.
 
+### A fonte da assinatura
+
+O nome usa **Cormorant Garamond Itálico 600**, a única fonte do app que não
+vem do sistema. Ela vai **embutida** no CSS como data URI, e não por link
+para o Google Fonts, porque o app não tem dependência externa nenhuma:
+funciona offline e cabe em um arquivo só.
+
+Para não pagar 24 kB por isso, a fonte é reduzida às letras que o nome usa —
+12 caracteres, 2,2 kB. Se o nome mudar:
+
+```bash
+pip install fonttools brotli
+python3 tools/subset-assinatura.py "Novo Nome"
+```
+
+O script baixa, reduz e imprime o base64 pronto para colar no `@font-face`
+de `assets/styles.css`.
+
+> Cormorant: Copyright 2015 the Cormorant Project Authors, sob SIL Open Font
+> License 1.1. O texto da licença acompanha o repositório em
+> `assets/fontes/Cormorant-OFL.txt`.
+
 ### Verificação
 
 ```bash
@@ -244,6 +266,7 @@ index.html               casca da página, metadados e manifesto
 assets/data.js           todo o conteúdo clínico (classes, combos, perfis…)
 assets/prevent-betas.js  coeficientes do PREVENT (gerado)
 assets/prevent.js        cálculo do risco e CKD-EPI 2021
+assets/fontes/           fonte da assinatura e sua licença
 assets/app.js            renderização, abas, busca, tema e instalação
 assets/styles.css        sistema visual: tokens, tema claro/escuro, componentes
 manifest.webmanifest     nome, ícones e comportamento do app instalado

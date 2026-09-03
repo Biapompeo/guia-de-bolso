@@ -1,4 +1,22 @@
 /* =================================================================
+   Fonte da assinatura — Cormorant Garamond Itálico 600.
+   Copyright 2015 the Cormorant Project Authors, SIL Open Font License 1.1.
+   Texto da licença em assets/fontes/Cormorant-OFL.txt.
+
+   Vai embutida como data URI, e não por link para o Google Fonts, porque o
+   app não tem nenhuma dependência externa: funciona offline e cabe em um
+   arquivo só. Reduzida às 12 letras do nome, ocupa 2,2 kB em vez de 24 kB.
+   Se o nome mudar, regerar com tools/subset-assinatura.py.
+   ================================================================= */
+@font-face {
+  font-family: "Cormorant Garamond Assinatura";
+  font-style: italic;
+  font-weight: 600;
+  font-display: swap;
+  src: url(data:font/woff2;base64,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) format("woff2");
+}
+
+/* =================================================================
    Anti-hipertensivos — folha de estilo
    Sistema visual: papel clínico, tipografia editorial, acento por classe
    ================================================================= */
@@ -37,6 +55,7 @@
 
   --font-body: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   --font-display: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, "Times New Roman", serif;
+  --font-assinatura: "Cormorant Garamond Assinatura", "Cormorant Garamond", var(--font-display);
   --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
 
   /* acento neutro; cada bloco .acc redefine --c e deriva os tons abaixo */
@@ -253,11 +272,12 @@ h1 {
 /* assinatura fixa, ao lado do seletor: é o único lugar sempre visível */
 .topbar-nome {
   flex: none;
-  font-family: var(--font-display);
-  font-size: 13px;
+  font-family: var(--font-assinatura);
+  font-style: italic;
+  font-size: 16px;   /* a Cormorant tem altura-x baixa e pede mais corpo */
   font-weight: 600;
   line-height: 1.1;
-  letter-spacing: -.012em;
+  letter-spacing: .004em;
   color: var(--ink-2);
   white-space: nowrap;
 }
@@ -1021,8 +1041,9 @@ h1 {
   color: var(--faint);
 }
 .assinatura-nome {
-  font-family: var(--font-display);
-  font-size: 21px;
+  font-family: var(--font-assinatura);
+  font-style: italic;
+  font-size: 30px;
   font-weight: 600;
   line-height: 1.15;
   letter-spacing: -.015em;

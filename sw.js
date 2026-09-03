@@ -2,7 +2,7 @@
    Service worker — deixa o guia disponível sem internet
    ================================================================= */
 
-const VERSAO = "v7";
+const VERSAO = "v8";
 const CACHE = "anti-hipertensivos-" + VERSAO;
 
 const SHELL = [
