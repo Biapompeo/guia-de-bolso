@@ -609,6 +609,212 @@ h1 {
 }
 .pearl p { font-size: 13.5px; line-height: 1.6; color: var(--ink); }
 
+/* ---------- Calculadora de risco ---------- */
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(132px, 1fr));
+  gap: 12px;
+  margin-top: 14px;
+}
+.field { display: flex; flex-direction: column; gap: 5px; min-width: 0; }
+.field label {
+  font-size: 11px;
+  font-weight: 650;
+  letter-spacing: .02em;
+  color: var(--muted);
+}
+.field .unit { font-weight: 500; color: var(--faint); }
+.field input {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: var(--r-sm);
+  border: 1px solid var(--line);
+  background: var(--surface-2);
+  color: var(--ink);
+  font-size: 15px;
+  font-variant-numeric: tabular-nums;
+  outline: none;
+  transition: border-color .16s, background .16s;
+}
+.field input:focus { border-color: var(--ink); background: var(--surface); }
+.field input:invalid { border-color: var(--danger); }
+.field input::-webkit-outer-spin-button,
+.field input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+.field input[type=number] { -moz-appearance: textfield; }
+
+/* controle segmentado (sexo) */
+.seg {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  gap: 3px;
+  padding: 3px;
+  border-radius: 999px;
+  background: var(--paper-2);
+  border: 1px solid var(--line);
+}
+.seg button {
+  padding: 8px 4px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 600;
+  text-align: center;
+  color: var(--muted);
+  transition: background .16s, color .16s;
+}
+.seg button[aria-pressed="true"] { background: var(--surface); color: var(--ink); box-shadow: var(--shadow-sm); }
+
+/* interruptores de sim/não */
+.toggles { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 16px; }
+.toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 13px 8px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: var(--surface-2);
+  font-size: 13px;
+  font-weight: 550;
+  color: var(--muted);
+  transition: background .16s, color .16s, border-color .16s;
+}
+.toggle .box {
+  width: 17px; height: 17px;
+  border-radius: 5px;
+  border: 1.5px solid var(--line);
+  display: grid;
+  place-items: center;
+  color: transparent;
+  transition: background .16s, border-color .16s, color .16s;
+}
+.toggle[aria-pressed="true"] {
+  background: color-mix(in srgb, var(--danger) 9%, transparent);
+  border-color: color-mix(in srgb, var(--danger) 34%, transparent);
+  color: var(--ink);
+}
+.toggle[aria-pressed="true"] .box {
+  background: var(--danger);
+  border-color: var(--danger);
+  color: #FFFFFF;
+}
+
+/* atalho da creatinina */
+.helper-line {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 10px;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px dashed var(--line);
+}
+.helper-line .field { flex: 1 1 130px; }
+.helper-btn {
+  padding: 10px 14px;
+  border-radius: var(--r-sm);
+  border: 1px solid var(--line);
+  background: var(--surface-2);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--muted);
+  white-space: nowrap;
+  transition: color .16s, border-color .16s;
+}
+.helper-btn:hover { color: var(--ink); border-color: var(--ink); }
+.helper-note { font-size: 11.5px; line-height: 1.5; color: var(--faint); margin-top: 8px; }
+
+/* resultado */
+.result {
+  margin-top: 10px;
+  border-radius: var(--r-md);
+  border: 1px solid var(--c-edge);
+  background: var(--c-wash);
+  padding: 18px;
+}
+.result-top { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.result-label { font-size: 10px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--c-txt); }
+.result-value {
+  font-family: var(--font-display);
+  font-size: 46px;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -.025em;
+  color: var(--c-txt);
+  font-variant-numeric: tabular-nums;
+  margin-top: 6px;
+}
+.result-band {
+  font-size: 12.5px;
+  font-weight: 700;
+  padding: 5px 12px;
+  border-radius: 999px;
+  background: var(--c-txt);
+  color: var(--paper);
+  white-space: nowrap;
+}
+.result-scale { display: flex; gap: 3px; margin-top: 16px; }
+.result-scale div {
+  flex: 1;
+  height: 5px;
+  border-radius: 999px;
+  background: currentColor;
+  opacity: .22;
+  transition: opacity .2s, transform .2s;
+}
+.result-scale div.on { opacity: 1; transform: scaleY(1.6); }
+.result-scale-rot {
+  display: flex;
+  justify-content: space-between;
+  font-size: 9.5px;
+  font-weight: 600;
+  color: var(--muted);
+  margin-top: 7px;
+}
+.result-secondary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 12px;
+  margin-top: 18px;
+  padding-top: 15px;
+  border-top: 1px solid var(--c-edge);
+}
+.result-secondary dt { font-size: 11px; font-weight: 600; color: var(--muted); line-height: 1.3; }
+.result-secondary dd {
+  font-size: 21px;
+  font-weight: 650;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+  margin: 3px 0 0;
+}
+.result-action {
+  margin-top: 16px;
+  padding: 13px 14px;
+  border-radius: var(--r-sm);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  font-size: 13.5px;
+  line-height: 1.55;
+  color: var(--ink);
+}
+.result-warn {
+  margin-top: 12px;
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--danger);
+  font-weight: 550;
+}
+.result-empty {
+  margin-top: 10px;
+  padding: 28px 18px;
+  text-align: center;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--faint);
+  border: 1px dashed var(--line);
+  border-radius: var(--r-md);
+}
+
 /* ---------- Combinações ---------- */
 .combo {
   background: var(--surface);
@@ -720,9 +926,10 @@ h1 {
   bottom: calc(10px + env(safe-area-inset-bottom));
   transform: translateX(-50%);
   z-index: 60;
-  width: min(calc(100% - 20px), 460px);
+  width: min(calc(100% - 16px), 520px);
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
   gap: 2px;
   padding: 6px;
   border-radius: var(--r-xl);
@@ -735,6 +942,7 @@ h1 {
 
 .tab {
   display: flex;
+  min-width: 0;
   flex-direction: column;
   align-items: center;
   gap: 3px;
@@ -877,6 +1085,353 @@ html[data-theme="dark"] .tab[aria-selected="true"] { background: var(--surface-2
 
 <nav class="tabbar" id="tabbar" role="tablist" aria-label="Seções do guia"></nav>
 <script>
+/* Coeficientes das equações PREVENT (AHA, Khan et al., Circulation 2023).
+   Extraídos de github.com/martingmayer/preventr (R/sysdata.rda, GPL-3),
+   modelo base, desfechos DCV total e ASCVD, horizontes de 10 e 30 anos.
+   NÃO editar à mão. */
+
+const PREVENT_BETAS = {
+ "y10_f_cvd": {
+  "age": 0.793933,
+  "nonHdl": 0.030524,
+  "hdl": -0.160686,
+  "sbpLt110": -0.2394,
+  "sbpGte110": 0.360078,
+  "dm": 0.86676,
+  "fumo": 0.536074,
+  "bmiLt30": 0.0,
+  "bmiGte30": 0.0,
+  "egfrLt60": 0.604592,
+  "egfrGte60": 0.043377,
+  "antiHas": 0.315167,
+  "estatina": -0.147765,
+  "antiHasSbp": -0.066361,
+  "estatinaNonHdl": 0.119788,
+  "ageNonHdl": -0.081972,
+  "ageHdl": 0.030677,
+  "ageSbpGte110": -0.094635,
+  "ageDm": -0.27057,
+  "ageFumo": -0.078715,
+  "ageBmiGte30": 0.0,
+  "ageEgfrLt60": -0.163781,
+  "const": -3.307728
+ },
+ "y10_m_cvd": {
+  "age": 0.768853,
+  "nonHdl": 0.073617,
+  "hdl": -0.095443,
+  "sbpLt110": -0.434735,
+  "sbpGte110": 0.336266,
+  "dm": 0.769286,
+  "fumo": 0.438687,
+  "bmiLt30": 0.0,
+  "bmiGte30": 0.0,
+  "egfrLt60": 0.537898,
+  "egfrGte60": 0.016483,
+  "antiHas": 0.288879,
+  "estatina": -0.133735,
+  "antiHasSbp": -0.047592,
+  "estatinaNonHdl": 0.150273,
+  "ageNonHdl": -0.051787,
+  "ageHdl": 0.019117,
+  "ageSbpGte110": -0.104948,
+  "ageDm": -0.225195,
+  "ageFumo": -0.089507,
+  "ageBmiGte30": 0.0,
+  "ageEgfrLt60": -0.15437,
+  "const": -3.031168
+ },
+ "y10_f_ascvd": {
+  "age": 0.719883,
+  "nonHdl": 0.117697,
+  "hdl": -0.151185,
+  "sbpLt110": -0.083536,
+  "sbpGte110": 0.359285,
+  "dm": 0.834858,
+  "fumo": 0.483108,
+  "bmiLt30": 0.0,
+  "bmiGte30": 0.0,
+  "egfrLt60": 0.486462,
+  "egfrGte60": 0.039778,
+  "antiHas": 0.226531,
+  "estatina": -0.059237,
+  "antiHasSbp": -0.039576,
+  "estatinaNonHdl": 0.084442,
+  "ageNonHdl": -0.056784,
+  "ageHdl": 0.032569,
+  "ageSbpGte110": -0.103598,
+  "ageDm": -0.241754,
+  "ageFumo": -0.079114,
+  "ageBmiGte30": 0.0,
+  "ageEgfrLt60": -0.167149,
+  "const": -3.819975
+ },
+ "y10_m_ascvd": {
+  "age": 0.709985,
+  "nonHdl": 0.165866,
+  "hdl": -0.114429,
+  "sbpLt110": -0.283721,
+  "sbpGte110": 0.323998,
+  "dm": 0.71896,
+  "fumo": 0.395697,
+  "bmiLt30": 0.0,
+  "bmiGte30": 0.0,
+  "egfrLt60": 0.369007,
+  "egfrGte60": 0.020362,
+  "antiHas": 0.203652,
+  "estatina": -0.086558,
+  "antiHasSbp": -0.032292,
+  "estatinaNonHdl": 0.114563,
+  "ageNonHdl": -0.03,
+  "ageHdl": 0.023275,
+  "ageSbpGte110": -0.092702,
+  "ageDm": -0.201852,
+  "ageFumo": -0.097053,
+  "ageBmiGte30": 0.0,
+  "ageEgfrLt60": -0.121708,
+  "const": -3.500655
+ },
+ "y30_f_cvd": {
+  "age": 0.550308,
+  "ageSq": -0.092837,
+  "nonHdl": 0.040979,
+  "hdl": -0.166331,
+  "sbpLt110": -0.162865,
+  "sbpGte110": 0.32995,
+  "dm": 0.679389,
+  "fumo": 0.319611,
+  "bmiLt30": 0.0,
+  "bmiGte30": 0.0,
+  "egfrLt60": 0.18571,
+  "egfrGte60": 0.055353,
+  "antiHas": 0.2894,
+  "estatina": -0.075688,
+  "antiHasSbp": -0.056367,
+  "estatinaNonHdl": 0.107102,
+  "ageNonHdl": -0.075144,
+  "ageHdl": 0.030179,
+  "ageSbpGte110": -0.099878,
+  "ageDm": -0.320617,
+  "ageFumo": -0.160786,
+  "ageBmiGte30": 0.0,
+  "ageEgfrLt60": -0.145079,
+  "const": -1.318827
+ },
+ "y30_m_cvd": {
+  "age": 0.462731,
+  "ageSq": -0.098428,
+  "nonHdl": 0.083609,
+  "hdl": -0.102982,
+  "sbpLt110": -0.214035,
+  "sbpGte110": 0.290432,
+  "dm": 0.533128,
+  "fumo": 0.214191,
+  "bmiLt30": 0.0,
+  "bmiGte30": 0.0,
+  "egfrLt60": 0.115556,
+  "egfrGte60": 0.060378,
+  "antiHas": 0.232714,
+  "estatina": -0.027211,
+  "antiHasSbp": -0.038449,
+  "estatinaNonHdl": 0.134192,
+  "ageNonHdl": -0.051176,
+  "ageHdl": 0.016587,
+  "ageSbpGte110": -0.110144,
+  "ageDm": -0.258594,
+  "ageFumo": -0.156641,
+  "ageBmiGte30": 0.0,
+  "ageEgfrLt60": -0.116678,
+  "const": -1.148204
+ },
+ "y30_f_ascvd": {
+  "age": 0.46692,
+  "ageSq": -0.089312,
+  "nonHdl": 0.12569,
+  "hdl": -0.154225,
+  "sbpLt110": -0.001809,
+  "sbpGte110": 0.322949,
+  "dm": 0.629671,
+  "fumo": 0.268292,
+  "bmiLt30": 0.0,
+  "bmiGte30": 0.0,
+  "egfrLt60": 0.100106,
+  "egfrGte60": 0.049966,
+  "antiHas": 0.187529,
+  "estatina": 0.015248,
+  "antiHasSbp": -0.027612,
+  "estatinaNonHdl": 0.073615,
+  "ageNonHdl": -0.052196,
+  "ageHdl": 0.031692,
+  "ageSbpGte110": -0.10461,
+  "ageDm": -0.272779,
+  "ageFumo": -0.153091,
+  "ageBmiGte30": 0.0,
+  "ageEgfrLt60": -0.129915,
+  "const": -1.974074
+ },
+ "y30_m_ascvd": {
+  "age": 0.39941,
+  "ageSq": -0.093748,
+  "nonHdl": 0.174464,
+  "hdl": -0.120203,
+  "sbpLt110": -0.066512,
+  "sbpGte110": 0.275304,
+  "dm": 0.479026,
+  "fumo": 0.178263,
+  "bmiLt30": 0.0,
+  "bmiGte30": 0.0,
+  "egfrLt60": -0.021879,
+  "egfrGte60": 0.060255,
+  "antiHas": 0.142118,
+  "estatina": 0.0136,
+  "antiHasSbp": -0.021826,
+  "estatinaNonHdl": 0.101315,
+  "ageNonHdl": -0.031262,
+  "ageHdl": 0.020673,
+  "ageSbpGte110": -0.092093,
+  "ageDm": -0.215995,
+  "ageFumo": -0.154881,
+  "ageBmiGte30": 0.0,
+  "ageEgfrLt60": -0.071255,
+  "const": -1.736444
+ }
+};
+
+/* =================================================================
+   PREVENT — Predicting Risk of cardiovascular disease EVENTs
+   American Heart Association (Khan SS et al., Circulation 2023).
+   Adotado pela Diretriz Brasileira de Hipertensão Arterial 2025
+   como a ferramenta de estratificação de risco cardiovascular.
+
+   Modelo base: sem HbA1c, sem relação albumina/creatinina e sem
+   índice de privação social (este último depende de CEP dos EUA).
+
+   Centralização, conforme a publicação original:
+     idade 55 · não-HDL 3,5 mmol/L · HDL 1,3 mmol/L · PAS 130
+     IMC 25 · TFGe 90 — e, nos termos em spline, o valor do nó.
+   ================================================================= */
+
+const PREVENT_LIMITES = {
+  idade: [30, 79],
+  pas: [90, 180],
+  colesterolTotal: [130, 320],
+  hdl: [20, 100],
+  tfg: [15, 140],
+  imc: [18.5, 39.9],
+};
+
+/* mg/dL -> mmol/L para colesterol */
+const paraMmol = (mgdl) => mgdl * 0.02586;
+
+/* CKD-EPI 2021, sem coeficiente de raça — para estimar a TFG a
+   partir da creatinina, quando ela não vier pronta do laboratório. */
+function tfgCkdEpi2021({ creatinina, idade, sexo }) {
+  const fem = sexo === "F";
+  const k = fem ? 0.7 : 0.9;
+  const a = fem ? -0.241 : -0.302;
+  const r = creatinina / k;
+  return (
+    142 *
+    Math.pow(Math.min(r, 1), a) *
+    Math.pow(Math.max(r, 1), -1.2) *
+    Math.pow(0.9938, idade) *
+    (fem ? 1.012 : 1)
+  );
+}
+
+/* Monta o vetor de preditores. `anos` = 10 ou 30. */
+function preditoresPrevent(p, anos) {
+  // O IMC tem coeficiente zero nos desfechos DCV total e ASCVD — ele só pesa
+  // no modelo de insuficiência cardíaca, que este app não exibe. Por isso o
+  // formulário não pede IMC; o valor de centralização entra como neutro.
+  if (typeof p.imc !== "number") p = { ...p, imc: 25 };
+  const idade = (p.idade - 55) / 10;
+  const naoHdl = paraMmol(p.colesterolTotal - p.hdl) - 3.5;
+  const hdl = (paraMmol(p.hdl) - 1.3) / 0.3;
+  const pasBaixa = (Math.min(p.pas, 110) - 110) / 20;
+  const pasAlta = (Math.max(p.pas, 110) - 130) / 20;
+  const imcBaixo = (Math.min(p.imc, 30) - 25) / 5;
+  const imcAlto = (Math.max(p.imc, 30) - 30) / 5;
+  const tfgBaixa = (Math.min(p.tfg, 60) - 60) / -15;
+  const tfgAlta = (Math.max(p.tfg, 60) - 90) / -15;
+  const dm = p.diabetes ? 1 : 0;
+  const fumo = p.fumante ? 1 : 0;
+  const antiHas = p.usaAntiHipertensivo ? 1 : 0;
+  const estatina = p.usaEstatina ? 1 : 0;
+
+  const v = {
+    age: idade,
+    nonHdl: naoHdl,
+    hdl: hdl,
+    sbpLt110: pasBaixa,
+    sbpGte110: pasAlta,
+    dm: dm,
+    fumo: fumo,
+    bmiLt30: imcBaixo,
+    bmiGte30: imcAlto,
+    egfrLt60: tfgBaixa,
+    egfrGte60: tfgAlta,
+    antiHas: antiHas,
+    estatina: estatina,
+    antiHasSbp: antiHas * pasAlta,
+    estatinaNonHdl: estatina * naoHdl,
+    ageNonHdl: idade * naoHdl,
+    ageHdl: idade * hdl,
+    ageSbpGte110: idade * pasAlta,
+    ageDm: idade * dm,
+    ageFumo: idade * fumo,
+    ageBmiGte30: idade * imcAlto,
+    ageEgfrLt60: idade * tfgBaixa,
+    const: 1,
+  };
+  if (anos === 30) v.ageSq = idade * idade;
+  return v;
+}
+
+function aplicarBetas(betas, preds) {
+  let lp = 0;
+  for (const termo in betas) {
+    const x = preds[termo];
+    if (x === undefined) throw new Error("preditor ausente: " + termo);
+    lp += betas[termo] * x;
+  }
+  return Math.exp(lp) / (1 + Math.exp(lp));
+}
+
+/* Faixas de risco adotadas pela DBHA 2025, aplicadas ao risco de
+   doença aterosclerótica (ASCVD) em 10 anos. */
+const FAIXAS_RISCO = [
+  { ate: 5, rot: "Baixo", cor: "#2E8B6F" },
+  { ate: 7.5, rot: "Limítrofe", cor: "#C9A227" },
+  { ate: 20, rot: "Intermediário", cor: "#D97A1F" },
+  { ate: Infinity, rot: "Alto", cor: "#B3242F" },
+];
+
+const faixaDe = (pct) => FAIXAS_RISCO.find((f) => pct < f.ate);
+
+/* Retorna { ascvd10, dcv10, dcv30, faixa, avisos[] } em pontos percentuais. */
+function calcularPrevent(p) {
+  const avisos = [];
+  for (const campo in PREVENT_LIMITES) {
+    const [min, max] = PREVENT_LIMITES[campo];
+    const v = p[campo];
+    if (typeof v === "number" && (v < min || v > max)) {
+      avisos.push(`${campo} fora da faixa validada (${min}–${max})`);
+    }
+  }
+
+  const s = p.sexo === "F" ? "f" : "m";
+  const p10 = preditoresPrevent(p, 10);
+  const p30 = preditoresPrevent(p, 30);
+
+  const ascvd10 = aplicarBetas(PREVENT_BETAS[`y10_${s}_ascvd`], p10) * 100;
+  const dcv10 = aplicarBetas(PREVENT_BETAS[`y10_${s}_cvd`], p10) * 100;
+  const dcv30 = aplicarBetas(PREVENT_BETAS[`y30_${s}_cvd`], p30) * 100;
+
+  return { ascvd10, dcv10, dcv30, faixa: faixaDe(ascvd10), avisos };
+}
+
+
 /* ---------------------------------------------------------------
    ANTI-HIPERTENSIVOS — base de conteúdo
    Diretriz Brasileira de Hipertensão Arterial (DBHA) 2025
@@ -1364,6 +1919,7 @@ const ICON = {
   combos: '<svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="12" r="5.5"/><circle cx="15" cy="12" r="5.5"/></svg>',
   perfis: '<svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.4"/><path d="M4.5 20a7.5 7.5 0 0 1 15 0"/></svg>',
   emerg: '<svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 4.5 13.5H11L10 22l8.5-11.5H12L13 2z"/></svg>',
+  risco: '<svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 0-9 9"/><path d="M12 12l5-4"/><circle cx="12" cy="12" r="1.4" fill="currentColor"/><path d="M19 16.5v3M19 22h.01"/></svg>',
   search: '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>',
   x: '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg>',
   caret: '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>',
@@ -1371,16 +1927,18 @@ const ICON = {
   moon: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z"/></svg>',
   pearl: '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v2M5 6l1.5 1.5M19 6l-1.5 1.5M9 17a5.5 5.5 0 1 1 6 0v2.5h-6V17zM10 22h4"/></svg>',
   logo: '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12h4.5l2-5.5 3.5 11 2.5-7 1.5 4.5H22"/></svg>',
+  check: '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.5 5 5L19 7"/></svg>',
   empty: '<svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>',
 };
 
 /* ---------- estado ---------- */
 const TABS = [
   { id: "inicio", rot: "Início", icon: ICON.inicio },
+  { id: "risco", rot: "Risco", icon: ICON.risco },
   { id: "classes", rot: "Classes", icon: ICON.classes },
   { id: "combos", rot: "Combinar", icon: ICON.combos },
   { id: "perfis", rot: "Paciente", icon: ICON.perfis },
-  { id: "emerg", rot: "Endovenoso", icon: ICON.emerg },
+  { id: "emerg", rot: "EV", icon: ICON.emerg },
 ];
 
 const state = {
@@ -1395,6 +1953,29 @@ if (!TABS.some((t) => t.id === state.aba)) state.aba = "inicio";
 
 const GRUPOS = ["Todos", ...new Set(CLASSES.map((c) => c.grupo))];
 if (!GRUPOS.includes(state.grupo)) state.grupo = "Todos";
+
+/* Entradas da calculadora. De propósito não são gravadas em disco:
+   são dados de paciente, e o app não deve guardá-los. */
+const risco = {
+  sexo: "F", idade: "", pas: "", colesterolTotal: "", hdl: "", tfg: "",
+  creatinina: "",
+  diabetes: false, fumante: false, usaAntiHipertensivo: false, usaEstatina: false,
+};
+
+const CAMPOS_RISCO = [
+  { k: "idade", rot: "Idade", un: "anos", min: 30, max: 79, step: 1 },
+  { k: "pas", rot: "PA sistólica", un: "mmHg", min: 70, max: 250, step: 1 },
+  { k: "colesterolTotal", rot: "Colesterol total", un: "mg/dL", min: 80, max: 500, step: 1 },
+  { k: "hdl", rot: "HDL", un: "mg/dL", min: 10, max: 150, step: 1 },
+  { k: "tfg", rot: "TFG estimada", un: "mL/min", min: 5, max: 200, step: 1 },
+];
+
+const MARCADORES_RISCO = [
+  { k: "diabetes", rot: "Diabetes" },
+  { k: "fumante", rot: "Fumante atual" },
+  { k: "usaAntiHipertensivo", rot: "Usa anti-hipertensivo" },
+  { k: "usaEstatina", rot: "Usa estatina" },
+];
 
 const COR_COMBO = { sim: "#2E7A61", nao: "#B3242F", atencao: "#B8871B" };
 const ROT_COMBO = { sim: "Pode e deve", nao: "Não combine", atencao: "Combine com cautela" };
@@ -1611,9 +2192,129 @@ function viewEmerg() {
   </div>`;
 }
 
+/* ---------- aba: risco ---------- */
+function riscoCompleto() {
+  return CAMPOS_RISCO.every((c) => Number.isFinite(parseFloat(risco[c.k])));
+}
+
+function entradasRisco() {
+  const n = (k) => parseFloat(risco[k]);
+  return {
+    sexo: risco.sexo,
+    idade: n("idade"), pas: n("pas"),
+    colesterolTotal: n("colesterolTotal"), hdl: n("hdl"), tfg: n("tfg"),
+    diabetes: risco.diabetes, fumante: risco.fumante,
+    usaAntiHipertensivo: risco.usaAntiHipertensivo, usaEstatina: risco.usaEstatina,
+  };
+}
+
+/* O que o risco calculado significa para a decisão de tratar, cruzando com a PA. */
+function conduta(faixa, pas) {
+  if (pas >= 140) {
+    return "Com PA ≥ 140/90 o tratamento medicamentoso começa no diagnóstico, qualquer que seja o risco calculado.";
+  }
+  if (pas >= 130) {
+    return faixa === "Alto"
+      ? "Na faixa 130–139/80–89 com risco alto, entra medicação se a PA não controlar após três meses de medidas não farmacológicas."
+      : "Na faixa 130–139/80–89 sem risco alto, a conduta é de medidas não medicamentosas, com reavaliação periódica do risco.";
+  }
+  return "Abaixo de 130/80 a conduta é de medidas não medicamentosas e controle dos demais fatores de risco.";
+}
+
+function resultadoRiscoHTML() {
+  if (!riscoCompleto()) {
+    return `<div class="result-empty">Preencha os cinco campos acima para ver o risco estimado.</div>`;
+  }
+  const e = entradasRisco();
+  const r = calcularPrevent(e);
+  const idx = FAIXAS_RISCO.indexOf(r.faixa);
+  const pct = (v) => v.toFixed(1).replace(".", ",") + "%";
+
+  return `<div class="result acc" style="--c:${r.faixa.cor}">
+    <div class="result-top">
+      <div>
+        <div class="result-label">Doença aterosclerótica em 10 anos</div>
+        <div class="result-value">${pct(r.ascvd10)}</div>
+      </div>
+      <span class="result-band">${esc(r.faixa.rot)}</span>
+    </div>
+
+    <div class="result-scale" style="color:var(--c-txt)">
+      ${FAIXAS_RISCO.map((_, i) => `<div class="${i === idx ? "on" : ""}"></div>`).join("")}
+    </div>
+    <div class="result-scale-rot">
+      ${FAIXAS_RISCO.map((f) => `<span>${esc(f.rot)}</span>`).join("")}
+    </div>
+
+    <dl class="result-secondary">
+      <div><dt>DCV total em 10 anos</dt><dd>${pct(r.dcv10)}</dd></div>
+      <div><dt>DCV total em 30 anos</dt><dd>${pct(r.dcv30)}</dd></div>
+    </dl>
+
+    <div class="result-action">${esc(conduta(r.faixa.rot, e.pas))}</div>
+    ${r.avisos.length
+      ? `<div class="result-warn">Fora da faixa validada: ${esc(r.avisos.join("; "))}. O resultado deixa de ser confiável.</div>`
+      : ""}
+  </div>`;
+}
+
+function viewRisco() {
+  const campos = CAMPOS_RISCO.map(
+    (c) => `<div class="field">
+      <label for="r-${c.k}">${esc(c.rot)} <span class="unit">${esc(c.un)}</span></label>
+      <input id="r-${c.k}" data-risco="${c.k}" type="number" inputmode="decimal"
+             min="${c.min}" max="${c.max}" step="${c.step}"
+             value="${esc(risco[c.k])}" placeholder="—">
+    </div>`
+  ).join("");
+
+  const marcadores = MARCADORES_RISCO.map(
+    (m) => `<button class="toggle" data-marca="${m.k}" aria-pressed="${risco[m.k]}">
+      <span class="box">${ICON.check}</span>${esc(m.rot)}
+    </button>`
+  ).join("");
+
+  return `
+  <p class="tab-intro">A DBHA 2025 adota o <strong>PREVENT</strong>, da American Heart Association, no lugar do escore de Framingham. Vale para 30 a 79 anos, em prevenção primária — quem já tem doença cardiovascular estabelecida é de alto risco por definição, sem precisar calcular.</p>
+
+  <section class="card card-pad">
+    <div class="eyebrow">Dados do paciente</div>
+
+    <div class="form-grid">
+      <div class="field" style="grid-column:1/-1">
+        <label>Sexo</label>
+        <div class="seg">
+          <button data-sexo="F" aria-pressed="${risco.sexo === "F"}">Feminino</button>
+          <button data-sexo="M" aria-pressed="${risco.sexo === "M"}">Masculino</button>
+        </div>
+      </div>
+      ${campos}
+    </div>
+
+    <div class="helper-line">
+      <div class="field">
+        <label for="r-creatinina">Creatinina <span class="unit">mg/dL</span></label>
+        <input id="r-creatinina" data-risco="creatinina" type="number" inputmode="decimal"
+               min="0.1" max="15" step="0.01" value="${esc(risco.creatinina)}" placeholder="—">
+      </div>
+      <button class="helper-btn" id="calc-tfg">Estimar TFG</button>
+    </div>
+    <p class="helper-note">Se o laboratório já informa a TFG, use aquele valor. A TFG é em mL/min/1,73m². O atalho aplica a CKD-EPI 2021, sem coeficiente de raça, e preenche o campo acima — precisa da idade e do sexo.</p>
+
+    <div class="toggles">${marcadores}</div>
+  </section>
+
+  <div id="risco-resultado">${resultadoRiscoHTML()}</div>
+
+  <p class="footnote" style="border:0;padding-top:14px">
+    Modelo base do PREVENT (Khan SS et al., <em>Circulation</em> 2023), sem HbA1c nem relação albumina/creatinina. As faixas — baixo &lt; 5%, limítrofe 5 a 7,5%, intermediário 7,5 a 20%, alto ≥ 20% — são as da diretriz, aplicadas ao risco de doença aterosclerótica em 10 anos. Nada do que você digita aqui é salvo.
+  </p>`;
+}
+
 /* ---------- render ---------- */
 const VIEWS = {
   inicio: viewInicio,
+  risco: viewRisco,
   classes: viewClasses,
   combos: viewCombos,
   perfis: viewPerfis,
@@ -1692,6 +2393,39 @@ document.addEventListener("click", (ev) => {
     return;
   }
 
+  const btSexo = ev.target.closest("[data-sexo]");
+  if (btSexo) {
+    risco.sexo = btSexo.dataset.sexo;
+    document.querySelectorAll("[data-sexo]").forEach((b) =>
+      b.setAttribute("aria-pressed", String(b.dataset.sexo === risco.sexo))
+    );
+    redesenharResultadoRisco();
+    return;
+  }
+
+  const marca = ev.target.closest("[data-marca]");
+  if (marca) {
+    const k = marca.dataset.marca;
+    risco[k] = !risco[k];
+    marca.setAttribute("aria-pressed", String(risco[k]));
+    redesenharResultadoRisco();
+    return;
+  }
+
+  if (ev.target.closest("#calc-tfg")) {
+    const cr = parseFloat(risco.creatinina);
+    const idade = parseFloat(risco.idade);
+    if (!Number.isFinite(cr) || !Number.isFinite(idade)) {
+      alert("Para estimar a TFG preciso da creatinina e da idade.");
+      return;
+    }
+    const v = tfgCkdEpi2021({ creatinina: cr, idade, sexo: risco.sexo });
+    risco.tfg = String(Math.round(v));
+    $("#r-tfg").value = risco.tfg;
+    redesenharResultadoRisco();
+    return;
+  }
+
   if (ev.target.closest("#search-clear")) {
     state.busca = "";
     renderListaClasses();
@@ -1714,7 +2448,18 @@ document.addEventListener("click", (ev) => {
   }
 });
 
+function redesenharResultadoRisco() {
+  const alvo = $("#risco-resultado");
+  if (alvo) alvo.innerHTML = resultadoRiscoHTML();
+}
+
 document.addEventListener("input", (ev) => {
+  const campo = ev.target.dataset && ev.target.dataset.risco;
+  if (campo) {
+    risco[campo] = ev.target.value;
+    redesenharResultadoRisco();
+    return;
+  }
   if (ev.target.id === "busca") {
     state.busca = ev.target.value;
     state.aberto = null;

@@ -33,13 +33,21 @@ def data_uri(rel, mime):
 
 
 css = ler("assets/styles.css")
-dados = ler("assets/data.js")
+dados = "\n".join(
+    ler(f) for f in ("assets/prevent-betas.js", "assets/prevent.js", "assets/data.js")
+)
 app = ler("assets/app.js")
 html = ler("index.html")
 
 # corpo da página, sem as tags <script src>, que serão embutidas
 corpo = re.search(r"<body>(.*)</body>", html, re.S).group(1)
 corpo = re.sub(r'\s*<script src="[^"]+"[^>]*></script>', "", corpo).strip()
+
+# o export para node não faz sentido no arquivo empacotado
+dados = dados.replace(
+    'if (typeof module !== "undefined") {\n'
+    '  module.exports = { calcularPrevent, tfgCkdEpi2021, preditoresPrevent, FAIXAS_RISCO };\n'
+    '}\n', "")
 
 # o service worker só existe no site publicado
 app = re.sub(

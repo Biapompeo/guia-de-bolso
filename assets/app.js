@@ -31,6 +31,7 @@ const ICON = {
   combos: '<svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="12" r="5.5"/><circle cx="15" cy="12" r="5.5"/></svg>',
   perfis: '<svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.4"/><path d="M4.5 20a7.5 7.5 0 0 1 15 0"/></svg>',
   emerg: '<svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 4.5 13.5H11L10 22l8.5-11.5H12L13 2z"/></svg>',
+  risco: '<svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 0-9 9"/><path d="M12 12l5-4"/><circle cx="12" cy="12" r="1.4" fill="currentColor"/><path d="M19 16.5v3M19 22h.01"/></svg>',
   search: '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>',
   x: '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg>',
   caret: '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>',
@@ -38,16 +39,18 @@ const ICON = {
   moon: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z"/></svg>',
   pearl: '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v2M5 6l1.5 1.5M19 6l-1.5 1.5M9 17a5.5 5.5 0 1 1 6 0v2.5h-6V17zM10 22h4"/></svg>',
   logo: '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12h4.5l2-5.5 3.5 11 2.5-7 1.5 4.5H22"/></svg>',
+  check: '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.5 5 5L19 7"/></svg>',
   empty: '<svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>',
 };
 
 /* ---------- estado ---------- */
 const TABS = [
   { id: "inicio", rot: "Início", icon: ICON.inicio },
+  { id: "risco", rot: "Risco", icon: ICON.risco },
   { id: "classes", rot: "Classes", icon: ICON.classes },
   { id: "combos", rot: "Combinar", icon: ICON.combos },
   { id: "perfis", rot: "Paciente", icon: ICON.perfis },
-  { id: "emerg", rot: "Endovenoso", icon: ICON.emerg },
+  { id: "emerg", rot: "EV", icon: ICON.emerg },
 ];
 
 const state = {
@@ -62,6 +65,29 @@ if (!TABS.some((t) => t.id === state.aba)) state.aba = "inicio";
 
 const GRUPOS = ["Todos", ...new Set(CLASSES.map((c) => c.grupo))];
 if (!GRUPOS.includes(state.grupo)) state.grupo = "Todos";
+
+/* Entradas da calculadora. De propósito não são gravadas em disco:
+   são dados de paciente, e o app não deve guardá-los. */
+const risco = {
+  sexo: "F", idade: "", pas: "", colesterolTotal: "", hdl: "", tfg: "",
+  creatinina: "",
+  diabetes: false, fumante: false, usaAntiHipertensivo: false, usaEstatina: false,
+};
+
+const CAMPOS_RISCO = [
+  { k: "idade", rot: "Idade", un: "anos", min: 30, max: 79, step: 1 },
+  { k: "pas", rot: "PA sistólica", un: "mmHg", min: 70, max: 250, step: 1 },
+  { k: "colesterolTotal", rot: "Colesterol total", un: "mg/dL", min: 80, max: 500, step: 1 },
+  { k: "hdl", rot: "HDL", un: "mg/dL", min: 10, max: 150, step: 1 },
+  { k: "tfg", rot: "TFG estimada", un: "mL/min", min: 5, max: 200, step: 1 },
+];
+
+const MARCADORES_RISCO = [
+  { k: "diabetes", rot: "Diabetes" },
+  { k: "fumante", rot: "Fumante atual" },
+  { k: "usaAntiHipertensivo", rot: "Usa anti-hipertensivo" },
+  { k: "usaEstatina", rot: "Usa estatina" },
+];
 
 const COR_COMBO = { sim: "#2E7A61", nao: "#B3242F", atencao: "#B8871B" };
 const ROT_COMBO = { sim: "Pode e deve", nao: "Não combine", atencao: "Combine com cautela" };
@@ -278,9 +304,129 @@ function viewEmerg() {
   </div>`;
 }
 
+/* ---------- aba: risco ---------- */
+function riscoCompleto() {
+  return CAMPOS_RISCO.every((c) => Number.isFinite(parseFloat(risco[c.k])));
+}
+
+function entradasRisco() {
+  const n = (k) => parseFloat(risco[k]);
+  return {
+    sexo: risco.sexo,
+    idade: n("idade"), pas: n("pas"),
+    colesterolTotal: n("colesterolTotal"), hdl: n("hdl"), tfg: n("tfg"),
+    diabetes: risco.diabetes, fumante: risco.fumante,
+    usaAntiHipertensivo: risco.usaAntiHipertensivo, usaEstatina: risco.usaEstatina,
+  };
+}
+
+/* O que o risco calculado significa para a decisão de tratar, cruzando com a PA. */
+function conduta(faixa, pas) {
+  if (pas >= 140) {
+    return "Com PA ≥ 140/90 o tratamento medicamentoso começa no diagnóstico, qualquer que seja o risco calculado.";
+  }
+  if (pas >= 130) {
+    return faixa === "Alto"
+      ? "Na faixa 130–139/80–89 com risco alto, entra medicação se a PA não controlar após três meses de medidas não farmacológicas."
+      : "Na faixa 130–139/80–89 sem risco alto, a conduta é de medidas não medicamentosas, com reavaliação periódica do risco.";
+  }
+  return "Abaixo de 130/80 a conduta é de medidas não medicamentosas e controle dos demais fatores de risco.";
+}
+
+function resultadoRiscoHTML() {
+  if (!riscoCompleto()) {
+    return `<div class="result-empty">Preencha os cinco campos acima para ver o risco estimado.</div>`;
+  }
+  const e = entradasRisco();
+  const r = calcularPrevent(e);
+  const idx = FAIXAS_RISCO.indexOf(r.faixa);
+  const pct = (v) => v.toFixed(1).replace(".", ",") + "%";
+
+  return `<div class="result acc" style="--c:${r.faixa.cor}">
+    <div class="result-top">
+      <div>
+        <div class="result-label">Doença aterosclerótica em 10 anos</div>
+        <div class="result-value">${pct(r.ascvd10)}</div>
+      </div>
+      <span class="result-band">${esc(r.faixa.rot)}</span>
+    </div>
+
+    <div class="result-scale" style="color:var(--c-txt)">
+      ${FAIXAS_RISCO.map((_, i) => `<div class="${i === idx ? "on" : ""}"></div>`).join("")}
+    </div>
+    <div class="result-scale-rot">
+      ${FAIXAS_RISCO.map((f) => `<span>${esc(f.rot)}</span>`).join("")}
+    </div>
+
+    <dl class="result-secondary">
+      <div><dt>DCV total em 10 anos</dt><dd>${pct(r.dcv10)}</dd></div>
+      <div><dt>DCV total em 30 anos</dt><dd>${pct(r.dcv30)}</dd></div>
+    </dl>
+
+    <div class="result-action">${esc(conduta(r.faixa.rot, e.pas))}</div>
+    ${r.avisos.length
+      ? `<div class="result-warn">Fora da faixa validada: ${esc(r.avisos.join("; "))}. O resultado deixa de ser confiável.</div>`
+      : ""}
+  </div>`;
+}
+
+function viewRisco() {
+  const campos = CAMPOS_RISCO.map(
+    (c) => `<div class="field">
+      <label for="r-${c.k}">${esc(c.rot)} <span class="unit">${esc(c.un)}</span></label>
+      <input id="r-${c.k}" data-risco="${c.k}" type="number" inputmode="decimal"
+             min="${c.min}" max="${c.max}" step="${c.step}"
+             value="${esc(risco[c.k])}" placeholder="—">
+    </div>`
+  ).join("");
+
+  const marcadores = MARCADORES_RISCO.map(
+    (m) => `<button class="toggle" data-marca="${m.k}" aria-pressed="${risco[m.k]}">
+      <span class="box">${ICON.check}</span>${esc(m.rot)}
+    </button>`
+  ).join("");
+
+  return `
+  <p class="tab-intro">A DBHA 2025 adota o <strong>PREVENT</strong>, da American Heart Association, no lugar do escore de Framingham. Vale para 30 a 79 anos, em prevenção primária — quem já tem doença cardiovascular estabelecida é de alto risco por definição, sem precisar calcular.</p>
+
+  <section class="card card-pad">
+    <div class="eyebrow">Dados do paciente</div>
+
+    <div class="form-grid">
+      <div class="field" style="grid-column:1/-1">
+        <label>Sexo</label>
+        <div class="seg">
+          <button data-sexo="F" aria-pressed="${risco.sexo === "F"}">Feminino</button>
+          <button data-sexo="M" aria-pressed="${risco.sexo === "M"}">Masculino</button>
+        </div>
+      </div>
+      ${campos}
+    </div>
+
+    <div class="helper-line">
+      <div class="field">
+        <label for="r-creatinina">Creatinina <span class="unit">mg/dL</span></label>
+        <input id="r-creatinina" data-risco="creatinina" type="number" inputmode="decimal"
+               min="0.1" max="15" step="0.01" value="${esc(risco.creatinina)}" placeholder="—">
+      </div>
+      <button class="helper-btn" id="calc-tfg">Estimar TFG</button>
+    </div>
+    <p class="helper-note">Se o laboratório já informa a TFG, use aquele valor. A TFG é em mL/min/1,73m². O atalho aplica a CKD-EPI 2021, sem coeficiente de raça, e preenche o campo acima — precisa da idade e do sexo.</p>
+
+    <div class="toggles">${marcadores}</div>
+  </section>
+
+  <div id="risco-resultado">${resultadoRiscoHTML()}</div>
+
+  <p class="footnote" style="border:0;padding-top:14px">
+    Modelo base do PREVENT (Khan SS et al., <em>Circulation</em> 2023), sem HbA1c nem relação albumina/creatinina. As faixas — baixo &lt; 5%, limítrofe 5 a 7,5%, intermediário 7,5 a 20%, alto ≥ 20% — são as da diretriz, aplicadas ao risco de doença aterosclerótica em 10 anos. Nada do que você digita aqui é salvo.
+  </p>`;
+}
+
 /* ---------- render ---------- */
 const VIEWS = {
   inicio: viewInicio,
+  risco: viewRisco,
   classes: viewClasses,
   combos: viewCombos,
   perfis: viewPerfis,
@@ -359,6 +505,39 @@ document.addEventListener("click", (ev) => {
     return;
   }
 
+  const btSexo = ev.target.closest("[data-sexo]");
+  if (btSexo) {
+    risco.sexo = btSexo.dataset.sexo;
+    document.querySelectorAll("[data-sexo]").forEach((b) =>
+      b.setAttribute("aria-pressed", String(b.dataset.sexo === risco.sexo))
+    );
+    redesenharResultadoRisco();
+    return;
+  }
+
+  const marca = ev.target.closest("[data-marca]");
+  if (marca) {
+    const k = marca.dataset.marca;
+    risco[k] = !risco[k];
+    marca.setAttribute("aria-pressed", String(risco[k]));
+    redesenharResultadoRisco();
+    return;
+  }
+
+  if (ev.target.closest("#calc-tfg")) {
+    const cr = parseFloat(risco.creatinina);
+    const idade = parseFloat(risco.idade);
+    if (!Number.isFinite(cr) || !Number.isFinite(idade)) {
+      alert("Para estimar a TFG preciso da creatinina e da idade.");
+      return;
+    }
+    const v = tfgCkdEpi2021({ creatinina: cr, idade, sexo: risco.sexo });
+    risco.tfg = String(Math.round(v));
+    $("#r-tfg").value = risco.tfg;
+    redesenharResultadoRisco();
+    return;
+  }
+
   if (ev.target.closest("#search-clear")) {
     state.busca = "";
     renderListaClasses();
@@ -381,7 +560,18 @@ document.addEventListener("click", (ev) => {
   }
 });
 
+function redesenharResultadoRisco() {
+  const alvo = $("#risco-resultado");
+  if (alvo) alvo.innerHTML = resultadoRiscoHTML();
+}
+
 document.addEventListener("input", (ev) => {
+  const campo = ev.target.dataset && ev.target.dataset.risco;
+  if (campo) {
+    risco[campo] = ev.target.value;
+    redesenharResultadoRisco();
+    return;
+  }
   if (ev.target.id === "busca") {
     state.busca = ev.target.value;
     state.aberto = null;
