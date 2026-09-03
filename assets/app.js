@@ -134,7 +134,7 @@ const _paraHex = (c) => "#" + c.map((v) => v.toString(16).padStart(2, "0")).join
 /* Pior caso de cada tema: no claro o acento pode cair sobre o papel, mais
    escuro que o cartão; no escuro, sobre o campo de formulário, mais claro. */
 const SUP_CLARA = "#EDE8E0";
-const SUP_ESCURA = "#2C3035";
+const SUP_ESCURA = "#2A2F35";
 
 function _legivel(base, fundo, rumo, alvo) {
   for (let t = 0; t <= 1.0001; t += 0.02) {
@@ -153,8 +153,10 @@ function acento(cor) {
   // o texto costuma cair sobre o próprio fundo lavado, mais escuro que o cartão
   const fundoClaro = _misturar(_hex(SUP_CLARA), base, 0.09);
   const fundoEscuro = _misturar(_hex(SUP_ESCURA), base, 0.17);
+  /* No tema escuro a mesma razão de contraste é percebida como mais fraca que
+     no claro, então o acento como texto é levado a 7:1 em vez do mínimo. */
   const claro = _legivel(base, fundoClaro, [0, 0, 0], 4.5);
-  const escuro = _legivel(base, fundoEscuro, [255, 255, 255], 4.5);
+  const escuro = _legivel(base, fundoEscuro, [255, 255, 255], 7.0);
   return (_cacheAcento[cor] = `--c:${cor};--c-l:${claro};--c-d:${escuro}`);
 }
 

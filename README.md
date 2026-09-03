@@ -25,17 +25,21 @@ lembrado entre sessões e versão para impressão.
 
 Nenhum dos dois temas usa extremo: o claro é papel quente (`#EDE8E0`) com
 cartões creme (`#F8F5EF`), não branco puro; o escuro é carvão (`#1A1D20`)
-com cartões `#24282C`, não preto. Os neutros formam uma escada de contraste
-verificada — texto corrido acima de 7:1, secundário e rótulos acima de
-4,5:1, em ambos os temas.
+com cartões `#23272C`, não preto.
+
+Os neutros formam uma escada de contraste verificada. **O tema escuro exige
+22% a mais que o claro**: a mesma razão de contraste é percebida como mais
+fraca sobre fundo escuro, então um texto em 4,5:1 passa na norma e ainda
+assim cansa a leitura. No escuro a escada sobre o cartão fica em 12,9:1
+(texto principal), 10,2:1, 7,8:1 e 6,1:1.
 
 As cores de identidade (uma por classe, por estágio e por veredito) valem
 como trilha e como ponto colorido, mas várias não alcançam contraste
 suficiente **como texto** — o dourado sobre papel claro é o caso extremo,
 em 1,6:1. Em vez de repintar a paleta à mão, `acento()` em `assets/app.js`
 deriva de cada cor duas variantes de texto, uma por tema, escurecendo ou
-clareando só o necessário para chegar a 4,5:1 sobre o fundo em que aquele
-texto realmente cai. Isso vai inline como `--c-l` e `--c-d`; o `--c` cru
+clareando só o necessário — 4,5:1 no claro, 7:1 no escuro — sobre o fundo em
+que aquele texto realmente cai. Isso vai inline como `--c-l` e `--c-d`; o `--c` cru
 segue intacto nas trilhas.
 
 ### Verificação
@@ -48,8 +52,8 @@ node tests/contraste.js http://localhost:8137
 
 Percorre as seis abas nos dois temas e mede o contraste real de cada texto
 contra o fundo efetivamente pintado, compondo transparências e resolvendo
-`color-mix`. Sai com código 1 se algo ficar abaixo do alvo. Rode depois de
-mexer em qualquer cor.
+`color-mix`. Os alvos do tema escuro são multiplicados por 1,22. Sai com
+código 1 se algo ficar abaixo. Rode depois de mexer em qualquer cor.
 
 ## Calculadora de risco (PREVENT)
 

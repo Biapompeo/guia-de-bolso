@@ -8,8 +8,11 @@
      npm i playwright
      node tests/contraste.js http://localhost:8137
 
-   Sai com código 1 se algum texto ficar abaixo do alvo. Os alvos são 7:1
-   para texto corrido e 4.5:1 para rótulos e texto secundário. */
+   Sai com código 1 se algum texto ficar abaixo do alvo. No tema claro os
+   alvos são 7:1 para texto corrido e 4,5:1 para rótulos e texto secundário.
+   No escuro eles sobem 22%, porque a mesma razão de contraste é percebida
+   como mais fraca sobre fundo escuro — 4,5:1 passa na norma e ainda assim
+   cansa a leitura. */
 
 const { chromium } = require('playwright');
 
@@ -17,7 +20,8 @@ const BASE = process.argv[2] || 'http://localhost:8137';
 // no ambiente de desenvolvimento o Chromium vem de fora do projeto
 const EXEC = process.env.CHROMIUM_PATH || undefined;
 
-const AUDIT = `(() => {
+const AUDIT = (exigencia) => `(() => {
+  const EXIG = ${exigencia};
   // o navegador serializa color-mix como oklab(...); ler aqueles números como
   // RGB dava falso negativo, então cada notação é convertida de verdade
   const g1 = v => v <= 0.0031308 ? v*12.92 : 1.055*Math.pow(v,1/2.4)-0.055;
@@ -78,7 +82,8 @@ const AUDIT = `(() => {
   ];
 
   const falhas = [];
-  for (const [sel, alvo] of alvos) {
+  for (const [sel, base] of alvos) {
+    const alvo = base * EXIG;
     for (const el of document.querySelectorAll(sel)) {
       const cs = getComputedStyle(el);
       if (!el.offsetParent && cs.position !== 'fixed') continue;
@@ -106,7 +111,7 @@ const AUDIT = `(() => {
         for (const [id,v] of [['idade','58'],['pas','152'],['colesterolTotal','230'],['hdl','40'],['tfg','72']]) await p.fill('#r-'+id, v);
         await p.waitForTimeout(300);
       }
-      const f = await p.evaluate(AUDIT);
+      const f = await p.evaluate(AUDIT(tema === 'dark' ? 1.22 : 1));
       f.forEach(x => todas.push(aba + ' :: ' + x));
     }
     const unico = [...new Set(todas)];
