@@ -753,6 +753,13 @@ h1 {
   color: var(--paper);
   white-space: nowrap;
 }
+.result-model {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--muted);
+  margin-top: 9px;
+  letter-spacing: .01em;
+}
 .result-scale { display: flex; gap: 3px; margin-top: 16px; }
 .result-scale div {
   flex: 1;
@@ -1086,12 +1093,13 @@ html[data-theme="dark"] .tab[aria-selected="true"] { background: var(--surface-2
 <nav class="tabbar" id="tabbar" role="tablist" aria-label="Seções do guia"></nav>
 <script>
 /* Coeficientes das equações PREVENT (AHA, Khan et al., Circulation 2023).
-   Extraídos de github.com/martingmayer/preventr (R/sysdata.rda, GPL-3),
-   modelo base, desfechos DCV total e ASCVD, horizontes de 10 e 30 anos.
-   NÃO editar à mão. */
+   Gerado por tools/extract-prevent-betas.py a partir do pacote R
+   preventr (github.com/martingmayer/preventr, GPL-3), R/sysdata.rda.
+   Modelos base, HbA1c, ACR e completo; desfechos DCV total e ASCVD;
+   horizontes de 10 e 30 anos. NÃO editar à mão. */
 
 const PREVENT_BETAS = {
- "y10_f_cvd": {
+ "base_10_f_cvd": {
   "age": 0.793933,
   "nonHdl": 0.030524,
   "hdl": -0.160686,
@@ -1116,7 +1124,7 @@ const PREVENT_BETAS = {
   "ageEgfrLt60": -0.163781,
   "const": -3.307728
  },
- "y10_m_cvd": {
+ "base_10_m_cvd": {
   "age": 0.768853,
   "nonHdl": 0.073617,
   "hdl": -0.095443,
@@ -1141,7 +1149,7 @@ const PREVENT_BETAS = {
   "ageEgfrLt60": -0.15437,
   "const": -3.031168
  },
- "y10_f_ascvd": {
+ "base_10_f_ascvd": {
   "age": 0.719883,
   "nonHdl": 0.117697,
   "hdl": -0.151185,
@@ -1166,7 +1174,7 @@ const PREVENT_BETAS = {
   "ageEgfrLt60": -0.167149,
   "const": -3.819975
  },
- "y10_m_ascvd": {
+ "base_10_m_ascvd": {
   "age": 0.709985,
   "nonHdl": 0.165866,
   "hdl": -0.114429,
@@ -1191,7 +1199,7 @@ const PREVENT_BETAS = {
   "ageEgfrLt60": -0.121708,
   "const": -3.500655
  },
- "y30_f_cvd": {
+ "base_30_f_cvd": {
   "age": 0.550308,
   "ageSq": -0.092837,
   "nonHdl": 0.040979,
@@ -1217,7 +1225,7 @@ const PREVENT_BETAS = {
   "ageEgfrLt60": -0.145079,
   "const": -1.318827
  },
- "y30_m_cvd": {
+ "base_30_m_cvd": {
   "age": 0.462731,
   "ageSq": -0.098428,
   "nonHdl": 0.083609,
@@ -1243,7 +1251,7 @@ const PREVENT_BETAS = {
   "ageEgfrLt60": -0.116678,
   "const": -1.148204
  },
- "y30_f_ascvd": {
+ "base_30_f_ascvd": {
   "age": 0.46692,
   "ageSq": -0.089312,
   "nonHdl": 0.12569,
@@ -1269,7 +1277,7 @@ const PREVENT_BETAS = {
   "ageEgfrLt60": -0.129915,
   "const": -1.974074
  },
- "y30_m_ascvd": {
+ "base_30_m_ascvd": {
   "age": 0.39941,
   "ageSq": -0.093748,
   "nonHdl": 0.174464,
@@ -1294,6 +1302,722 @@ const PREVENT_BETAS = {
   "ageBmiGte30": 0.0,
   "ageEgfrLt60": -0.071255,
   "const": -1.736444
+ },
+ "hba1c_10_f_cvd": {
+  "age": 0.785818,
+  "nonHdl": 0.019444,
+  "hdl": -0.152196,
+  "sbpLt110": -0.229668,
+  "sbpGte110": 0.346578,
+  "dm": 0.536624,
+  "fumo": 0.541168,
+  "bmiLt30": 0.0,
+  "bmiGte30": 0.0,
+  "egfrLt60": 0.59319,
+  "egfrGte60": 0.047246,
+  "antiHas": 0.315857,
+  "estatina": -0.153517,
+  "antiHasSbp": -0.068775,
+  "estatinaNonHdl": 0.105475,
+  "ageNonHdl": -0.076112,
+  "ageHdl": 0.030747,
+  "ageSbpGte110": -0.090597,
+  "ageDm": -0.224186,
+  "ageFumo": -0.080186,
+  "ageBmiGte30": 0.0,
+  "ageEgfrLt60": -0.166729,
+  "hba1cDm": 0.133835,
+  "hba1cSemDm": 0.162241,
+  "semHba1c": -0.01425,
+  "const": -3.306162
+ },
+ "hba1c_10_m_cvd": {
+  "age": 0.769918,
+  "nonHdl": 0.060509,
+  "hdl": -0.088853,
+  "sbpLt110": -0.417713,
+  "sbpGte110": 0.328866,
+  "dm": 0.475947,
+  "fumo": 0.438566,
+  "bmiLt30": 0.0,
+  "bmiGte30": 0.0,
+  "egfrLt60": 0.533462,
+  "egfrGte60": 0.020643,
+  "antiHas": 0.291752,
+  "estatina": -0.138331,
+  "antiHasSbp": -0.048262,
+  "estatinaNonHdl": 0.13938,
+  "ageNonHdl": -0.04635,
+  "ageHdl": 0.020593,
+  "ageSbpGte110": -0.103772,
+  "ageDm": -0.17377,
+  "ageFumo": -0.091584,
+  "ageBmiGte30": 0.0,
+  "ageEgfrLt60": -0.163704,
+  "hba1cDm": 0.13159,
+  "hba1cSemDm": 0.129519,
+  "semHba1c": -0.012837,
+  "const": -3.040901
+ },
+ "hba1c_10_f_ascvd": {
+  "age": 0.711183,
+  "nonHdl": 0.106797,
+  "hdl": -0.142574,
+  "sbpLt110": -0.073682,
+  "sbpGte110": 0.348084,
+  "dm": 0.511295,
+  "fumo": 0.488029,
+  "bmiLt30": 0.0,
+  "bmiGte30": 0.0,
+  "egfrLt60": 0.4755,
+  "egfrGte60": 0.043813,
+  "antiHas": 0.225909,
+  "estatina": -0.064887,
+  "antiHasSbp": -0.043764,
+  "estatinaNonHdl": 0.069708,
+  "ageNonHdl": -0.050638,
+  "ageHdl": 0.032747,
+  "ageSbpGte110": -0.099644,
+  "ageDm": -0.192434,
+  "ageFumo": -0.080354,
+  "ageBmiGte30": 0.0,
+  "ageEgfrLt60": -0.168259,
+  "hba1cDm": 0.133906,
+  "hba1cSemDm": 0.159646,
+  "semHba1c": 0.001568,
+  "const": -3.838746
+ },
+ "hba1c_10_m_ascvd": {
+  "age": 0.706415,
+  "nonHdl": 0.153227,
+  "hdl": -0.108217,
+  "sbpLt110": -0.267529,
+  "sbpGte110": 0.317381,
+  "dm": 0.432604,
+  "fumo": 0.395884,
+  "bmiLt30": 0.0,
+  "bmiGte30": 0.0,
+  "egfrLt60": 0.366501,
+  "egfrGte60": 0.025024,
+  "antiHas": 0.206116,
+  "estatina": -0.089999,
+  "antiHasSbp": -0.033496,
+  "estatinaNonHdl": 0.103417,
+  "ageNonHdl": -0.025541,
+  "ageHdl": 0.024754,
+  "ageSbpGte110": -0.091744,
+  "ageDm": -0.14992,
+  "ageFumo": -0.098089,
+  "ageBmiGte30": 0.0,
+  "ageEgfrLt60": -0.130523,
+  "hba1cDm": 0.115716,
+  "hba1cSemDm": 0.12883,
+  "semHba1c": -0.001,
+  "const": -3.51835
+ },
+ "hba1c_30_f_cvd": {
+  "age": 0.534349,
+  "ageSq": -0.095231,
+  "nonHdl": 0.029812,
+  "hdl": -0.157845,
+  "sbpLt110": -0.150449,
+  "sbpGte110": 0.317337,
+  "dm": 0.431474,
+  "fumo": 0.32094,
+  "bmiLt30": 0.0,
+  "bmiGte30": 0.0,
+  "egfrLt60": 0.177144,
+  "egfrGte60": 0.058283,
+  "antiHas": 0.288895,
+  "estatina": -0.079589,
+  "antiHasSbp": -0.060044,
+  "estatinaNonHdl": 0.09206,
+  "ageNonHdl": -0.069611,
+  "ageHdl": 0.030881,
+  "ageSbpGte110": -0.095405,
+  "ageDm": -0.276341,
+  "ageFumo": -0.162394,
+  "ageBmiGte30": 0.0,
+  "ageEgfrLt60": -0.143051,
+  "hba1cDm": 0.094054,
+  "hba1cSemDm": 0.111649,
+  "semHba1c": -0.00248,
+  "const": -1.341059
+ },
+ "hba1c_30_m_cvd": {
+  "age": 0.451987,
+  "ageSq": -0.101624,
+  "nonHdl": 0.070046,
+  "hdl": -0.0968,
+  "sbpLt110": -0.192353,
+  "sbpGte110": 0.282704,
+  "dm": 0.341715,
+  "fumo": 0.210527,
+  "bmiLt30": 0.0,
+  "bmiGte30": 0.0,
+  "egfrLt60": 0.111329,
+  "egfrGte60": 0.064014,
+  "antiHas": 0.233425,
+  "estatina": -0.029942,
+  "antiHasSbp": -0.03932,
+  "estatinaNonHdl": 0.122885,
+  "ageNonHdl": -0.046374,
+  "ageHdl": 0.01846,
+  "ageSbpGte110": -0.108574,
+  "ageDm": -0.220805,
+  "ageFumo": -0.157798,
+  "ageBmiGte30": 0.0,
+  "ageEgfrLt60": -0.117938,
+  "hba1cDm": 0.076817,
+  "hba1cSemDm": 0.07773,
+  "semHba1c": 0.00922,
+  "const": -1.180767
+ },
+ "hba1c_30_f_ascvd": {
+  "age": 0.455557,
+  "ageSq": -0.09035,
+  "nonHdl": 0.114832,
+  "hdl": -0.145875,
+  "sbpLt110": 0.008932,
+  "sbpGte110": 0.313903,
+  "dm": 0.386281,
+  "fumo": 0.271431,
+  "bmiLt30": 0.0,
+  "bmiGte30": 0.0,
+  "egfrLt60": 0.093099,
+  "egfrGte60": 0.053222,
+  "antiHas": 0.186218,
+  "estatina": 0.010696,
+  "antiHasSbp": -0.032971,
+  "estatinaNonHdl": 0.058361,
+  "ageNonHdl": -0.046327,
+  "ageHdl": 0.032472,
+  "ageSbpGte110": -0.100478,
+  "ageDm": -0.226694,
+  "ageFumo": -0.154186,
+  "ageBmiGte30": 0.0,
+  "ageEgfrLt60": -0.128601,
+  "hba1cDm": 0.087583,
+  "hba1cSemDm": 0.112642,
+  "semHba1c": 0.012436,
+  "const": -2.011533
+ },
+ "hba1c_30_m_ascvd": {
+  "age": 0.388327,
+  "ageSq": -0.095811,
+  "nonHdl": 0.161337,
+  "hdl": -0.114442,
+  "sbpLt110": -0.047434,
+  "sbpGte110": 0.269128,
+  "dm": 0.285977,
+  "fumo": 0.175955,
+  "bmiLt30": 0.0,
+  "bmiGte30": 0.0,
+  "egfrLt60": -0.02429,
+  "egfrGte60": 0.064452,
+  "antiHas": 0.142874,
+  "estatina": 0.011506,
+  "antiHasSbp": -0.02333,
+  "estatinaNonHdl": 0.089966,
+  "ageNonHdl": -0.027548,
+  "ageHdl": 0.022573,
+  "ageSbpGte110": -0.090802,
+  "ageDm": -0.177189,
+  "ageFumo": -0.154885,
+  "ageBmiGte30": 0.0,
+  "ageEgfrLt60": -0.073275,
+  "hba1cDm": 0.059109,
+  "hba1cSemDm": 0.082116,
+  "semHba1c": 0.017975,
+  "const": -1.777708
+ },
+ "uacr_10_f_cvd": {
+  "age": 0.796925,
+  "nonHdl": 0.025663,
+  "hdl": -0.158811,
+  "sbpLt110": -0.22557,
+  "sbpGte110": 0.339665,
+  "dm": 0.804751,
+  "fumo": 0.528534,
+  "bmiLt30": 0.0,
+  "bmiGte30": 0.0,
+  "egfrLt60": 0.480351,
+  "egfrGte60": 0.043447,
+  "antiHas": 0.298521,
+  "estatina": -0.149779,
+  "antiHasSbp": -0.074289,
+  "estatinaNonHdl": 0.106756,
+  "ageNonHdl": -0.077813,
+  "ageHdl": 0.030677,
+  "ageSbpGte110": -0.090717,
+  "ageDm": -0.270512,
+  "ageFumo": -0.083056,
+  "ageBmiGte30": 0.0,
+  "ageEgfrLt60": -0.138925,
+  "lnRac": 0.179304,
+  "semRac": 0.013207,
+  "const": -3.738341
+ },
+ "uacr_10_m_cvd": {
+  "age": 0.776865,
+  "nonHdl": 0.065995,
+  "hdl": -0.095111,
+  "sbpLt110": -0.420667,
+  "sbpGte110": 0.312015,
+  "dm": 0.698521,
+  "fumo": 0.431467,
+  "bmiLt30": 0.0,
+  "bmiGte30": 0.0,
+  "egfrLt60": 0.384136,
+  "egfrGte60": 0.009384,
+  "antiHas": 0.267649,
+  "estatina": -0.139097,
+  "antiHasSbp": -0.057931,
+  "estatinaNonHdl": 0.138372,
+  "ageNonHdl": -0.048833,
+  "ageHdl": 0.020041,
+  "ageSbpGte110": -0.102454,
+  "ageDm": -0.223635,
+  "ageFumo": -0.089485,
+  "ageBmiGte30": 0.0,
+  "ageEgfrLt60": -0.132185,
+  "lnRac": 0.188797,
+  "semRac": 0.091698,
+  "const": -3.510705
+ },
+ "uacr_10_f_ascvd": {
+  "age": 0.7202,
+  "nonHdl": 0.113577,
+  "hdl": -0.149351,
+  "sbpLt110": -0.072668,
+  "sbpGte110": 0.343626,
+  "dm": 0.777309,
+  "fumo": 0.474666,
+  "bmiLt30": 0.0,
+  "bmiGte30": 0.0,
+  "egfrLt60": 0.382465,
+  "egfrGte60": 0.039418,
+  "antiHas": 0.212518,
+  "estatina": -0.060305,
+  "antiHasSbp": -0.046605,
+  "estatinaNonHdl": 0.073312,
+  "ageNonHdl": -0.053426,
+  "ageHdl": 0.032569,
+  "ageSbpGte110": -0.099989,
+  "ageDm": -0.241176,
+  "ageFumo": -0.082694,
+  "ageBmiGte30": 0.0,
+  "ageEgfrLt60": -0.144474,
+  "lnRac": 0.150122,
+  "semRac": 0.005026,
+  "const": -4.174614
+ },
+ "uacr_10_m_ascvd": {
+  "age": 0.714172,
+  "nonHdl": 0.160219,
+  "hdl": -0.113909,
+  "sbpLt110": -0.271946,
+  "sbpGte110": 0.305872,
+  "dm": 0.660063,
+  "fumo": 0.388402,
+  "bmiLt30": 0.0,
+  "bmiGte30": 0.0,
+  "egfrLt60": 0.246632,
+  "egfrGte60": 0.015185,
+  "antiHas": 0.186167,
+  "estatina": -0.08944,
+  "antiHasSbp": -0.041188,
+  "estatinaNonHdl": 0.105821,
+  "ageNonHdl": -0.028089,
+  "ageHdl": 0.024043,
+  "ageSbpGte110": -0.091232,
+  "ageDm": -0.200489,
+  "ageFumo": -0.096936,
+  "ageBmiGte30": 0.0,
+  "ageEgfrLt60": -0.102287,
+  "lnRac": 0.151007,
+  "semRac": 0.0556,
+  "const": -3.85146
+ },
+ "uacr_30_f_cvd": {
+  "age": 0.549177,
+  "ageSq": -0.093731,
+  "nonHdl": 0.035985,
+  "hdl": -0.164297,
+  "sbpLt110": -0.14834,
+  "sbpGte110": 0.313353,
+  "dm": 0.625377,
+  "fumo": 0.314717,
+  "bmiLt30": 0.0,
+  "bmiGte30": 0.0,
+  "egfrLt60": 0.109466,
+  "egfrGte60": 0.055071,
+  "antiHas": 0.278243,
+  "estatina": -0.078624,
+  "antiHasSbp": -0.062895,
+  "estatinaNonHdl": 0.093204,
+  "ageNonHdl": -0.071069,
+  "ageHdl": 0.030636,
+  "ageSbpGte110": -0.095145,
+  "ageDm": -0.316823,
+  "ageFumo": -0.163639,
+  "ageBmiGte30": 0.0,
+  "ageEgfrLt60": -0.126548,
+  "lnRac": 0.114225,
+  "semRac": -0.005586,
+  "const": -1.583738
+ },
+ "uacr_30_m_cvd": {
+  "age": 0.464491,
+  "ageSq": -0.09989,
+  "nonHdl": 0.075761,
+  "hdl": -0.103178,
+  "sbpLt110": -0.199071,
+  "sbpGte110": 0.271582,
+  "dm": 0.475464,
+  "fumo": 0.206967,
+  "bmiLt30": 0.0,
+  "bmiGte30": 0.0,
+  "egfrLt60": 0.03311,
+  "egfrGte60": 0.054047,
+  "antiHas": 0.218991,
+  "estatina": -0.033104,
+  "antiHasSbp": -0.04534,
+  "estatinaNonHdl": 0.121454,
+  "ageNonHdl": -0.048399,
+  "ageHdl": 0.0179,
+  "ageSbpGte110": -0.105932,
+  "ageDm": -0.249286,
+  "ageFumo": -0.156154,
+  "ageBmiGte30": 0.0,
+  "ageEgfrLt60": -0.101243,
+  "lnRac": 0.100757,
+  "semRac": 0.057246,
+  "const": -1.398727
+ },
+ "uacr_30_f_ascvd": {
+  "age": 0.462967,
+  "ageSq": -0.090278,
+  "nonHdl": 0.121521,
+  "hdl": -0.152207,
+  "sbpLt110": 0.009268,
+  "sbpGte110": 0.311361,
+  "dm": 0.581256,
+  "fumo": 0.263167,
+  "bmiLt30": 0.0,
+  "bmiGte30": 0.0,
+  "egfrLt60": 0.039173,
+  "egfrGte60": 0.049296,
+  "antiHas": 0.178618,
+  "estatina": 0.013106,
+  "antiHasSbp": -0.032514,
+  "estatinaNonHdl": 0.061709,
+  "ageNonHdl": -0.048919,
+  "ageHdl": 0.032108,
+  "ageSbpGte110": -0.100319,
+  "ageDm": -0.268457,
+  "ageFumo": -0.15473,
+  "ageBmiGte30": 0.0,
+  "ageEgfrLt60": -0.11307,
+  "lnRac": 0.090347,
+  "semRac": -0.014582,
+  "const": -2.178888
+ },
+ "uacr_30_m_ascvd": {
+  "age": 0.399561,
+  "ageSq": -0.094557,
+  "nonHdl": 0.168669,
+  "hdl": -0.120215,
+  "sbpLt110": -0.055556,
+  "sbpGte110": 0.263357,
+  "dm": 0.436204,
+  "fumo": 0.171623,
+  "bmiLt30": 0.0,
+  "bmiGte30": 0.0,
+  "egfrLt60": -0.077528,
+  "egfrGte60": 0.056124,
+  "antiHas": 0.131933,
+  "estatina": 0.010243,
+  "antiHasSbp": -0.026929,
+  "estatinaNonHdl": 0.092056,
+  "ageNonHdl": -0.029702,
+  "ageHdl": 0.021794,
+  "ageSbpGte110": -0.089335,
+  "ageDm": -0.208147,
+  "ageFumo": -0.154272,
+  "ageBmiGte30": 0.0,
+  "ageEgfrLt60": -0.059725,
+  "lnRac": 0.068487,
+  "semRac": 0.019396,
+  "const": -1.873449
+ },
+ "full_10_f_cvd": {
+  "age": 0.771679,
+  "nonHdl": 0.006211,
+  "hdl": -0.154776,
+  "sbpLt110": -0.193312,
+  "sbpGte110": 0.307122,
+  "dm": 0.496753,
+  "fumo": 0.466605,
+  "bmiLt30": 0.0,
+  "bmiGte30": 0.0,
+  "egfrLt60": 0.47807,
+  "egfrGte60": 0.052908,
+  "antiHas": 0.303489,
+  "estatina": -0.155652,
+  "antiHasSbp": -0.066703,
+  "estatinaNonHdl": 0.106182,
+  "ageNonHdl": -0.074227,
+  "ageHdl": 0.028824,
+  "ageSbpGte110": -0.087519,
+  "ageDm": -0.22671,
+  "ageFumo": -0.067613,
+  "ageBmiGte30": 0.0,
+  "ageEgfrLt60": -0.149323,
+  "sdi46": 0.136199,
+  "sdi710": 0.22616,
+  "semSdi": 0.180451,
+  "lnRac": 0.164592,
+  "semRac": 0.019841,
+  "hba1cDm": 0.129851,
+  "hba1cSemDm": 0.141256,
+  "semHba1c": -0.003166,
+  "const": -3.860385
+ },
+ "full_10_m_cvd": {
+  "age": 0.784758,
+  "nonHdl": 0.053449,
+  "hdl": -0.091128,
+  "sbpLt110": -0.492197,
+  "sbpGte110": 0.297241,
+  "dm": 0.452705,
+  "fumo": 0.372664,
+  "bmiLt30": 0.0,
+  "bmiGte30": 0.0,
+  "egfrLt60": 0.388685,
+  "egfrGte60": 0.008166,
+  "antiHas": 0.250805,
+  "estatina": -0.153848,
+  "antiHasSbp": -0.047469,
+  "estatinaNonHdl": 0.141538,
+  "ageNonHdl": -0.043645,
+  "ageHdl": 0.019955,
+  "ageSbpGte110": -0.102269,
+  "ageDm": -0.176251,
+  "ageFumo": -0.071587,
+  "ageBmiGte30": 0.0,
+  "ageEgfrLt60": -0.142867,
+  "sdi46": 0.080243,
+  "sdi710": 0.275073,
+  "semSdi": 0.144759,
+  "lnRac": 0.177285,
+  "semRac": 0.109567,
+  "hba1cDm": 0.11657,
+  "hba1cSemDm": 0.10483,
+  "semHba1c": -0.023007,
+  "const": -3.631387
+ },
+ "full_10_f_ascvd": {
+  "age": 0.702307,
+  "nonHdl": 0.089876,
+  "hdl": -0.140732,
+  "sbpLt110": -0.025665,
+  "sbpGte110": 0.314511,
+  "dm": 0.479922,
+  "fumo": 0.406205,
+  "bmiLt30": 0.0,
+  "bmiGte30": 0.0,
+  "egfrLt60": 0.384774,
+  "egfrGte60": 0.049517,
+  "antiHas": 0.213386,
+  "estatina": -0.067855,
+  "antiHasSbp": -0.045142,
+  "estatinaNonHdl": 0.078819,
+  "ageNonHdl": -0.053599,
+  "ageHdl": 0.029176,
+  "ageSbpGte110": -0.096184,
+  "ageDm": -0.200147,
+  "ageFumo": -0.058647,
+  "ageBmiGte30": 0.0,
+  "ageEgfrLt60": -0.153779,
+  "sdi46": 0.141397,
+  "sdi710": 0.228136,
+  "semSdi": 0.158891,
+  "lnRac": 0.137182,
+  "semRac": 0.006161,
+  "hba1cDm": 0.123192,
+  "hba1cSemDm": 0.141057,
+  "semHba1c": 0.005866,
+  "const": -4.291503
+ },
+ "full_10_m_ascvd": {
+  "age": 0.712874,
+  "nonHdl": 0.14652,
+  "hdl": -0.112579,
+  "sbpLt110": -0.338722,
+  "sbpGte110": 0.298025,
+  "dm": 0.399583,
+  "fumo": 0.337911,
+  "bmiLt30": 0.0,
+  "bmiGte30": 0.0,
+  "egfrLt60": 0.25826,
+  "egfrGte60": 0.014777,
+  "antiHas": 0.168662,
+  "estatina": -0.107362,
+  "antiHasSbp": -0.038104,
+  "estatinaNonHdl": 0.103417,
+  "ageNonHdl": -0.022876,
+  "ageHdl": 0.026745,
+  "ageSbpGte110": -0.089745,
+  "ageDm": -0.149746,
+  "ageFumo": -0.077206,
+  "ageBmiGte30": 0.0,
+  "ageEgfrLt60": -0.119837,
+  "sdi46": 0.065112,
+  "sdi710": 0.267668,
+  "semSdi": 0.138849,
+  "lnRac": 0.137584,
+  "semRac": 0.065294,
+  "hba1cDm": 0.101282,
+  "hba1cSemDm": 0.109273,
+  "semHba1c": -0.011285,
+  "const": -3.969788
+ },
+ "full_30_f_cvd": {
+  "age": 0.507375,
+  "ageSq": -0.098175,
+  "nonHdl": 0.01623,
+  "hdl": -0.161715,
+  "sbpLt110": -0.111124,
+  "sbpGte110": 0.282946,
+  "dm": 0.400407,
+  "fumo": 0.29187,
+  "bmiLt30": 0.0,
+  "bmiGte30": 0.0,
+  "egfrLt60": 0.10171,
+  "egfrGte60": 0.062264,
+  "antiHas": 0.287242,
+  "estatina": -0.076814,
+  "antiHasSbp": -0.055728,
+  "estatinaNonHdl": 0.091759,
+  "ageNonHdl": -0.067913,
+  "ageHdl": 0.029076,
+  "ageSbpGte110": -0.090775,
+  "ageDm": -0.270212,
+  "ageFumo": -0.137322,
+  "ageBmiGte30": 0.0,
+  "ageEgfrLt60": -0.125586,
+  "sdi46": 0.106774,
+  "sdi710": 0.185314,
+  "semSdi": 0.156712,
+  "lnRac": 0.102806,
+  "semRac": -0.000618,
+  "hba1cDm": 0.092528,
+  "hba1cSemDm": 0.09756,
+  "semHba1c": 0.010171,
+  "const": -1.748475
+ },
+ "full_30_m_cvd": {
+  "age": 0.442759,
+  "ageSq": -0.106411,
+  "nonHdl": 0.062938,
+  "hdl": -0.101543,
+  "sbpLt110": -0.254233,
+  "sbpGte110": 0.254968,
+  "dm": 0.333835,
+  "fumo": 0.187383,
+  "bmiLt30": 0.0,
+  "bmiGte30": 0.0,
+  "egfrLt60": 0.02461,
+  "egfrGte60": 0.055201,
+  "antiHas": 0.197973,
+  "estatina": -0.040771,
+  "antiHasSbp": -0.036552,
+  "estatinaNonHdl": 0.123282,
+  "ageNonHdl": -0.044133,
+  "ageHdl": 0.017787,
+  "ageSbpGte110": -0.104666,
+  "ageDm": -0.211611,
+  "ageFumo": -0.127791,
+  "ageBmiGte30": 0.0,
+  "ageEgfrLt60": -0.095592,
+  "sdi46": 0.02567,
+  "sdi710": 0.188764,
+  "semSdi": 0.089241,
+  "lnRac": 0.08946,
+  "semRac": 0.071012,
+  "hba1cDm": 0.06762,
+  "hba1cSemDm": 0.063409,
+  "semHba1c": 0.003878,
+  "const": -1.504558
+ },
+ "full_30_f_ascvd": {
+  "age": 0.438674,
+  "ageSq": -0.092196,
+  "nonHdl": 0.097773,
+  "hdl": -0.145352,
+  "sbpLt110": 0.059092,
+  "sbpGte110": 0.286286,
+  "dm": 0.366914,
+  "fumo": 0.235469,
+  "bmiLt30": 0.0,
+  "bmiGte30": 0.0,
+  "egfrLt60": 0.035434,
+  "egfrGte60": 0.057309,
+  "antiHas": 0.184008,
+  "estatina": 0.01175,
+  "antiHasSbp": -0.033195,
+  "estatinaNonHdl": 0.066431,
+  "ageNonHdl": -0.049283,
+  "ageHdl": 0.028889,
+  "ageSbpGte110": -0.096471,
+  "ageDm": -0.227965,
+  "ageFumo": -0.120405,
+  "ageBmiGte30": 0.0,
+  "ageEgfrLt60": -0.115764,
+  "sdi46": 0.110763,
+  "sdi710": 0.184037,
+  "semSdi": 0.130896,
+  "lnRac": 0.081074,
+  "semRac": -0.014778,
+  "hba1cDm": 0.079471,
+  "hba1cSemDm": 0.100262,
+  "semHba1c": 0.017301,
+  "const": -2.314066
+ },
+ "full_30_m_ascvd": {
+  "age": 0.374357,
+  "ageSq": -0.09955,
+  "nonHdl": 0.154481,
+  "hdl": -0.12153,
+  "sbpLt110": -0.108397,
+  "sbpGte110": 0.255518,
+  "dm": 0.2697,
+  "fumo": 0.162843,
+  "bmiLt30": 0.0,
+  "bmiGte30": 0.0,
+  "egfrLt60": -0.077507,
+  "egfrGte60": 0.058341,
+  "antiHas": 0.112032,
+  "estatina": -0.002506,
+  "antiHasSbp": -0.025612,
+  "estatinaNonHdl": 0.088675,
+  "ageNonHdl": -0.025451,
+  "ageHdl": 0.024464,
+  "ageSbpGte110": -0.086915,
+  "ageDm": -0.165745,
+  "ageFumo": -0.124471,
+  "ageBmiGte30": 0.0,
+  "ageEgfrLt60": -0.062455,
+  "sdi46": 0.015675,
+  "sdi710": 0.186423,
+  "semSdi": 0.08457,
+  "lnRac": 0.056017,
+  "semRac": 0.025224,
+  "hba1cDm": 0.050142,
+  "hba1cSemDm": 0.07229,
+  "semHba1c": 0.011494,
+  "const": -1.985368
  }
 };
 
@@ -1303,8 +2027,15 @@ const PREVENT_BETAS = {
    Adotado pela Diretriz Brasileira de Hipertensão Arterial 2025
    como a ferramenta de estratificação de risco cardiovascular.
 
-   Modelo base: sem HbA1c, sem relação albumina/creatinina e sem
-   índice de privação social (este último depende de CEP dos EUA).
+   Quatro variantes, escolhidas pelo que o usuário informar:
+     base   — nem HbA1c nem relação albumina/creatinina
+     hba1c  — só HbA1c
+     uacr   — só relação albumina/creatinina (RAC)
+     full   — os dois
+
+   O índice de privação social (SDI) nunca é usado: ele depende de CEP dos
+   Estados Unidos. As equações foram ajustadas com indicador de ausência,
+   então entra como "SDI ausente", que é o comportamento previsto no modelo.
 
    Centralização, conforme a publicação original:
      idade 55 · não-HDL 3,5 mmol/L · HDL 1,3 mmol/L · PAS 130
@@ -1318,6 +2049,8 @@ const PREVENT_LIMITES = {
   hdl: [20, 100],
   tfg: [15, 140],
   imc: [18.5, 39.9],
+  hba1c: [4, 15],
+  rac: [1, 5000],
 };
 
 /* mg/dL -> mmol/L para colesterol */
@@ -1385,8 +2118,45 @@ function preditoresPrevent(p, anos) {
     const: 1,
   };
   if (anos === 30) v.ageSq = idade * idade;
+
+  /* Termos das variantes. Cada exame ausente entra como zero somado ao seu
+     indicador de ausência — foi assim que as equações foram ajustadas. */
+  const temHba1c = Number.isFinite(p.hba1c);
+  const temRac = Number.isFinite(p.rac);
+
+  v.hba1cDm = temHba1c && dm === 1 ? p.hba1c - 5.3 : 0;
+  v.hba1cSemDm = temHba1c && dm === 0 ? p.hba1c - 5.3 : 0;
+  v.semHba1c = temHba1c ? 0 : 1;
+
+  v.lnRac = temRac ? Math.log(p.rac) : 0;
+  v.semRac = temRac ? 0 : 1;
+
+  /* O SDI só existe para CEP dos EUA. `sdiDecil` é aceito apenas para
+     reproduzir os casos de referência publicados; o app nunca o informa. */
+  const decil = p.sdiDecil;
+  v.sdi46 = decil >= 4 && decil <= 6 ? 1 : 0;
+  v.sdi710 = decil >= 7 && decil <= 10 ? 1 : 0;
+  v.semSdi = Number.isFinite(decil) ? 0 : 1;
+
   return v;
 }
+
+/* Qual variante usar, dado o que foi informado. */
+function modeloPrevent(p) {
+  const h = Number.isFinite(p.hba1c);
+  const r = Number.isFinite(p.rac);
+  if (h && r) return "full";
+  if (h) return "hba1c";
+  if (r) return "uacr";
+  return "base";
+}
+
+const NOME_MODELO = {
+  base: "modelo base",
+  hba1c: "refinado com HbA1c",
+  uacr: "refinado com albuminúria",
+  full: "refinado com HbA1c e albuminúria",
+};
 
 function aplicarBetas(betas, preds) {
   let lp = 0;
@@ -1421,16 +2191,25 @@ function calcularPrevent(p) {
   }
 
   const s = p.sexo === "F" ? "f" : "m";
+  const m = modeloPrevent(p);
   const p10 = preditoresPrevent(p, 10);
   const p30 = preditoresPrevent(p, 30);
 
-  const ascvd10 = aplicarBetas(PREVENT_BETAS[`y10_${s}_ascvd`], p10) * 100;
-  const dcv10 = aplicarBetas(PREVENT_BETAS[`y10_${s}_cvd`], p10) * 100;
-  const dcv30 = aplicarBetas(PREVENT_BETAS[`y30_${s}_cvd`], p30) * 100;
+  const ascvd10 = aplicarBetas(PREVENT_BETAS[`${m}_10_${s}_ascvd`], p10) * 100;
+  const dcv10 = aplicarBetas(PREVENT_BETAS[`${m}_10_${s}_cvd`], p10) * 100;
+  const dcv30 = aplicarBetas(PREVENT_BETAS[`${m}_30_${s}_cvd`], p30) * 100;
 
-  return { ascvd10, dcv10, dcv30, faixa: faixaDe(ascvd10), avisos };
+  return {
+    ascvd10, dcv10, dcv30,
+    faixa: faixaDe(ascvd10),
+    modelo: m, nomeModelo: NOME_MODELO[m],
+    avisos,
+  };
 }
 
+if (typeof module !== "undefined") {
+  module.exports = { calcularPrevent, tfgCkdEpi2021, preditoresPrevent, modeloPrevent, FAIXAS_RISCO };
+}
 
 /* ---------------------------------------------------------------
    ANTI-HIPERTENSIVOS — base de conteúdo
@@ -1958,16 +2737,21 @@ if (!GRUPOS.includes(state.grupo)) state.grupo = "Todos";
    são dados de paciente, e o app não deve guardá-los. */
 const risco = {
   sexo: "F", idade: "", pas: "", colesterolTotal: "", hdl: "", tfg: "",
-  creatinina: "",
+  creatinina: "", hba1c: "", rac: "",
   diabetes: false, fumante: false, usaAntiHipertensivo: false, usaEstatina: false,
 };
 
 const CAMPOS_RISCO = [
-  { k: "idade", rot: "Idade", un: "anos", min: 30, max: 79, step: 1 },
-  { k: "pas", rot: "PA sistólica", un: "mmHg", min: 70, max: 250, step: 1 },
-  { k: "colesterolTotal", rot: "Colesterol total", un: "mg/dL", min: 80, max: 500, step: 1 },
-  { k: "hdl", rot: "HDL", un: "mg/dL", min: 10, max: 150, step: 1 },
-  { k: "tfg", rot: "TFG estimada", un: "mL/min", min: 5, max: 200, step: 1 },
+  { k: "idade", rot: "Idade", un: "anos", min: 30, max: 79 },
+  { k: "pas", rot: "PA sistólica", un: "mmHg", min: 70, max: 250 },
+  { k: "colesterolTotal", rot: "Colesterol total", un: "mg/dL", min: 80, max: 500 },
+  { k: "hdl", rot: "HDL", un: "mg/dL", min: 10, max: 150 },
+  { k: "tfg", rot: "TFG estimada", un: "mL/min", min: 5, max: 200 },
+];
+
+const CAMPOS_OPCIONAIS = [
+  { k: "hba1c", rot: "HbA1c", un: "%", min: 3, max: 20 },
+  { k: "rac", rot: "Albumina/creatinina", un: "mg/g", min: 0.1, max: 10000 },
 ];
 
 const MARCADORES_RISCO = [
@@ -2205,6 +2989,8 @@ function entradasRisco() {
     colesterolTotal: n("colesterolTotal"), hdl: n("hdl"), tfg: n("tfg"),
     diabetes: risco.diabetes, fumante: risco.fumante,
     usaAntiHipertensivo: risco.usaAntiHipertensivo, usaEstatina: risco.usaEstatina,
+    // vazios viram NaN, que o cálculo trata como exame não informado
+    hba1c: n("hba1c"), rac: n("rac"),
   };
 }
 
@@ -2238,6 +3024,7 @@ function resultadoRiscoHTML() {
       </div>
       <span class="result-band">${esc(r.faixa.rot)}</span>
     </div>
+    <div class="result-model">PREVENT · ${esc(r.nomeModelo)}</div>
 
     <div class="result-scale" style="color:var(--c-txt)">
       ${FAIXAS_RISCO.map((_, i) => `<div class="${i === idx ? "on" : ""}"></div>`).join("")}
@@ -2263,7 +3050,16 @@ function viewRisco() {
     (c) => `<div class="field">
       <label for="r-${c.k}">${esc(c.rot)} <span class="unit">${esc(c.un)}</span></label>
       <input id="r-${c.k}" data-risco="${c.k}" type="number" inputmode="decimal"
-             min="${c.min}" max="${c.max}" step="${c.step}"
+             min="${c.min}" max="${c.max}" step="any"
+             value="${esc(risco[c.k])}" placeholder="—">
+    </div>`
+  ).join("");
+
+  const opcionais = CAMPOS_OPCIONAIS.map(
+    (c) => `<div class="field">
+      <label for="r-${c.k}">${esc(c.rot)} <span class="unit">${esc(c.un)}</span></label>
+      <input id="r-${c.k}" data-risco="${c.k}" type="number" inputmode="decimal"
+             min="${c.min}" max="${c.max}" step="any"
              value="${esc(risco[c.k])}" placeholder="—">
     </div>`
   ).join("");
@@ -2295,7 +3091,7 @@ function viewRisco() {
       <div class="field">
         <label for="r-creatinina">Creatinina <span class="unit">mg/dL</span></label>
         <input id="r-creatinina" data-risco="creatinina" type="number" inputmode="decimal"
-               min="0.1" max="15" step="0.01" value="${esc(risco.creatinina)}" placeholder="—">
+               min="0.1" max="15" step="any" value="${esc(risco.creatinina)}" placeholder="—">
       </div>
       <button class="helper-btn" id="calc-tfg">Estimar TFG</button>
     </div>
@@ -2304,10 +3100,16 @@ function viewRisco() {
     <div class="toggles">${marcadores}</div>
   </section>
 
+  <section class="card card-pad" style="margin-top:10px">
+    <div class="eyebrow">Exames opcionais</div>
+    <p class="helper-note" style="margin:6px 0 0">Refinam a estimativa em diabetes e em doença renal. Sem eles o cálculo usa o modelo base, que é o padrão da diretriz.</p>
+    <div class="form-grid">${opcionais}</div>
+  </section>
+
   <div id="risco-resultado">${resultadoRiscoHTML()}</div>
 
   <p class="footnote" style="border:0;padding-top:14px">
-    Modelo base do PREVENT (Khan SS et al., <em>Circulation</em> 2023), sem HbA1c nem relação albumina/creatinina. As faixas — baixo &lt; 5%, limítrofe 5 a 7,5%, intermediário 7,5 a 20%, alto ≥ 20% — são as da diretriz, aplicadas ao risco de doença aterosclerótica em 10 anos. Nada do que você digita aqui é salvo.
+    PREVENT (Khan SS et al., <em>Circulation</em> 2023). Informar os dois exames aciona o modelo completo, que inclui um termo de privação social baseado em CEP dos Estados Unidos — aqui ele entra como desconhecido, valor que a equação calibra perto da média da população. Por isso esse resultado não é comparável ao de uma calculadora americana alimentada com CEP. As faixas — baixo &lt; 5%, limítrofe 5 a 7,5%, intermediário 7,5 a 20%, alto ≥ 20% — são as da diretriz, aplicadas ao risco de doença aterosclerótica em 10 anos. Nada do que você digita aqui é salvo.
   </p>`;
 }
 

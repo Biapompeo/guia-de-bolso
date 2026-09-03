@@ -70,16 +70,21 @@ if (!GRUPOS.includes(state.grupo)) state.grupo = "Todos";
    são dados de paciente, e o app não deve guardá-los. */
 const risco = {
   sexo: "F", idade: "", pas: "", colesterolTotal: "", hdl: "", tfg: "",
-  creatinina: "",
+  creatinina: "", hba1c: "", rac: "",
   diabetes: false, fumante: false, usaAntiHipertensivo: false, usaEstatina: false,
 };
 
 const CAMPOS_RISCO = [
-  { k: "idade", rot: "Idade", un: "anos", min: 30, max: 79, step: 1 },
-  { k: "pas", rot: "PA sistólica", un: "mmHg", min: 70, max: 250, step: 1 },
-  { k: "colesterolTotal", rot: "Colesterol total", un: "mg/dL", min: 80, max: 500, step: 1 },
-  { k: "hdl", rot: "HDL", un: "mg/dL", min: 10, max: 150, step: 1 },
-  { k: "tfg", rot: "TFG estimada", un: "mL/min", min: 5, max: 200, step: 1 },
+  { k: "idade", rot: "Idade", un: "anos", min: 30, max: 79 },
+  { k: "pas", rot: "PA sistólica", un: "mmHg", min: 70, max: 250 },
+  { k: "colesterolTotal", rot: "Colesterol total", un: "mg/dL", min: 80, max: 500 },
+  { k: "hdl", rot: "HDL", un: "mg/dL", min: 10, max: 150 },
+  { k: "tfg", rot: "TFG estimada", un: "mL/min", min: 5, max: 200 },
+];
+
+const CAMPOS_OPCIONAIS = [
+  { k: "hba1c", rot: "HbA1c", un: "%", min: 3, max: 20 },
+  { k: "rac", rot: "Albumina/creatinina", un: "mg/g", min: 0.1, max: 10000 },
 ];
 
 const MARCADORES_RISCO = [
@@ -317,6 +322,8 @@ function entradasRisco() {
     colesterolTotal: n("colesterolTotal"), hdl: n("hdl"), tfg: n("tfg"),
     diabetes: risco.diabetes, fumante: risco.fumante,
     usaAntiHipertensivo: risco.usaAntiHipertensivo, usaEstatina: risco.usaEstatina,
+    // vazios viram NaN, que o cálculo trata como exame não informado
+    hba1c: n("hba1c"), rac: n("rac"),
   };
 }
 
@@ -350,6 +357,7 @@ function resultadoRiscoHTML() {
       </div>
       <span class="result-band">${esc(r.faixa.rot)}</span>
     </div>
+    <div class="result-model">PREVENT · ${esc(r.nomeModelo)}</div>
 
     <div class="result-scale" style="color:var(--c-txt)">
       ${FAIXAS_RISCO.map((_, i) => `<div class="${i === idx ? "on" : ""}"></div>`).join("")}
@@ -375,7 +383,16 @@ function viewRisco() {
     (c) => `<div class="field">
       <label for="r-${c.k}">${esc(c.rot)} <span class="unit">${esc(c.un)}</span></label>
       <input id="r-${c.k}" data-risco="${c.k}" type="number" inputmode="decimal"
-             min="${c.min}" max="${c.max}" step="${c.step}"
+             min="${c.min}" max="${c.max}" step="any"
+             value="${esc(risco[c.k])}" placeholder="—">
+    </div>`
+  ).join("");
+
+  const opcionais = CAMPOS_OPCIONAIS.map(
+    (c) => `<div class="field">
+      <label for="r-${c.k}">${esc(c.rot)} <span class="unit">${esc(c.un)}</span></label>
+      <input id="r-${c.k}" data-risco="${c.k}" type="number" inputmode="decimal"
+             min="${c.min}" max="${c.max}" step="any"
              value="${esc(risco[c.k])}" placeholder="—">
     </div>`
   ).join("");
@@ -407,7 +424,7 @@ function viewRisco() {
       <div class="field">
         <label for="r-creatinina">Creatinina <span class="unit">mg/dL</span></label>
         <input id="r-creatinina" data-risco="creatinina" type="number" inputmode="decimal"
-               min="0.1" max="15" step="0.01" value="${esc(risco.creatinina)}" placeholder="—">
+               min="0.1" max="15" step="any" value="${esc(risco.creatinina)}" placeholder="—">
       </div>
       <button class="helper-btn" id="calc-tfg">Estimar TFG</button>
     </div>
@@ -416,10 +433,16 @@ function viewRisco() {
     <div class="toggles">${marcadores}</div>
   </section>
 
+  <section class="card card-pad" style="margin-top:10px">
+    <div class="eyebrow">Exames opcionais</div>
+    <p class="helper-note" style="margin:6px 0 0">Refinam a estimativa em diabetes e em doença renal. Sem eles o cálculo usa o modelo base, que é o padrão da diretriz.</p>
+    <div class="form-grid">${opcionais}</div>
+  </section>
+
   <div id="risco-resultado">${resultadoRiscoHTML()}</div>
 
   <p class="footnote" style="border:0;padding-top:14px">
-    Modelo base do PREVENT (Khan SS et al., <em>Circulation</em> 2023), sem HbA1c nem relação albumina/creatinina. As faixas — baixo &lt; 5%, limítrofe 5 a 7,5%, intermediário 7,5 a 20%, alto ≥ 20% — são as da diretriz, aplicadas ao risco de doença aterosclerótica em 10 anos. Nada do que você digita aqui é salvo.
+    PREVENT (Khan SS et al., <em>Circulation</em> 2023). Informar os dois exames aciona o modelo completo, que inclui um termo de privação social baseado em CEP dos Estados Unidos — aqui ele entra como desconhecido, valor que a equação calibra perto da média da população. Por isso esse resultado não é comparável ao de uma calculadora americana alimentada com CEP. As faixas — baixo &lt; 5%, limítrofe 5 a 7,5%, intermediário 7,5 a 20%, alto ≥ 20% — são as da diretriz, aplicadas ao risco de doença aterosclerótica em 10 anos. Nada do que você digita aqui é salvo.
   </p>`;
 }
 

@@ -4,8 +4,15 @@
    Adotado pela Diretriz Brasileira de Hipertensão Arterial 2025
    como a ferramenta de estratificação de risco cardiovascular.
 
-   Modelo base: sem HbA1c, sem relação albumina/creatinina e sem
-   índice de privação social (este último depende de CEP dos EUA).
+   Quatro variantes, escolhidas pelo que o usuário informar:
+     base   — nem HbA1c nem relação albumina/creatinina
+     hba1c  — só HbA1c
+     uacr   — só relação albumina/creatinina (RAC)
+     full   — os dois
+
+   O índice de privação social (SDI) nunca é usado: ele depende de CEP dos
+   Estados Unidos. As equações foram ajustadas com indicador de ausência,
+   então entra como "SDI ausente", que é o comportamento previsto no modelo.
 
    Centralização, conforme a publicação original:
      idade 55 · não-HDL 3,5 mmol/L · HDL 1,3 mmol/L · PAS 130
@@ -19,6 +26,8 @@ const PREVENT_LIMITES = {
   hdl: [20, 100],
   tfg: [15, 140],
   imc: [18.5, 39.9],
+  hba1c: [4, 15],
+  rac: [1, 5000],
 };
 
 /* mg/dL -> mmol/L para colesterol */
@@ -86,8 +95,45 @@ function preditoresPrevent(p, anos) {
     const: 1,
   };
   if (anos === 30) v.ageSq = idade * idade;
+
+  /* Termos das variantes. Cada exame ausente entra como zero somado ao seu
+     indicador de ausência — foi assim que as equações foram ajustadas. */
+  const temHba1c = Number.isFinite(p.hba1c);
+  const temRac = Number.isFinite(p.rac);
+
+  v.hba1cDm = temHba1c && dm === 1 ? p.hba1c - 5.3 : 0;
+  v.hba1cSemDm = temHba1c && dm === 0 ? p.hba1c - 5.3 : 0;
+  v.semHba1c = temHba1c ? 0 : 1;
+
+  v.lnRac = temRac ? Math.log(p.rac) : 0;
+  v.semRac = temRac ? 0 : 1;
+
+  /* O SDI só existe para CEP dos EUA. `sdiDecil` é aceito apenas para
+     reproduzir os casos de referência publicados; o app nunca o informa. */
+  const decil = p.sdiDecil;
+  v.sdi46 = decil >= 4 && decil <= 6 ? 1 : 0;
+  v.sdi710 = decil >= 7 && decil <= 10 ? 1 : 0;
+  v.semSdi = Number.isFinite(decil) ? 0 : 1;
+
   return v;
 }
+
+/* Qual variante usar, dado o que foi informado. */
+function modeloPrevent(p) {
+  const h = Number.isFinite(p.hba1c);
+  const r = Number.isFinite(p.rac);
+  if (h && r) return "full";
+  if (h) return "hba1c";
+  if (r) return "uacr";
+  return "base";
+}
+
+const NOME_MODELO = {
+  base: "modelo base",
+  hba1c: "refinado com HbA1c",
+  uacr: "refinado com albuminúria",
+  full: "refinado com HbA1c e albuminúria",
+};
 
 function aplicarBetas(betas, preds) {
   let lp = 0;
@@ -122,16 +168,22 @@ function calcularPrevent(p) {
   }
 
   const s = p.sexo === "F" ? "f" : "m";
+  const m = modeloPrevent(p);
   const p10 = preditoresPrevent(p, 10);
   const p30 = preditoresPrevent(p, 30);
 
-  const ascvd10 = aplicarBetas(PREVENT_BETAS[`y10_${s}_ascvd`], p10) * 100;
-  const dcv10 = aplicarBetas(PREVENT_BETAS[`y10_${s}_cvd`], p10) * 100;
-  const dcv30 = aplicarBetas(PREVENT_BETAS[`y30_${s}_cvd`], p30) * 100;
+  const ascvd10 = aplicarBetas(PREVENT_BETAS[`${m}_10_${s}_ascvd`], p10) * 100;
+  const dcv10 = aplicarBetas(PREVENT_BETAS[`${m}_10_${s}_cvd`], p10) * 100;
+  const dcv30 = aplicarBetas(PREVENT_BETAS[`${m}_30_${s}_cvd`], p30) * 100;
 
-  return { ascvd10, dcv10, dcv30, faixa: faixaDe(ascvd10), avisos };
+  return {
+    ascvd10, dcv10, dcv30,
+    faixa: faixaDe(ascvd10),
+    modelo: m, nomeModelo: NOME_MODELO[m],
+    avisos,
+  };
 }
 
 if (typeof module !== "undefined") {
-  module.exports = { calcularPrevent, tfgCkdEpi2021, preditoresPrevent, FAIXAS_RISCO };
+  module.exports = { calcularPrevent, tfgCkdEpi2021, preditoresPrevent, modeloPrevent, FAIXAS_RISCO };
 }

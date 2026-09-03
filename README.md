@@ -11,7 +11,7 @@ Feito para o celular: instala na tela de início, abre em tela cheia e
 | Aba | Conteúdo |
 | --- | --- |
 | **Início** | Classificação da PA por estágio, quando começar o tratamento, meta pressórica e escalonamento em quatro degraus |
-| **Risco** | Calculadora PREVENT: risco de doença aterosclerótica em 10 anos com a faixa da diretriz, mais DCV total em 10 e 30 anos, e o que o resultado significa para a decisão de tratar |
+| **Risco** | Calculadora PREVENT: risco de doença aterosclerótica em 10 anos com a faixa da diretriz, mais DCV total em 10 e 30 anos, e o que o resultado significa para a decisão de tratar. HbA1c e albuminúria são opcionais e refinam a estimativa |
 | **Classes** | 12 classes com representantes e doses, mecanismo, indicações, contraindicações, efeitos adversos e a "pega na prática" — com busca e filtro por grupo |
 | **Combinar** | Combinações recomendadas, as que exigem cautela e as proscritas, com o exemplo prático de cada uma |
 | **Paciente** | Escolha guiada pela comorbidade (diabetes, DRC, IC, gestação, gota, asma…) |
@@ -23,19 +23,32 @@ Também: tema claro e escuro, busca que ignora acentos (`gestacao` acha
 ## Calculadora de risco (PREVENT)
 
 A DBHA 2025 substituiu o escore de Framingham pelo **PREVENT** da American
-Heart Association (Khan SS et al., *Circulation* 2023). O app implementa o
-**modelo base**, para os desfechos de doença aterosclerótica e de doença
-cardiovascular total, em 10 e 30 anos.
+Heart Association (Khan SS et al., *Circulation* 2023). O app implementa as
+quatro variantes aplicáveis fora dos Estados Unidos, para os desfechos de
+doença aterosclerótica e de doença cardiovascular total, em 10 e 30 anos.
 
-- `assets/prevent-betas.js` — coeficientes, extraídos do pacote R
-  [`preventr`](https://github.com/martingmayer/preventr) (GPL-3) direto do
-  `sysdata.rda`. **Arquivo gerado, não editar à mão.**
+A variante é escolhida pelo que o usuário informar:
+
+| HbA1c | Albumina/creatinina | Modelo |
+| --- | --- | --- |
+| — | — | base |
+| sim | — | hba1c |
+| — | sim | uacr |
+| sim | sim | full |
+
+- `assets/prevent-betas.js` — coeficientes dos 32 conjuntos (4 modelos × 2
+  horizontes × 2 sexos × 2 desfechos). **Arquivo gerado, não editar à mão** —
+  use `tools/extract-prevent-betas.py`, que lê o `sysdata.rda` do pacote R
+  [`preventr`](https://github.com/martingmayer/preventr) (GPL-3).
 - `assets/prevent.js` — transformações das variáveis, função logística,
   faixas de risco e a CKD-EPI 2021 para estimar TFG pela creatinina.
 
-Ficam de fora as variantes com HbA1c e com relação albumina/creatinina. A
-variante com índice de privação social depende de CEP dos Estados Unidos e
-não se aplica no Brasil.
+O índice de privação social (SDI) nunca é informado: depende de CEP dos
+Estados Unidos. As equações foram ajustadas com indicador de ausência, então
+ele entra como desconhecido — e o coeficiente desse indicador fica entre as
+categorias de privação média e alta, ou seja, perto da média da população.
+Isso só afeta o modelo `full`, e torna aquele resultado não comparável ao de
+uma calculadora americana alimentada com CEP.
 
 ### Validação
 
@@ -43,10 +56,15 @@ não se aplica no Brasil.
 node tests/test-prevent.js
 ```
 
-Confere seis valores de risco contra os casos de referência do pacote
-`preventr` (mulher e homem, três desfechos cada) e seis valores de TFG
-contra uma implementação independente da equação publicada, incluindo duas
-âncoras definicionais. Rode isso sempre que mexer no cálculo.
+Confere 24 valores de risco contra os casos de referência do pacote
+`preventr` — os quatro modelos, mulher e homem, três desfechos cada — mais a
+escolha automática do modelo, e seis valores de TFG contra uma implementação
+independente da equação publicada, incluindo duas âncoras definicionais.
+Rode isso sempre que mexer no cálculo.
+
+Os casos do modelo `full` usam `sdiDecil: 3` para reproduzir o CEP 14738 dos
+testes originais. Esse parâmetro existe só para a validação; o app nunca o
+informa.
 
 > As faixas — baixo < 5%, limítrofe 5 a 7,5%, intermediário 7,5 a 20%, alto
 > ≥ 20% — valem para o risco de doença aterosclerótica em 10 anos, em
@@ -137,7 +155,7 @@ assets/styles.css        sistema visual: tokens, tema claro/escuro, componentes
 manifest.webmanifest     nome, ícones e comportamento do app instalado
 sw.js                    cache offline
 icons/                   ícones do app
-tools/                   empacotador do arquivo único
+tools/                   empacotador do arquivo único e extrator dos coeficientes
 tests/                   validação da calculadora de risco
 dist/                    saída gerada: anti-hipertensivos.html
 ```
