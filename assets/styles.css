@@ -87,6 +87,42 @@ html[data-theme="dark"] .acc {
   --c-edge: color-mix(in srgb, var(--c) 40%, transparent);
 }
 
+/* Sem escolha explícita, segue o sistema. Necessário porque o app pode ser
+   embutido em um hospedeiro que não carimba data-theme na raiz. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+
+    --paper:      #0E1013;
+    --paper-2:    #15181C;
+    --surface:    #16191D;
+    --surface-2:  #1B1F24;
+    --ink:        #E9EBEE;
+    --ink-2:      #C3C8CF;
+    --muted:      #949BA4;
+    --faint:      #6E757E;
+    --line:       #262B31;
+    --line-soft:  #1F242A;
+
+    --danger:     #E8736E;
+    --warn:       #E0AE4C;
+    --ok:         #5FBF9C;
+
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, .4);
+    --shadow-md: 0 2px 4px rgba(0, 0, 0, .3), 0 8px 24px -14px rgba(0, 0, 0, .8);
+    --shadow-lg: 0 10px 44px -12px rgba(0, 0, 0, .7);
+
+    --c-txt: var(--ink);
+    --c-wash: color-mix(in srgb, var(--ink) 10%, transparent);
+    --c-edge: color-mix(in srgb, var(--ink) 24%, transparent);
+  }
+  :root:not([data-theme="light"]) .acc {
+    --c-txt: color-mix(in oklab, var(--c) 56%, #FFFFFF);
+    --c-wash: color-mix(in srgb, var(--c) 17%, transparent);
+    --c-edge: color-mix(in srgb, var(--c) 40%, transparent);
+  }
+}
+
 /* ---------- Reset ---------- */
 *, *::before, *::after { box-sizing: border-box; }
 * { margin: 0; }
@@ -716,6 +752,9 @@ h1 {
   background: var(--paper-2);
 }
 html[data-theme="dark"] .tab[aria-selected="true"] { background: var(--surface-2); }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .tab[aria-selected="true"] { background: var(--surface-2); }
+}
 
 /* ---------- Painéis ---------- */
 [hidden] { display: none !important; }

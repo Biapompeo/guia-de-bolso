@@ -1,0 +1,1769 @@
+<title>Anti-hipertensivos</title>
+<style>
+/* =================================================================
+   Anti-hipertensivos — folha de estilo
+   Sistema visual: papel clínico, tipografia editorial, acento por classe
+   ================================================================= */
+
+/* ---------- Tokens ---------- */
+:root {
+  color-scheme: light;
+
+  --paper:      #F4F2EE;
+  --paper-2:    #EDEAE4;
+  --surface:    #FFFFFF;
+  --surface-2:  #FAF9F7;
+  --ink:        #16181B;
+  --ink-2:      #3B4048;
+  --muted:      #6E747C;
+  --faint:      #969CA4;
+  --line:       #E3DFD8;
+  --line-soft:  #EFECE6;
+
+  --danger:     #B3242F;
+  --warn:       #A8781A;
+  --ok:         #2E7A61;
+
+  --shadow-sm: 0 1px 2px rgba(20, 22, 26, .05);
+  --shadow-md: 0 2px 4px rgba(20, 22, 26, .05), 0 8px 20px -12px rgba(20, 22, 26, .18);
+  --shadow-lg: 0 8px 40px -12px rgba(20, 22, 26, .26);
+
+  --r-sm: 8px;
+  --r-md: 14px;
+  --r-lg: 20px;
+  --r-xl: 26px;
+
+  --wrap: 680px;
+  --pad: clamp(16px, 4.5vw, 24px);
+
+  --font-body: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-display: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, "Times New Roman", serif;
+  --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+
+  /* acento neutro; cada bloco .acc redefine --c e deriva os tons abaixo */
+  --c: var(--ink);
+  --c-txt: var(--ink);
+  --c-wash: color-mix(in srgb, var(--ink) 7%, transparent);
+  --c-edge: color-mix(in srgb, var(--ink) 20%, transparent);
+}
+
+/* Tons derivados do acento. Precisam ser declarados no próprio elemento que
+   define --c: propriedades customizadas são resolvidas onde são declaradas,
+   então herdar "--c-txt: var(--c)" da raiz devolveria sempre a cor da raiz. */
+.acc {
+  --c-txt: var(--c);
+  --c-wash: color-mix(in srgb, var(--c) 9%, transparent);
+  --c-edge: color-mix(in srgb, var(--c) 26%, transparent);
+}
+
+html[data-theme="dark"] {
+  color-scheme: dark;
+
+  --paper:      #0E1013;
+  --paper-2:    #15181C;
+  --surface:    #16191D;
+  --surface-2:  #1B1F24;
+  --ink:        #E9EBEE;
+  --ink-2:      #C3C8CF;
+  --muted:      #949BA4;
+  --faint:      #6E757E;
+  --line:       #262B31;
+  --line-soft:  #1F242A;
+
+  --danger:     #E8736E;
+  --warn:       #E0AE4C;
+  --ok:         #5FBF9C;
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, .4);
+  --shadow-md: 0 2px 4px rgba(0, 0, 0, .3), 0 8px 24px -14px rgba(0, 0, 0, .8);
+  --shadow-lg: 0 10px 44px -12px rgba(0, 0, 0, .7);
+
+  --c-txt: var(--ink);
+  --c-wash: color-mix(in srgb, var(--ink) 10%, transparent);
+  --c-edge: color-mix(in srgb, var(--ink) 24%, transparent);
+}
+
+html[data-theme="dark"] .acc {
+  --c-txt: color-mix(in oklab, var(--c) 56%, #FFFFFF);
+  --c-wash: color-mix(in srgb, var(--c) 17%, transparent);
+  --c-edge: color-mix(in srgb, var(--c) 40%, transparent);
+}
+
+/* Sem escolha explícita, segue o sistema. Necessário porque o app pode ser
+   embutido em um hospedeiro que não carimba data-theme na raiz. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+
+    --paper:      #0E1013;
+    --paper-2:    #15181C;
+    --surface:    #16191D;
+    --surface-2:  #1B1F24;
+    --ink:        #E9EBEE;
+    --ink-2:      #C3C8CF;
+    --muted:      #949BA4;
+    --faint:      #6E757E;
+    --line:       #262B31;
+    --line-soft:  #1F242A;
+
+    --danger:     #E8736E;
+    --warn:       #E0AE4C;
+    --ok:         #5FBF9C;
+
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, .4);
+    --shadow-md: 0 2px 4px rgba(0, 0, 0, .3), 0 8px 24px -14px rgba(0, 0, 0, .8);
+    --shadow-lg: 0 10px 44px -12px rgba(0, 0, 0, .7);
+
+    --c-txt: var(--ink);
+    --c-wash: color-mix(in srgb, var(--ink) 10%, transparent);
+    --c-edge: color-mix(in srgb, var(--ink) 24%, transparent);
+  }
+  :root:not([data-theme="light"]) .acc {
+    --c-txt: color-mix(in oklab, var(--c) 56%, #FFFFFF);
+    --c-wash: color-mix(in srgb, var(--c) 17%, transparent);
+    --c-edge: color-mix(in srgb, var(--c) 40%, transparent);
+  }
+}
+
+/* ---------- Reset ---------- */
+*, *::before, *::after { box-sizing: border-box; }
+* { margin: 0; }
+
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow-wrap: break-word;
+  min-height: 100dvh;
+  padding-bottom: calc(96px + env(safe-area-inset-bottom));
+  -webkit-tap-highlight-color: transparent;
+}
+
+button, input { font: inherit; color: inherit; }
+button { background: none; border: 0; cursor: pointer; text-align: left; }
+ul { list-style: none; padding: 0; }
+strong { font-weight: 650; }
+
+:focus-visible {
+  outline: 2px solid var(--c-txt);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+::selection { background: color-mix(in srgb, var(--danger) 22%, transparent); }
+
+/* ---------- Estrutura ---------- */
+.wrap {
+  max-width: var(--wrap);
+  margin-inline: auto;
+  padding-inline: var(--pad);
+}
+
+.stack > * + * { margin-top: 10px; }
+
+/* ---------- Cabeçalho ---------- */
+.hero {
+  padding-top: calc(22px + env(safe-area-inset-top));
+  padding-bottom: 18px;
+}
+
+.hero-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.brand-mark {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: .13em;
+  text-transform: uppercase;
+  color: var(--faint);
+  margin-bottom: 7px;
+}
+
+.brand-mark svg { display: block; }
+
+h1 {
+  font-family: var(--font-display);
+  font-size: clamp(30px, 8.6vw, 40px);
+  font-weight: 600;
+  line-height: 1.02;
+  letter-spacing: -.022em;
+}
+
+.hero-sub {
+  margin-top: 8px;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--muted);
+  max-width: 46ch;
+}
+
+.icon-btn {
+  width: 40px;
+  height: 40px;
+  flex: none;
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--muted);
+  box-shadow: var(--shadow-sm);
+  transition: transform .15s, color .15s, border-color .15s;
+}
+.icon-btn:active { transform: scale(.92); }
+.icon-btn:hover { color: var(--ink); border-color: color-mix(in srgb, var(--ink) 22%, transparent); }
+
+/* faixa cromática dos estágios, sob o cabeçalho */
+.ruler-strip {
+  display: flex;
+  height: 3px;
+  border-radius: 999px;
+  overflow: hidden;
+  margin-top: 18px;
+}
+.ruler-strip span { flex: 1; }
+
+/* ---------- Cartões ---------- */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  box-shadow: var(--shadow-sm);
+}
+
+.card-pad { padding: 18px; }
+
+.section-title {
+  font-family: var(--font-display);
+  font-size: 19px;
+  font-weight: 600;
+  letter-spacing: -.012em;
+  line-height: 1.2;
+}
+
+.eyebrow {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--faint);
+}
+
+.tab-intro {
+  margin: 2px 0 14px;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--muted);
+}
+
+/* ---------- Régua de estágios ---------- */
+.stage {
+  display: grid;
+  grid-template-columns: 8px minmax(0, 1fr);
+  gap: 0 11px;
+  padding: 11px 0;
+  border-top: 1px solid var(--line-soft);
+}
+.stage:first-of-type { border-top: 0; padding-top: 2px; }
+
+.stage-dot {
+  width: 8px; height: 8px;
+  border-radius: 999px;
+  margin-top: 6px;
+  background: var(--c);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--c) 18%, transparent);
+}
+
+.stage-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 10px;
+}
+.stage-name { font-size: 13.5px; font-weight: 640; }
+.stage-range {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--c-txt);
+  background: var(--c-wash);
+  padding: 1px 7px;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+.stage-note { font-size: 12.5px; line-height: 1.45; color: var(--muted); margin-top: 3px; }
+
+.footnote {
+  font-size: 11.5px;
+  line-height: 1.55;
+  color: var(--faint);
+  margin-top: 14px;
+  padding-top: 13px;
+  border-top: 1px solid var(--line-soft);
+}
+
+/* ---------- Limiares de início ---------- */
+.thr {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 11px;
+  align-items: start;
+  padding: 10px 0;
+  border-top: 1px solid var(--line-soft);
+}
+.thr:first-of-type { border-top: 0; padding-top: 0; }
+.thr-pa {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  font-weight: 650;
+  white-space: nowrap;
+  color: var(--c-txt);
+  background: var(--c-wash);
+  border: 1px solid var(--c-edge);
+  border-radius: 999px;
+  padding: 3px 9px;
+  margin-top: 1px;
+  min-width: 116px;
+  text-align: center;
+}
+.thr-txt { font-size: 13.5px; line-height: 1.5; color: var(--ink-2); }
+
+/* ---------- Meta ---------- */
+.target {
+  margin-top: 18px;
+  padding: 16px;
+  border-radius: var(--r-sm);
+  background: color-mix(in srgb, var(--danger) 8%, transparent);
+  border: 1px solid color-mix(in srgb, var(--danger) 22%, transparent);
+}
+.target-label { font-size: 10px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--danger); }
+.target-value {
+  font-family: var(--font-display);
+  font-size: 34px;
+  font-weight: 600;
+  letter-spacing: -.02em;
+  line-height: 1.1;
+  color: var(--danger);
+  margin-top: 4px;
+}
+.target-note { font-size: 12.5px; line-height: 1.5; color: var(--muted); margin-top: 6px; }
+
+/* ---------- Escada de escalonamento ---------- */
+.steps { counter-reset: step; margin-top: 4px; }
+.step {
+  position: relative;
+  display: grid;
+  grid-template-columns: 26px minmax(0, 1fr);
+  gap: 12px;
+  padding-bottom: 16px;
+}
+.step:last-child { padding-bottom: 0; }
+.step::before {
+  counter-increment: step;
+  content: counter(step);
+  grid-column: 1;
+  width: 26px; height: 26px;
+  display: grid; place-items: center;
+  border-radius: 999px;
+  font-size: 12px; font-weight: 700;
+  font-family: var(--font-mono);
+  color: var(--danger);
+  background: color-mix(in srgb, var(--danger) 10%, transparent);
+  border: 1px solid color-mix(in srgb, var(--danger) 24%, transparent);
+}
+.step::after {
+  content: "";
+  position: absolute;
+  left: 13px; top: 30px; bottom: 2px;
+  width: 1px;
+  background: var(--line);
+}
+.step:last-child::after { display: none; }
+.step-name { font-size: 14px; font-weight: 640; line-height: 1.3; }
+.step-txt { font-size: 13px; line-height: 1.5; color: var(--muted); margin-top: 2px; }
+
+/* ---------- Busca ---------- */
+.search-bar {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  padding: 10px 0 12px;
+  background: linear-gradient(var(--paper) 86%, transparent);
+}
+.search-field {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.search-field svg {
+  position: absolute;
+  left: 14px;
+  color: var(--faint);
+  pointer-events: none;
+}
+.search-field input {
+  width: 100%;
+  padding: 12px 40px 12px 40px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  box-shadow: var(--shadow-sm);
+  font-size: 14.5px;
+  outline: none;
+  transition: border-color .16s, box-shadow .16s;
+}
+.search-field input::placeholder { color: var(--faint); }
+.search-field input:focus {
+  border-color: color-mix(in srgb, var(--ink) 34%, transparent);
+  box-shadow: var(--shadow-md);
+}
+.search-clear {
+  position: absolute;
+  right: 8px;
+  width: 28px; height: 28px;
+  display: grid; place-items: center;
+  border-radius: 999px;
+  color: var(--faint);
+}
+.search-clear:hover { color: var(--ink); background: var(--paper-2); }
+
+/* ---------- Chips ---------- */
+.chips {
+  display: flex;
+  gap: 7px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  padding: 2px var(--pad) 14px;
+  margin-inline: calc(var(--pad) * -1);
+  scroll-snap-type: x proximity;
+}
+.chips::-webkit-scrollbar { display: none; }
+.chip {
+  flex: none;
+  scroll-snap-align: start;
+  padding: 7px 13px;
+  border-radius: 999px;
+  font-size: 12.5px;
+  font-weight: 550;
+  white-space: nowrap;
+  color: var(--muted);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  transition: background .16s, color .16s, border-color .16s, transform .12s;
+}
+.chip:active { transform: scale(.96); }
+.chip[aria-pressed="true"] {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--paper);
+  font-weight: 600;
+}
+
+/* ---------- Cartão de classe ---------- */
+.klass {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--c);
+  border-radius: var(--r-md);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+  transition: box-shadow .2s, border-color .2s;
+}
+.klass.is-open { box-shadow: var(--shadow-md); }
+
+.klass-head {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: start;
+  width: 100%;
+  padding: 15px 15px 15px 16px;
+}
+.klass-group {
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: .11em;
+  text-transform: uppercase;
+  color: var(--c-txt);
+}
+.klass-name {
+  font-size: 15.5px;
+  font-weight: 640;
+  line-height: 1.25;
+  letter-spacing: -.008em;
+  margin-top: 3px;
+}
+.klass-preview {
+  font-size: 12.5px;
+  line-height: 1.4;
+  color: var(--muted);
+  margin-top: 5px;
+}
+.klass-aside { display: flex; align-items: center; gap: 8px; padding-top: 2px; }
+
+.tag-first {
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: .07em;
+  padding: 3px 6px;
+  border-radius: 5px;
+  color: var(--c-txt);
+  background: var(--c-wash);
+  border: 1px solid var(--c-edge);
+  white-space: nowrap;
+}
+
+.caret {
+  width: 26px; height: 26px;
+  flex: none;
+  display: grid; place-items: center;
+  border-radius: 999px;
+  color: var(--muted);
+  background: var(--paper-2);
+  transition: transform .28s cubic-bezier(.4, 0, .2, 1), background .2s, color .2s;
+}
+.klass.is-open .caret {
+  transform: rotate(180deg);
+  background: var(--c-wash);
+  color: var(--c-txt);
+}
+
+/* acordeão animado */
+.klass-body {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows .32s cubic-bezier(.4, 0, .2, 1);
+}
+.klass.is-open .klass-body { grid-template-rows: 1fr; }
+.klass-body > div { overflow: hidden; }
+.klass-inner {
+  padding: 4px 16px 18px;
+  border-top: 1px solid var(--line-soft);
+  margin-top: 2px;
+}
+
+.blk { margin-top: 15px; }
+.blk-title {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .11em;
+  text-transform: uppercase;
+  color: var(--c-txt);
+  margin-bottom: 7px;
+}
+.blk-title.is-danger { color: var(--danger); }
+.blk-title.is-muted { color: var(--faint); }
+.blk p { font-size: 13.5px; line-height: 1.58; color: var(--ink-2); }
+.blk li {
+  position: relative;
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: var(--ink-2);
+  padding-left: 15px;
+}
+.blk li + li { margin-top: 6px; }
+.blk li::before {
+  content: "";
+  position: absolute;
+  left: 2px; top: 9px;
+  width: 4px; height: 4px;
+  border-radius: 999px;
+  background: var(--c-txt);
+  opacity: .55;
+}
+.blk.is-danger li::before { background: var(--danger); }
+
+.pearl {
+  margin-top: 18px;
+  padding: 14px 15px;
+  border-radius: var(--r-sm);
+  background: var(--c-wash);
+  border: 1px solid var(--c-edge);
+}
+.pearl-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 9.5px;
+  font-weight: 800;
+  letter-spacing: .11em;
+  text-transform: uppercase;
+  color: var(--c-txt);
+  margin-bottom: 6px;
+}
+.pearl p { font-size: 13.5px; line-height: 1.6; color: var(--ink); }
+
+/* ---------- Combinações ---------- */
+.combo {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--c);
+  border-radius: var(--r-md);
+  box-shadow: var(--shadow-sm);
+  padding: 15px 16px;
+}
+.combo-title {
+  font-size: 15px;
+  font-weight: 640;
+  line-height: 1.28;
+}
+.combo-txt { font-size: 13.5px; line-height: 1.58; color: var(--muted); margin-top: 6px; }
+.combo-ex {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--c-txt);
+  margin-top: 11px;
+  padding-top: 10px;
+  border-top: 1px dashed var(--line);
+}
+
+.group-label {
+  color: var(--c-txt);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 22px 0 10px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+.group-label::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--line);
+}
+.group-label:first-child { margin-top: 0; }
+
+/* ---------- Listas (perfis / EV) ---------- */
+.rows { overflow: hidden; }
+.row {
+  padding: 14px 16px;
+  border-top: 1px solid var(--line-soft);
+}
+.row:first-child { border-top: 0; }
+.row-title { font-size: 13.5px; font-weight: 640; line-height: 1.3; }
+.row-main { font-size: 13.5px; line-height: 1.45; color: var(--danger); margin-top: 4px; }
+.row-note { font-size: 12.5px; line-height: 1.45; color: var(--muted); margin-top: 3px; }
+
+/* ---------- Aviso ---------- */
+.notice {
+  background: var(--surface);
+  border: 1px solid color-mix(in srgb, var(--danger) 26%, var(--line));
+  border-left: 3px solid var(--danger);
+  border-radius: var(--r-md);
+  padding: 15px 16px;
+  box-shadow: var(--shadow-sm);
+}
+.notice .eyebrow { color: var(--danger); }
+.notice p { font-size: 13.5px; line-height: 1.58; color: var(--ink-2); margin-top: 8px; }
+
+/* ---------- Vazio ---------- */
+.empty {
+  text-align: center;
+  padding: 48px 20px;
+  color: var(--faint);
+  font-size: 13.5px;
+}
+.empty svg { margin: 0 auto 12px; display: block; opacity: .5; }
+
+/* ---------- Rodapé ---------- */
+.foot {
+  margin-top: 30px;
+  padding-top: 18px;
+  border-top: 1px solid var(--line);
+  font-size: 11.5px;
+  line-height: 1.6;
+  color: var(--faint);
+}
+.foot-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+.ghost-btn {
+  font-size: 12px;
+  font-weight: 600;
+  padding: 7px 13px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--muted);
+  transition: color .16s, border-color .16s, transform .12s;
+}
+.ghost-btn:active { transform: scale(.96); }
+.ghost-btn:hover { color: var(--ink); border-color: color-mix(in srgb, var(--ink) 24%, transparent); }
+
+/* ---------- Navegação inferior ---------- */
+.tabbar {
+  position: fixed;
+  left: 50%;
+  bottom: calc(10px + env(safe-area-inset-bottom));
+  transform: translateX(-50%);
+  z-index: 60;
+  width: min(calc(100% - 20px), 460px);
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 2px;
+  padding: 6px;
+  border-radius: var(--r-xl);
+  background: color-mix(in srgb, var(--surface) 86%, transparent);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  backdrop-filter: saturate(180%) blur(20px);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow-lg);
+}
+
+.tab {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  padding: 7px 2px 6px;
+  border-radius: 18px;
+  color: var(--faint);
+  font-size: 9.5px;
+  font-weight: 600;
+  letter-spacing: -.005em;
+  text-align: center;
+  transition: color .18s, background .18s, transform .12s;
+}
+.tab svg { display: block; }
+.tab:active { transform: scale(.94); }
+.tab[aria-selected="true"] {
+  color: var(--ink);
+  background: var(--paper-2);
+}
+html[data-theme="dark"] .tab[aria-selected="true"] { background: var(--surface-2); }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .tab[aria-selected="true"] { background: var(--surface-2); }
+}
+
+/* ---------- Painéis ---------- */
+[hidden] { display: none !important; }
+.panel { animation: rise .3s cubic-bezier(.2, .7, .3, 1) both; }
+@keyframes rise {
+  from { opacity: 0; transform: translateY(7px); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* ---------- Folha de instalação (iOS) ---------- */
+.sheet-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  background: rgba(10, 12, 15, .45);
+  -webkit-backdrop-filter: blur(3px);
+  backdrop-filter: blur(3px);
+  display: grid;
+  align-items: end;
+  animation: fade .2s ease both;
+}
+.sheet {
+  width: min(100%, 480px);
+  margin: 0 auto;
+  background: var(--surface);
+  border-radius: var(--r-lg) var(--r-lg) 0 0;
+  padding: 22px var(--pad) calc(26px + env(safe-area-inset-bottom));
+  box-shadow: var(--shadow-lg);
+  animation: slide-up .28s cubic-bezier(.2, .7, .3, 1) both;
+}
+.sheet h2 { font-family: var(--font-display); font-size: 21px; font-weight: 600; margin-bottom: 4px; }
+.sheet p { font-size: 13.5px; line-height: 1.6; color: var(--muted); }
+.sheet ol { margin: 14px 0 0; padding-left: 20px; font-size: 13.5px; line-height: 1.7; color: var(--ink-2); }
+.sheet ol li::marker { color: var(--faint); font-variant-numeric: tabular-nums; }
+.sheet-close {
+  width: 100%;
+  margin-top: 20px;
+  padding: 13px;
+  border-radius: 999px;
+  background: var(--ink);
+  color: var(--paper);
+  font-size: 14.5px;
+  font-weight: 620;
+  text-align: center;
+}
+@keyframes fade { from { opacity: 0 } to { opacity: 1 } }
+@keyframes slide-up { from { transform: translateY(100%) } to { transform: none } }
+
+/* ---------- Larguras maiores ---------- */
+@media (min-width: 720px) {
+  body { font-size: 15.5px; }
+  :root { --wrap: 880px; }
+  .grid-2 {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+    align-items: start;
+  }
+  .grid-2 > * { margin-top: 0 !important; }
+}
+
+/* ---------- Impressão ---------- */
+@media print {
+  body { padding: 0; background: #fff; }
+  .tabbar, .search-bar, .chips, .icon-btn, .foot-row { display: none !important; }
+  .klass-body { grid-template-rows: 1fr !important; }
+  .panel { animation: none; display: block !important; }
+  [hidden] { display: block !important; }
+}
+
+/* ---------- Movimento reduzido ---------- */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+  }
+}
+</style>
+<script>
+  /* aplica o tema antes da primeira pintura, para não piscar branco */
+  try {
+    var t = JSON.parse(localStorage.getItem("ah:tema") || "null");
+    if (!t) t = matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+    document.documentElement.dataset.theme = t;
+    document.querySelector('meta[name="theme-color"]').content = t === "dark" ? "#0E1013" : "#F4F2EE";
+  } catch (e) {}
+</script>
+<header class="wrap hero">
+  <div class="hero-top">
+    <div>
+      <div class="brand-mark"><span id="brand-icon"></span> DBHA 2025 · SBC · SBH · SBN</div>
+      <h1>Anti&#8209;hipertensivos</h1>
+      <p class="hero-sub">Guia de bolso para escolher, combinar e ajustar — organizado pela Diretriz Brasileira de Hipertensão Arterial de 2025.</p>
+    </div>
+    <button id="theme-toggle" class="icon-btn" type="button" aria-label="Alternar tema"></button>
+  </div>
+  <div class="ruler-strip" id="ruler" aria-hidden="true"></div>
+</header>
+
+<main class="wrap" id="painel" role="tabpanel" aria-live="polite"></main>
+
+<noscript>
+  <div class="wrap"><div class="notice">
+    <div class="eyebrow">JavaScript desativado</div>
+    <p>Este guia precisa de JavaScript para funcionar. Ative-o nas configurações do navegador e recarregue a página.</p>
+  </div></div>
+</noscript>
+
+<footer class="wrap foot">
+  <p>Conteúdo de estudo baseado na Diretriz Brasileira de Hipertensão Arterial 2025 (SBC, SBH e SBN) e no PCDT de Hipertensão Arterial Sistêmica do Ministério da Saúde. Doses são referências para adulto com função renal e hepática preservadas — sempre confira antes de prescrever.</p>
+  <div class="foot-row">
+    <button id="btn-instalar" class="ghost-btn" type="button">Deixar na tela de início</button>
+    <button class="ghost-btn" type="button" onclick="print()">Imprimir</button>
+  </div>
+</footer>
+
+<nav class="tabbar" id="tabbar" role="tablist" aria-label="Seções do guia"></nav>
+<script>
+/* ---------------------------------------------------------------
+   ANTI-HIPERTENSIVOS — base de conteúdo
+   Diretriz Brasileira de Hipertensão Arterial (DBHA) 2025
+   SBC / SBH / SBN
+----------------------------------------------------------------*/
+
+const CLASSES = [
+  {
+    id: "tiaz",
+    grupo: "Diuréticos",
+    nome: "Tiazídicos e similares",
+    cor: "#2E7D9A",
+    primeiraLinha: true,
+    drogas: [
+      "Hidroclorotiazida 12,5–25 mg/dia",
+      "Clortalidona 12,5–25 mg/dia",
+      "Indapamida 1,5 mg/dia (SR)",
+    ],
+    mecanismo:
+      "Inibem o cotransportador Na⁺/Cl⁻ no túbulo contorcido distal. No início reduzem volemia; no uso crônico o efeito anti-hipertensivo vem principalmente da queda da resistência vascular periférica.",
+    indicacoes: [
+      "Primeira linha, isolado ou em combinação",
+      "Idoso e hipertensão sistólica isolada",
+      "Pessoas negras (boa resposta, como os BCC)",
+      "Hipertensão resistente (junto com espironolactona)",
+      "Osteoporose e nefrolitíase por hipercalciúria — retêm cálcio",
+    ],
+    contraindicacoes: [
+      "Gota / hiperuricemia sintomática",
+      "Hiponatremia significativa",
+      "TFG < 30 mL/min — perdem eficácia, trocar por diurético de alça",
+      "Alergia grave a sulfonamida (relativa)",
+    ],
+    adversos:
+      "HipoK⁺, hipoNa⁺, hipoMg²⁺, hiperuricemia, hiperglicemia, dislipidemia, hipercalcemia, disfunção erétil.",
+    pearl:
+      "Clortalidona e indapamida têm meia-vida mais longa e mais evidência de desfecho que a hidroclorotiazida — mas causam mais hipocalemia. Dose alta não aumenta muito o efeito pressórico e aumenta muito o efeito metabólico: pense em associar, não em subir dose.",
+  },
+  {
+    id: "alca",
+    grupo: "Diuréticos",
+    nome: "De alça",
+    cor: "#1E5E75",
+    primeiraLinha: false,
+    drogas: ["Furosemida 20–80 mg (1–2×/dia)", "Bumetanida"],
+    mecanismo:
+      "Inibem o cotransportador Na⁺/K⁺/2Cl⁻ na alça de Henle. Diurese potente, porém curta — por isso costumam exigir duas tomadas ao dia.",
+    indicacoes: [
+      "Hipertenso com DRC e TFG < 30 mL/min",
+      "Insuficiência cardíaca com congestão",
+      "Estados hipervolêmicos (síndrome nefrótica, cirrose)",
+    ],
+    contraindicacoes: [
+      "Hipovolemia / desidratação",
+      "Uso concomitante com aminoglicosídeo (ototoxicidade somada)",
+      "Não é droga de escolha para HAS não complicada",
+    ],
+    adversos:
+      "HipoK⁺, hipoNa⁺, hipoMg²⁺, hipoCa²⁺, alcalose metabólica hipoclorêmica, ototoxicidade dose-dependente, hiperuricemia.",
+    pearl:
+      "Ao contrário do tiazídico, a furosemida espolia cálcio. Regra de prova: tiazídico retém Ca²⁺ (bom na osteoporose), alça perde Ca²⁺ (útil na hipercalcemia).",
+  },
+  {
+    id: "poupador",
+    grupo: "Diuréticos",
+    nome: "Antagonistas mineralocorticoides e poupadores de K⁺",
+    cor: "#5C8A3C",
+    primeiraLinha: false,
+    drogas: [
+      "Espironolactona 25–50 mg/dia",
+      "Eplerenona 25–50 mg/dia",
+      "Amilorida (associada a tiazídico)",
+    ],
+    mecanismo:
+      "Bloqueiam o receptor mineralocorticoide no túbulo coletor (espironolactona, eplerenona) ou o canal epitelial de sódio (amilorida), reduzindo reabsorção de Na⁺ e retendo K⁺.",
+    indicacoes: [
+      "Quarta droga de escolha na hipertensão resistente (DBHA 2025)",
+      "Hiperaldosteronismo primário",
+      "Insuficiência cardíaca com fração de ejeção reduzida",
+      "Cirrose com ascite",
+    ],
+    contraindicacoes: [
+      "K⁺ > 5,5 mEq/L",
+      "TFG < 30 mL/min (risco alto de hipercalemia)",
+      "Associação com IECA/BRA sem monitorar potássio e creatinina",
+    ],
+    adversos:
+      "Hipercalemia, ginecomastia e disfunção erétil (espironolactona — a eplerenona quase não faz), acidose metabólica hiperclorêmica.",
+    pearl:
+      "O estudo PATHWAY-2 consagrou a espironolactona como a quarta droga. Se der ginecomastia, troque por eplerenona — mesmo mecanismo, sem a ação antiandrogênica.",
+  },
+  {
+    id: "ieca",
+    grupo: "Bloqueio do SRAA",
+    nome: "IECA — inibidores da ECA",
+    cor: "#B33A2F",
+    primeiraLinha: true,
+    drogas: [
+      "Enalapril 5–40 mg/dia (2×)",
+      "Captopril 25–150 mg/dia (2–3×)",
+      "Lisinopril 10–40 mg/dia",
+      "Ramipril 2,5–10 mg/dia",
+      "Perindopril 4–8 mg/dia",
+    ],
+    mecanismo:
+      "Bloqueiam a enzima conversora, reduzindo angiotensina II (menos vasoconstrição e menos aldosterona) e acumulando bradicinina — daí a vasodilatação extra e também a tosse e o angioedema.",
+    indicacoes: [
+      "Primeira linha",
+      "Nefroproteção: diabetes com albuminúria, DRC proteinúrica",
+      "Insuficiência cardíaca com FE reduzida",
+      "Pós-infarto e remodelamento ventricular",
+      "Jovem, branco, hipertenso com renina alta",
+    ],
+    contraindicacoes: [
+      "Gestação — absoluta (oligoidrâmnio, malformação renal, óbito fetal)",
+      "Angioedema prévio com IECA — absoluta",
+      "Estenose bilateral de artéria renal (ou unilateral em rim único)",
+      "Hipercalemia (K⁺ > 5,5)",
+      "Nunca junto com BRA ou alisquireno",
+    ],
+    adversos:
+      "Tosse seca em 10–20% (mais em mulheres), angioedema, hipercalemia, elevação da creatinina, hipotensão de primeira dose, disgeusia (captopril).",
+    pearl:
+      "Subir até 30% na creatinina após iniciar IECA é esperado e não indica suspensão — é queda da pressão intraglomerular, justamente o efeito nefroprotetor. Acima disso, investigue estenose de artéria renal ou hipovolemia.",
+  },
+  {
+    id: "bra",
+    grupo: "Bloqueio do SRAA",
+    nome: "BRA — bloqueadores do receptor AT1",
+    cor: "#9E3A68",
+    primeiraLinha: true,
+    drogas: [
+      "Losartana 50–100 mg/dia",
+      "Valsartana 80–320 mg/dia",
+      "Candesartana 8–32 mg/dia",
+      "Olmesartana 20–40 mg/dia",
+      "Telmisartana 40–80 mg/dia",
+      "Irbesartana 150–300 mg/dia",
+    ],
+    mecanismo:
+      "Bloqueiam seletivamente o receptor AT1 da angiotensina II. Como não mexem na bradicinina, praticamente não causam tosse.",
+    indicacoes: [
+      "Mesmas do IECA, com melhor tolerância",
+      "Paciente que desenvolveu tosse com IECA",
+      "Hipertenso com gota — losartana tem efeito uricosúrico",
+      "Nefroproteção no diabético (irbesartana e losartana têm os grandes ensaios)",
+    ],
+    contraindicacoes: [
+      "Gestação — absoluta, igual ao IECA",
+      "Estenose bilateral de artéria renal",
+      "Hipercalemia",
+      "Associação com IECA",
+    ],
+    adversos:
+      "Hipercalemia, elevação de creatinina, tontura. Angioedema é raríssimo, mas pode ocorrer.",
+    pearl:
+      "IECA e BRA têm eficácia equivalente em desfecho — a escolha é por custo e tolerância. O que não se faz é somar os dois: o ONTARGET mostrou mais lesão renal aguda, hipotensão e hipercalemia, sem ganho cardiovascular.",
+  },
+  {
+    id: "bccdhp",
+    grupo: "Bloqueadores de canal de cálcio",
+    nome: "Di-hidropiridínicos",
+    cor: "#B8871B",
+    primeiraLinha: true,
+    drogas: [
+      "Anlodipino 2,5–10 mg/dia",
+      "Nifedipino retard 20–60 mg/dia",
+      "Lercanidipino 10–20 mg/dia",
+      "Levanlodipino 2,5–5 mg/dia",
+      "Felodipino 5–10 mg/dia",
+    ],
+    mecanismo:
+      "Bloqueiam canais de cálcio tipo L do músculo liso arteriolar. Efeito predominantemente vascular, sem ação relevante sobre o nó sinusal ou a contratilidade.",
+    indicacoes: [
+      "Primeira linha",
+      "Idoso e hipertensão sistólica isolada",
+      "Pessoas negras",
+      "Angina estável e angina vasoespástica (Prinzmetal)",
+      "Doença arterial periférica",
+      "Gestante — nifedipino é opção segura",
+    ],
+    contraindicacoes: [
+      "Insuficiência cardíaca com FE reduzida descompensada (relativa — anlodipino é o mais seguro do grupo)",
+      "Edema de membros inferiores importante",
+      "Taquiarritmias (pela taquicardia reflexa)",
+    ],
+    adversos:
+      "Edema maleolar dose-dependente, cefaleia, rubor facial, taquicardia reflexa, hiperplasia gengival, constipação leve.",
+    pearl:
+      "O edema do anlodipino é por vasodilatação arteriolar, não por retenção de sal — diurético não resolve. O que resolve é associar IECA ou BRA, que dilata a vênula e equilibra a pressão capilar. E nunca use nifedipino de ação rápida sublingual na crise hipertensiva: está proscrito por queda abrupta e imprevisível da PA, com risco de AVC e infarto.",
+  },
+  {
+    id: "bccndhp",
+    grupo: "Bloqueadores de canal de cálcio",
+    nome: "Não di-hidropiridínicos",
+    cor: "#8A6516",
+    primeiraLinha: false,
+    drogas: ["Verapamil 120–360 mg/dia", "Diltiazem 120–360 mg/dia"],
+    mecanismo:
+      "Além do efeito vascular, agem no nó sinusal e atrioventricular: reduzem frequência cardíaca e contratilidade (cronotropismo e inotropismo negativos).",
+    indicacoes: [
+      "Hipertenso com fibrilação atrial de alta resposta ventricular",
+      "Angina, quando o betabloqueador é contraindicado (asma, por exemplo)",
+      "Taquicardia supraventricular",
+      "Enxaqueca (verapamil)",
+    ],
+    contraindicacoes: [
+      "Insuficiência cardíaca com FE reduzida — absoluta",
+      "Bloqueio atrioventricular de 2º ou 3º grau, doença do nó sinusal",
+      "Bradicardia < 50 bpm",
+      "Associação com betabloqueador — risco de bradiarritmia grave",
+    ],
+    adversos:
+      "Bradicardia, bloqueio AV, constipação intensa (verapamil), piora de IC, hiperplasia gengival.",
+    pearl:
+      "Verapamil ou diltiazem + betabloqueador é uma das combinações mais cobradas como erro: os dois freiam o nó AV e a soma pode gerar bloqueio total.",
+  },
+  {
+    id: "bb",
+    grupo: "Simpaticolíticos",
+    nome: "Betabloqueadores",
+    cor: "#464C99",
+    primeiraLinha: false,
+    drogas: [
+      "1ª geração, não seletivos: propranolol, nadolol",
+      "2ª geração, cardiosseletivos (β1): atenolol, metoprolol, bisoprolol",
+      "3ª geração, vasodilatadores: carvedilol (bloqueio α1), nebivolol (libera NO)",
+    ],
+    mecanismo:
+      "Bloqueiam receptores β-adrenérgicos: reduzem débito cardíaco, frequência e liberação de renina. Os de 3ª geração somam vasodilatação e têm perfil metabólico melhor.",
+    indicacoes: [
+      "Não são primeira linha para HAS isolada — só entram se houver indicação específica",
+      "Insuficiência cardíaca com FE reduzida: carvedilol, metoprolol succinato, bisoprolol",
+      "Pós-infarto e doença coronariana / angina",
+      "Fibrilação atrial (controle de frequência)",
+      "Paciente em diálise",
+      "Mulher com desejo de engravidar",
+      "Enxaqueca, tremor essencial, hipertireoidismo, cirrose com varizes",
+    ],
+    contraindicacoes: [
+      "Asma e DPOC broncoespástico — absoluta para os não seletivos",
+      "Bloqueio AV de 2º ou 3º grau, bradicardia sinusal",
+      "Insuficiência cardíaca aguda descompensada e choque cardiogênico",
+      "Doença arterial periférica grave, fenômeno de Raynaud",
+      "Feocromocitoma sem alfabloqueio prévio",
+    ],
+    adversos:
+      "Bradicardia, broncoespasmo, fadiga, disfunção erétil, mascaramento dos sintomas de hipoglicemia no diabético, piora do perfil lipídico e glicêmico, insônia e pesadelos (propranolol, lipofílico).",
+    pearl:
+      "Nunca suspenda de forma abrupta: há hiper-regulação de receptores β e o rebote pode causar crise hipertensiva, angina e infarto — retire em 1 a 2 semanas. E lembre que o atenolol teve desempenho pior que outras classes na prevenção de AVC.",
+  },
+  {
+    id: "alfa",
+    grupo: "Simpaticolíticos",
+    nome: "Alfabloqueadores",
+    cor: "#7A56A6",
+    primeiraLinha: false,
+    drogas: ["Doxazosina 1–16 mg/dia", "Prazosina", "Terazosina"],
+    mecanismo:
+      "Bloqueiam receptores α1 pós-sinápticos na musculatura lisa vascular e no colo vesical e próstata.",
+    indicacoes: [
+      "Hipertenso com hiperplasia prostática benigna — trata as duas coisas",
+      "Quinta droga na hipertensão resistente",
+      "Feocromocitoma: fenoxibenzamina antes do betabloqueador",
+    ],
+    contraindicacoes: [
+      "Insuficiência cardíaca (o ALLHAT mostrou mais IC com doxazosina)",
+      "Hipotensão ortostática, idoso frágil com risco de queda",
+    ],
+    adversos:
+      "Hipotensão de primeira dose com síncope, tontura postural, cefaleia, retenção hídrica, síndrome da íris flácida em cirurgia de catarata.",
+    pearl:
+      "Comece sempre com dose baixa à noite, para reduzir a síncope de primeira dose.",
+  },
+  {
+    id: "central",
+    grupo: "Simpaticolíticos",
+    nome: "Ação central — agonistas α2 e imidazolínicos",
+    cor: "#2F6F5F",
+    primeiraLinha: false,
+    drogas: [
+      "Metildopa 500–2000 mg/dia",
+      "Clonidina 0,1–0,8 mg/dia",
+      "Rilmenidina, moxonidina",
+    ],
+    mecanismo:
+      "Estimulam receptores α2 pré-sinápticos e imidazolínicos no bulbo, reduzindo o tônus simpático central.",
+    indicacoes: [
+      "Metildopa: hipertensão na gestação — segurança consagrada",
+      "Clonidina: hipertensão refratária, abstinência, fogachos",
+      "Alternativa quando as classes principais estão contraindicadas",
+    ],
+    contraindicacoes: [
+      "Depressão (relativa)",
+      "Metildopa: doença hepática ativa",
+      "Uso irregular ou má adesão — pelo risco de rebote com a clonidina",
+    ],
+    adversos:
+      "Sonolência, boca seca, hipotensão postural, depressão, disfunção sexual. Metildopa: anemia hemolítica autoimune com Coombs direto positivo, hepatotoxicidade, febre.",
+    pearl:
+      "A suspensão abrupta da clonidina causa crise hipertensiva de rebote grave, com taquicardia e sudorese — retire sempre de forma gradual.",
+  },
+  {
+    id: "vasodil",
+    grupo: "Outros",
+    nome: "Vasodilatadores diretos",
+    cor: "#96522E",
+    primeiraLinha: false,
+    drogas: ["Hidralazina 50–200 mg/dia", "Minoxidil 2,5–80 mg/dia"],
+    mecanismo:
+      "Relaxam diretamente a musculatura lisa arteriolar, sem passar por receptor adrenérgico.",
+    indicacoes: [
+      "Hipertensão na gestação, inclusive hidralazina IV na emergência da pré-eclâmpsia",
+      "Insuficiência cardíaca: hidralazina + nitrato quando IECA/BRA não podem ser usados",
+      "Hipertensão grave refratária (minoxidil)",
+    ],
+    contraindicacoes: [
+      "Doença coronariana — a taquicardia reflexa pode precipitar isquemia",
+      "Dissecção aórtica",
+      "Lúpus eritematoso sistêmico (hidralazina)",
+    ],
+    adversos:
+      "Taquicardia reflexa, retenção hidrossalina, cefaleia, rubor. Hidralazina: lúpus induzido por droga. Minoxidil: hipertricose e derrame pericárdico.",
+    pearl:
+      "Vasodilatador direto quase nunca vai sozinho: precisa de betabloqueador para conter a taquicardia reflexa e de diurético para conter a retenção de sódio. É o clássico esquema tríplice da hidralazina.",
+  },
+  {
+    id: "renina",
+    grupo: "Outros",
+    nome: "Inibidor direto da renina",
+    cor: "#6B7079",
+    primeiraLinha: false,
+    drogas: ["Alisquireno 150–300 mg/dia"],
+    mecanismo:
+      "Bloqueia a renina no primeiro passo do sistema, impedindo a conversão de angiotensinogênio em angiotensina I.",
+    indicacoes: [
+      "Uso restrito, alternativa quando IECA e BRA não são tolerados",
+      "Pouca evidência de desfecho — não é recomendado de rotina",
+    ],
+    contraindicacoes: [
+      "Gestação — absoluta",
+      "Associação com IECA ou BRA, sobretudo em diabéticos (estudo ALTITUDE)",
+      "TFG < 30 mL/min",
+    ],
+    adversos: "Diarreia, hipercalemia, elevação de creatinina, angioedema raro.",
+    pearl:
+      "Cai pouco na prática, mas cai em prova como a droga que não deve ser combinada a IECA ou BRA.",
+  },
+];
+
+const ESTAGIOS = [
+  { rot: "PA normal", faixa: "< 120 e < 80", cor: "#2E8B6F", cond: "Reavaliar anualmente" },
+  { rot: "Pré-hipertensão", faixa: "120–139 e/ou 80–89", cor: "#C9A227", cond: "MAPA ou MRPA — pode haver hipertensão mascarada" },
+  { rot: "Estágio 1", faixa: "140–159 e/ou 90–99", cor: "#D97A1F", cond: "MAPA ou MRPA — pode ser efeito do avental branco" },
+  { rot: "Estágio 2", faixa: "160–179 e/ou 100–109", cor: "#C1462F", cond: "MAPA ou MRPA, mas a chance de HAS sustentada é alta" },
+  { rot: "Estágio 3", faixa: "≥ 180 e/ou ≥ 110", cor: "#8E1F2F", cond: "Iniciar tratamento de imediato" },
+];
+
+const INICIO_LIMIARES = [
+  { pa: "≥ 120/80", cor: "#2E8B6F", txt: "Medidas não medicamentosas para todos, desde o diagnóstico." },
+  { pa: "130–139/80–89", cor: "#A8841C", txt: "Remédio se o risco cardiovascular for alto e a PA não controlar após três meses de medidas não farmacológicas." },
+  { pa: "≥ 140/90", cor: "#C1462F", txt: "Tratamento medicamentoso desde o diagnóstico, incluindo idosos e maiores de 80 anos." },
+];
+
+const ESCALONAMENTO = [
+  ["Monoterapia", "Só para PA 130–139/80–89 com alto risco, estágio 1 de baixo risco, ≥ 80 anos, frágeis ou com hipotensão ortostática sintomática."],
+  ["Dupla em dose baixa", "Padrão para todos os demais hipertensos, já no início. Preferir combinação em comprimido único."],
+  ["Tripla", "IECA ou BRA + BCC + tiazídico. Controla cerca de 90% dos casos."],
+  ["Quarta droga", "Espironolactona. Se não tolerar, eplerenona."],
+];
+
+const COMBOS = [
+  {
+    tipo: "sim",
+    titulo: "IECA ou BRA + BCC di-hidropiridínico",
+    txt: "A dupla preferencial. O estudo ACCOMPLISH mostrou superioridade sobre IECA + tiazídico em desfecho cardiovascular, e o bloqueio do SRAA ainda reduz o edema maleolar do BCC.",
+    ex: "Perindopril + anlodipino · Valsartana + anlodipino",
+  },
+  {
+    tipo: "sim",
+    titulo: "IECA ou BRA + diurético tiazídico",
+    txt: "Excelente e amplamente disponível no SUS. O diurético ativa o SRAA, e o IECA/BRA bloqueia essa resposta — sinergia real. Também compensa a hipocalemia do tiazídico.",
+    ex: "Losartana + hidroclorotiazida · Enalapril + hidroclorotiazida",
+  },
+  {
+    tipo: "sim",
+    titulo: "BCC + diurético tiazídico",
+    txt: "Opção quando IECA e BRA estão contraindicados, como na gestação ou na hipercalemia.",
+    ex: "Anlodipino + clortalidona",
+  },
+  {
+    tipo: "sim",
+    titulo: "Tripla: IECA ou BRA + BCC + tiazídico",
+    txt: "É a tríplice padrão e controla cerca de 90% dos hipertensos. Antes de escalar para ela, otimize as doses da dupla.",
+    ex: "Losartana + anlodipino + clortalidona",
+  },
+  {
+    tipo: "sim",
+    titulo: "Quarta droga: espironolactona",
+    txt: "Escolha da DBHA 2025 na hipertensão resistente. Se houver ginecomastia persistente, troque por eplerenona. Monitore potássio e creatinina em 1 a 2 semanas.",
+    ex: "Tríplice + espironolactona 25 mg",
+  },
+  {
+    tipo: "nao",
+    titulo: "IECA + BRA",
+    txt: "Duplo bloqueio do SRAA. O ONTARGET mostrou mais lesão renal aguda, hipotensão e hipercalemia, sem qualquer ganho cardiovascular. O mesmo vale para alisquireno + IECA/BRA.",
+    ex: "",
+  },
+  {
+    tipo: "nao",
+    titulo: "Betabloqueador + verapamil ou diltiazem",
+    txt: "Os dois deprimem o nó atrioventricular e a contratilidade. A soma pode causar bradicardia grave, bloqueio total e descompensação de insuficiência cardíaca.",
+    ex: "",
+  },
+  {
+    tipo: "atencao",
+    titulo: "Betabloqueador + diurético tiazídico",
+    txt: "Funciona, mas piora resistência insulínica, glicemia e lipídios. Evite em pré-diabéticos e em quem tem síndrome metabólica.",
+    ex: "",
+  },
+  {
+    tipo: "atencao",
+    titulo: "IECA/BRA + espironolactona",
+    txt: "Combinação útil e indicada na hipertensão resistente e na IC, mas exige controle de potássio e creatinina. Contraindicada se K⁺ > 5,5 ou TFG < 30.",
+    ex: "",
+  },
+];
+
+const PERFIS = [
+  { cond: "Diabetes com albuminúria", esc: "IECA ou BRA", obs: "Nefroproteção — obrigatório no esquema" },
+  { cond: "Doença renal crônica proteinúrica", esc: "IECA ou BRA", obs: "Aceitar alta de até 30% na creatinina" },
+  { cond: "Insuficiência cardíaca com FE reduzida", esc: "IECA/BRA ou sacubitril-valsartana + BB + espironolactona + iSGLT2", obs: "Evitar verapamil e diltiazem" },
+  { cond: "Pós-infarto e doença coronariana", esc: "Betabloqueador + IECA", obs: "BB reduz mortalidade e isquemia" },
+  { cond: "Fibrilação atrial", esc: "Betabloqueador ou BCC não di-hidropiridínico", obs: "Controle de frequência" },
+  { cond: "Gestação", esc: "Metildopa, nifedipino, hidralazina (labetalol se disponível)", obs: "IECA, BRA e alisquireno são proibidos" },
+  { cond: "Pessoa negra", esc: "BCC ou tiazídico", obs: "Menor resposta a IECA/BRA em monoterapia" },
+  { cond: "Idoso e HAS sistólica isolada", esc: "BCC ou tiazídico", obs: "Iniciar devagar, atenção à hipotensão postural" },
+  { cond: "Gota", esc: "Losartana ou BCC", obs: "Losartana é uricosúrica; evitar tiazídico" },
+  { cond: "Hiperplasia prostática benigna", esc: "Alfabloqueador (doxazosina)", obs: "Como droga adicional, não como primeira" },
+  { cond: "Asma e DPOC", esc: "Evitar BB não seletivo", obs: "Se necessário, usar β1-seletivo com cautela" },
+  { cond: "Enxaqueca", esc: "Betabloqueador ou verapamil", obs: "Efeito profilático" },
+  { cond: "Osteoporose", esc: "Tiazídico", obs: "Reduz calciúria" },
+  { cond: "Pós-AVC", esc: "IECA + tiazídico", obs: "Reduzir a PA após a fase aguda" },
+];
+
+const EMERGENCIA = [
+  { d: "Nitroprussiato de sódio", u: "Emergência hipertensiva em geral", c: "Intoxicação por cianeto e tiocianato; proteger da luz" },
+  { d: "Nitroglicerina", u: "Síndrome coronariana aguda, edema agudo de pulmão", c: "Cefaleia, tolerância; não usar com inibidor de PDE5" },
+  { d: "Metoprolol ou esmolol IV", u: "Dissecção aórtica (antes do vasodilatador), SCA", c: "Bradicardia, broncoespasmo" },
+  { d: "Hidralazina IV", u: "Pré-eclâmpsia grave e eclâmpsia", c: "Taquicardia reflexa" },
+  { d: "Nicardipino IV", u: "AVC, encefalopatia hipertensiva", c: "Alto custo, taquicardia" },
+  { d: "Furosemida IV", u: "Edema agudo de pulmão, congestão", c: "Não usar se houver hipovolemia" },
+];
+
+/* =================================================================
+   Anti-hipertensivos — aplicação
+   ================================================================= */
+
+/* ---------- utilidades ---------- */
+const $ = (sel, root = document) => root.querySelector(sel);
+
+const esc = (s) =>
+  String(s).replace(/[&<>"']/g, (c) =>
+    ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c])
+  );
+
+/* remove acentos e caixa, para a busca perdoar digitação no celular */
+const norm = (s) =>
+  String(s).toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+
+const store = {
+  get(k, fb) {
+    try { const v = localStorage.getItem("ah:" + k); return v === null ? fb : JSON.parse(v); }
+    catch { return fb; }
+  },
+  set(k, v) {
+    try { localStorage.setItem("ah:" + k, JSON.stringify(v)); } catch { /* modo privado */ }
+  },
+};
+
+/* ---------- ícones ---------- */
+const ICON = {
+  inicio: '<svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h4l2-5 3 10 2.5-6 1.5 3h5"/></svg>',
+  classes: '<svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2.5"/><path d="M8 4v16M12 9h5M12 13h5"/></svg>',
+  combos: '<svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="12" r="5.5"/><circle cx="15" cy="12" r="5.5"/></svg>',
+  perfis: '<svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.4"/><path d="M4.5 20a7.5 7.5 0 0 1 15 0"/></svg>',
+  emerg: '<svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 4.5 13.5H11L10 22l8.5-11.5H12L13 2z"/></svg>',
+  search: '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>',
+  x: '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg>',
+  caret: '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>',
+  sun: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.2 5.2l1.4 1.4M17.4 17.4l1.4 1.4M18.8 5.2l-1.4 1.4M6.6 17.4l-1.4 1.4"/></svg>',
+  moon: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z"/></svg>',
+  pearl: '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v2M5 6l1.5 1.5M19 6l-1.5 1.5M9 17a5.5 5.5 0 1 1 6 0v2.5h-6V17zM10 22h4"/></svg>',
+  logo: '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12h4.5l2-5.5 3.5 11 2.5-7 1.5 4.5H22"/></svg>',
+  empty: '<svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>',
+};
+
+/* ---------- estado ---------- */
+const TABS = [
+  { id: "inicio", rot: "Início", icon: ICON.inicio },
+  { id: "classes", rot: "Classes", icon: ICON.classes },
+  { id: "combos", rot: "Combinar", icon: ICON.combos },
+  { id: "perfis", rot: "Paciente", icon: ICON.perfis },
+  { id: "emerg", rot: "Endovenoso", icon: ICON.emerg },
+];
+
+const state = {
+  aba: store.get("aba", "inicio"),
+  aberto: null,
+  grupo: store.get("grupo", "Todos"),
+  busca: "",
+};
+const abaUrl = new URLSearchParams(location.search).get("aba");
+if (abaUrl && TABS.some((t) => t.id === abaUrl)) state.aba = abaUrl;
+if (!TABS.some((t) => t.id === state.aba)) state.aba = "inicio";
+
+const GRUPOS = ["Todos", ...new Set(CLASSES.map((c) => c.grupo))];
+if (!GRUPOS.includes(state.grupo)) state.grupo = "Todos";
+
+const COR_COMBO = { sim: "#2E7A61", nao: "#B3242F", atencao: "#B8871B" };
+const ROT_COMBO = { sim: "Pode e deve", nao: "Não combine", atencao: "Combine com cautela" };
+const ORDEM_COMBO = ["sim", "atencao", "nao"];
+
+/* ---------- tema ---------- */
+function temaAtual() {
+  return store.get("tema", null) ||
+    (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+}
+
+function aplicarTema(t) {
+  document.documentElement.dataset.theme = t;
+  $("#theme-toggle").innerHTML = t === "dark" ? ICON.sun : ICON.moon;
+  $("#theme-toggle").setAttribute(
+    "aria-label",
+    t === "dark" ? "Usar tema claro" : "Usar tema escuro"
+  );
+  const meta = $('meta[name="theme-color"]');
+  if (meta) meta.content = t === "dark" ? "#0E1013" : "#F4F2EE";
+}
+
+/* ---------- blocos reutilizáveis ---------- */
+function bloco(titulo, conteudo, mod = "") {
+  const corpo = Array.isArray(conteudo)
+    ? `<ul>${conteudo.map((i) => `<li>${esc(i)}</li>`).join("")}</ul>`
+    : `<p>${esc(conteudo)}</p>`;
+  return `<div class="blk ${mod}">
+    <div class="blk-title ${mod}">${esc(titulo)}</div>${corpo}
+  </div>`;
+}
+
+/* ---------- aba: início ---------- */
+function viewInicio() {
+  const estagios = ESTAGIOS.map(
+    (e) => `<div class="stage acc" style="--c:${e.cor}">
+      <span class="stage-dot"></span>
+      <div>
+        <div class="stage-head">
+          <span class="stage-name">${esc(e.rot)}</span>
+          <span class="stage-range">${esc(e.faixa)}</span>
+        </div>
+        <div class="stage-note">${esc(e.cond)}</div>
+      </div>
+    </div>`
+  ).join("");
+
+  const limiares = INICIO_LIMIARES.map(
+    (l) => `<div class="thr acc" style="--c:${l.cor}">
+      <span class="thr-pa">${esc(l.pa)}</span>
+      <span class="thr-txt">${esc(l.txt)}</span>
+    </div>`
+  ).join("");
+
+  const passos = ESCALONAMENTO.map(
+    ([t, d]) => `<div class="step">
+      <div>
+        <div class="step-name">${esc(t)}</div>
+        <div class="step-txt">${esc(d)}</div>
+      </div>
+    </div>`
+  ).join("");
+
+  return `
+  <div class="grid-2 stack">
+    <section class="card card-pad">
+      <div class="eyebrow">Classificação · consultório</div>
+      <h2 class="section-title" style="margin:6px 0 14px">Como classificar a pressão</h2>
+      ${estagios}
+      <p class="footnote">Valores de consultório em mmHg. O diagnóstico exige confirmação em duas ou mais consultas, ou por MAPA/MRPA — salvo se já houver lesão de órgão-alvo ou doença cardiovascular estabelecida.</p>
+    </section>
+
+    <section class="card card-pad">
+      <div class="eyebrow">Conduta</div>
+      <h2 class="section-title" style="margin:6px 0 14px">Quando e com o que começar</h2>
+      ${limiares}
+
+      <div class="target">
+        <div class="target-label">Meta pressórica</div>
+        <div class="target-value">&lt; 130/80 mmHg</div>
+        <p class="target-note">Para todos, independentemente de idade e risco. A diretriz não define limite inferior: se a sistólica cair abaixo de 120 e a paciente estiver assintomática, mantenha a medicação.</p>
+      </div>
+
+      <div class="eyebrow" style="margin:22px 0 12px">Escalonamento</div>
+      <div class="steps">${passos}</div>
+    </section>
+  </div>`;
+}
+
+/* ---------- aba: classes ---------- */
+function cardClasse(c) {
+  const aberto = state.aberto === c.id;
+  const resto = c.drogas.length > 1 ? ` · +${c.drogas.length - 1}` : "";
+  return `<article class="klass acc ${aberto ? "is-open" : ""}" style="--c:${c.cor}" data-id="${c.id}">
+    <button class="klass-head" aria-expanded="${aberto}" aria-controls="body-${c.id}">
+      <span>
+        <span class="klass-group">${esc(c.grupo)}</span>
+        <span class="klass-name" style="display:block">${esc(c.nome)}</span>
+        ${aberto ? "" : `<span class="klass-preview" style="display:block">${esc(c.drogas[0])}${resto}</span>`}
+      </span>
+      <span class="klass-aside">
+        ${c.primeiraLinha ? '<span class="tag-first">1ª LINHA</span>' : ""}
+        <span class="caret">${ICON.caret}</span>
+      </span>
+    </button>
+    <div class="klass-body" id="body-${c.id}"><div><div class="klass-inner">
+      ${bloco("Representantes e doses", c.drogas)}
+      ${bloco("Como age", c.mecanismo)}
+      ${bloco("Quando usar", c.indicacoes)}
+      ${bloco("Quando não usar", c.contraindicacoes, "is-danger")}
+      ${bloco("Efeitos adversos", c.adversos, "is-muted")}
+      <div class="pearl">
+        <div class="pearl-label">${ICON.pearl} Pega na prática</div>
+        <p>${esc(c.pearl)}</p>
+      </div>
+    </div></div></div>
+  </article>`;
+}
+
+function filtrar() {
+  const q = norm(state.busca.trim());
+  return CLASSES.filter((c) => {
+    if (state.grupo !== "Todos" && c.grupo !== state.grupo) return false;
+    if (!q) return true;
+    const alvo = norm(
+      [c.nome, c.grupo, c.drogas.join(" "), c.indicacoes.join(" "),
+       c.contraindicacoes.join(" "), c.mecanismo, c.adversos, c.pearl].join(" ")
+    );
+    return q.split(/\s+/).every((t) => alvo.includes(t));
+  });
+}
+
+function renderListaClasses() {
+  const lista = filtrar();
+  const alvo = $("#lista-classes");
+  const limpar = $("#search-clear");
+  if (limpar) limpar.hidden = !state.busca;
+  if (!lista.length) {
+    alvo.innerHTML = `<div class="empty">${ICON.empty}
+      Nenhuma classe corresponde a essa busca.<br>Tente outro termo.</div>`;
+    return;
+  }
+  alvo.innerHTML = lista.map(cardClasse).join("");
+}
+
+function viewClasses() {
+  return `
+  <div class="search-bar">
+    <div class="search-field">
+      ${ICON.search}
+      <input id="busca" type="search" inputmode="search" autocomplete="off"
+             enterkeyhint="search" placeholder="Buscar droga, classe ou indicação"
+             aria-label="Buscar droga, classe ou indicação">
+      <button id="search-clear" class="search-clear" aria-label="Limpar busca" hidden>${ICON.x}</button>
+    </div>
+  </div>
+  <div class="chips" id="chips" role="group" aria-label="Filtrar por grupo">
+    ${GRUPOS.map(
+      (g) => `<button class="chip" data-grupo="${esc(g)}" aria-pressed="${g === state.grupo}">${esc(g)}</button>`
+    ).join("")}
+  </div>
+  <div class="stack" id="lista-classes"></div>`;
+}
+
+/* ---------- aba: combinações ---------- */
+function viewCombos() {
+  let html = `<p class="tab-intro">A diretriz de 2025 recomenda começar já com dois fármacos em dose baixa na maioria dos hipertensos, de preferência em comprimido único.</p>`;
+  for (const tipo of ORDEM_COMBO) {
+    const itens = COMBOS.filter((c) => c.tipo === tipo);
+    if (!itens.length) continue;
+    html += `<div class="group-label acc" style="--c:${COR_COMBO[tipo]}">${esc(ROT_COMBO[tipo])}</div><div class="stack">`;
+    html += itens.map(
+      (c) => `<article class="combo acc" style="--c:${COR_COMBO[c.tipo]}">
+        <h3 class="combo-title">${esc(c.titulo)}</h3>
+        <p class="combo-txt">${esc(c.txt)}</p>
+        ${c.ex ? `<div class="combo-ex">${esc(c.ex)}</div>` : ""}
+      </article>`
+    ).join("");
+    html += `</div>`;
+  }
+  return html;
+}
+
+/* ---------- aba: perfis ---------- */
+function viewPerfis() {
+  return `<p class="tab-intro">Escolha guiada pela comorbidade: a indicação específica vence a preferência genérica de primeira linha.</p>
+  <div class="card rows">
+    ${PERFIS.map(
+      (p) => `<div class="row">
+        <div class="row-title">${esc(p.cond)}</div>
+        <div class="row-main">${esc(p.esc)}</div>
+        <div class="row-note">${esc(p.obs)}</div>
+      </div>`
+    ).join("")}
+  </div>`;
+}
+
+/* ---------- aba: endovenosos ---------- */
+function viewEmerg() {
+  return `
+  <div class="notice">
+    <div class="eyebrow">Mudança de nomenclatura em 2025</div>
+    <p>O termo urgência hipertensiva saiu da diretriz. PAS ≥ 180 e/ou PAD ≥ 110 <strong>sem</strong> lesão de órgão-alvo passa a se chamar elevação importante da PA sem lesão progressiva de órgãos-alvo: ajusta-se ou inicia-se a medicação por via oral e reavalia-se em até sete dias, no ambulatório.</p>
+    <p>Emergência hipertensiva continua sendo a mesma faixa de PA <strong>com</strong> lesão aguda e progressiva de órgão-alvo. Aí sim: UTI, anti-hipertensivo endovenoso e meta de redução específica para cada órgão acometido.</p>
+  </div>
+  <div class="card rows" style="margin-top:10px">
+    ${EMERGENCIA.map(
+      (e) => `<div class="row">
+        <div class="row-title">${esc(e.d)}</div>
+        <div class="row-main">${esc(e.u)}</div>
+        <div class="row-note">${esc(e.c)}</div>
+      </div>`
+    ).join("")}
+  </div>`;
+}
+
+/* ---------- render ---------- */
+const VIEWS = {
+  inicio: viewInicio,
+  classes: viewClasses,
+  combos: viewCombos,
+  perfis: viewPerfis,
+  emerg: viewEmerg,
+};
+
+function renderAba() {
+  $("#painel").innerHTML = `<div class="panel">${VIEWS[state.aba]()}</div>`;
+  if (state.aba === "classes") {
+    renderListaClasses();
+    const inp = $("#busca");
+    inp.value = state.busca;
+  }
+  document.querySelectorAll(".tab").forEach((b) => {
+    b.setAttribute("aria-selected", String(b.dataset.aba === state.aba));
+  });
+  store.set("aba", state.aba);
+}
+
+function irPara(id) {
+  if (state.aba === id) {
+    scrollTo({ top: 0, behavior: "smooth" });
+    return;
+  }
+  state.aba = id;
+  renderAba();
+  scrollTo({ top: 0 });
+}
+
+/* ---------- montagem ---------- */
+function montar() {
+  $("#tabbar").innerHTML = TABS.map(
+    (t) => `<button class="tab" role="tab" data-aba="${t.id}"
+             aria-selected="${t.id === state.aba}" aria-controls="painel">
+      ${t.icon}<span>${esc(t.rot)}</span></button>`
+  ).join("");
+
+  $("#ruler").innerHTML = ESTAGIOS.map(
+    (e) => `<span style="background:${e.cor}"></span>`
+  ).join("");
+
+  $("#brand-icon").innerHTML = ICON.logo;
+  aplicarTema(temaAtual());
+  renderAba();
+}
+
+/* ---------- eventos ---------- */
+document.addEventListener("click", (ev) => {
+  const tab = ev.target.closest(".tab");
+  if (tab) return irPara(tab.dataset.aba);
+
+  const chip = ev.target.closest(".chip");
+  if (chip) {
+    state.grupo = chip.dataset.grupo;
+    store.set("grupo", state.grupo);
+    document.querySelectorAll(".chip").forEach((c) =>
+      c.setAttribute("aria-pressed", String(c.dataset.grupo === state.grupo))
+    );
+    state.aberto = null;
+    renderListaClasses();
+    return;
+  }
+
+  const head = ev.target.closest(".klass-head");
+  if (head) {
+    const art = head.closest(".klass");
+    const id = art.dataset.id;
+    const abrindo = state.aberto !== id;
+    state.aberto = abrindo ? id : null;
+    renderListaClasses();
+    if (abrindo) {
+      const novo = document.querySelector(`.klass[data-id="${id}"]`);
+      const y = novo.getBoundingClientRect().top + scrollY - 12;
+      if (novo.getBoundingClientRect().top < 0) scrollTo({ top: y, behavior: "smooth" });
+    }
+    return;
+  }
+
+  if (ev.target.closest("#search-clear")) {
+    state.busca = "";
+    renderListaClasses();
+    $("#busca").value = "";
+    $("#busca").focus();
+    return;
+  }
+
+  if (ev.target.closest("#theme-toggle")) {
+    const novo = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
+    store.set("tema", novo);
+    aplicarTema(novo);
+    return;
+  }
+
+  if (ev.target.closest("#btn-instalar")) return instalar();
+
+  if (ev.target.closest("#sheet-close") || ev.target.id === "sheet-backdrop") {
+    $("#sheet-backdrop")?.remove();
+  }
+});
+
+document.addEventListener("input", (ev) => {
+  if (ev.target.id === "busca") {
+    state.busca = ev.target.value;
+    state.aberto = null;
+    renderListaClasses();
+  }
+});
+
+document.addEventListener("keydown", (ev) => {
+  if (ev.key === "Escape") {
+    if ($("#sheet-backdrop")) return $("#sheet-backdrop").remove();
+    if (document.activeElement?.id === "busca") {
+      state.busca = "";
+      $("#busca").value = "";
+      renderListaClasses();
+    }
+  }
+});
+
+/* ---------- atalho na tela de início ---------- */
+function instalar() {
+  document.body.insertAdjacentHTML(
+    "beforeend",
+    `<div class="sheet-backdrop" id="sheet-backdrop" role="dialog" aria-modal="true" aria-label="Como instalar">
+      <div class="sheet">
+        <h2>Deixe na tela de início</h2>
+        <p>Um toque no ícone e o guia abre direto, sem procurar o link.</p>
+        <ol>
+          <li><strong>iPhone / iPad:</strong> toque em Compartilhar e depois em “Adicionar à Tela de Início”.</li>
+          <li><strong>Android:</strong> menu do navegador e depois “Adicionar à tela inicial”.</li>
+          <li><strong>Computador:</strong> salve nos favoritos.</li>
+        </ol>
+        <button class="sheet-close" id="sheet-close">Entendi</button>
+      </div>
+    </div>`
+  );
+}
+
+/* modo instalado: esconde o convite */
+if (matchMedia("(display-mode: standalone)").matches || navigator.standalone) {
+  addEventListener("DOMContentLoaded", () => {
+    const b = $("#btn-instalar");
+    if (b) b.hidden = true;
+  });
+}
+
+/* ---------- tema do sistema muda ---------- */
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change", (e) => {
+  if (store.get("tema", null) === null) aplicarTema(e.matches ? "dark" : "light");
+});
+
+montar();
+</script>

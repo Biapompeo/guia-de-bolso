@@ -21,24 +21,41 @@ Também: tema claro e escuro, busca que ignora acentos (`gestacao` acha
 
 ## Colocar no ar
 
-O site é estático — nenhum build, nenhuma dependência.
+O site é estático — nenhum build, nenhuma dependência. Há três caminhos,
+do mais simples ao mais completo.
 
-### GitHub Pages
+### 1. Arquivo único (não depende de nada)
+
+`dist/anti-hipertensivos.html` tem CSS, JavaScript e ícones embutidos.
+Baixe, mande por mensagem ou guarde no celular: abre por duplo clique e
+funciona sem internet, sem servidor e sem instalar nada.
+
+Para regerar depois de editar qualquer arquivo:
+
+```bash
+python3 tools/build-single-file.py
+```
+
+### 2. GitHub Pages
 
 O workflow `.github/workflows/deploy.yml` liga o Pages sozinho
 (`enablement: true`) e publica a cada push — não é preciso mexer em
 Settings. O endereço aparece ao final da execução, em
 `https://<usuário>.github.io/<repositório>/`.
 
-> **O repositório precisa ser público.** GitHub Pages em repositório
-> privado só existe nos planos pagos (Pro, Team, Enterprise). Em conta
-> gratuita com repositório privado a publicação falha com "Not Found",
-> por mais que o workflow esteja correto.
+> **O repositório precisa ser público.** Em repositório privado a execução
+> para em `Create Pages site failed: Resource not accessible by
+> integration`, porque GitHub Pages em repositório privado só existe nos
+> planos pagos (Pro, Team, Enterprise). Tornando o repositório público, o
+> workflow publica na próxima execução sem nenhuma outra mudança.
 
-### Qualquer outra hospedagem
+### 3. Qualquer outra hospedagem
 
-Serve para Netlify, Vercel, Cloudflare Pages ou um servidor comum: basta
-apontar para a raiz do repositório. Não existe etapa de build.
+Netlify, Vercel, Cloudflare Pages ou um servidor comum: aponte para a raiz
+do repositório. Não existe etapa de build. No Netlify Drop
+(`app.netlify.com/drop`) dá para arrastar a pasta e receber uma URL na hora,
+sem conta e sem configurar nada — e nesse caminho o app continua instalável
+e offline, porque o manifesto e o service worker vão junto.
 
 ## Instalar no celular
 
@@ -71,6 +88,8 @@ assets/styles.css        sistema visual: tokens, tema claro/escuro, componentes
 manifest.webmanifest     nome, ícones e comportamento do app instalado
 sw.js                    cache offline
 icons/                   ícones do app
+tools/                   empacotador do arquivo único
+dist/                    saída gerada: anti-hipertensivos.html
 ```
 
 ### Como editar o conteúdo
@@ -79,9 +98,11 @@ Todo o texto clínico está em **`assets/data.js`**, em listas simples. Para
 acrescentar uma classe, copie um objeto de `CLASSES` e ajuste os campos —
 `grupo` cria o filtro sozinho e `cor` define o acento do cartão.
 
-Depois de mudar qualquer arquivo, suba a versão em `sw.js`
-(`const VERSAO = "v1"` → `"v2"`) para que quem já instalou receba a
-atualização na próxima abertura.
+Depois de mudar qualquer arquivo:
+
+1. Suba a versão em `sw.js` (`const VERSAO = "v1"` → `"v2"`), para que quem
+   já instalou receba a atualização na próxima abertura.
+2. Rode `python3 tools/build-single-file.py` para atualizar o arquivo único.
 
 ## Aviso
 
