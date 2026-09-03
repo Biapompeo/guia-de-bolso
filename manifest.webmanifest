@@ -1,0 +1,26 @@
+{
+  "name": "Anti-hipertensivos · Guia de bolso",
+  "short_name": "Anti-HAS",
+  "description": "Guia visual de bolso dos anti-hipertensivos conforme a Diretriz Brasileira de Hipertensão Arterial 2025 (SBC, SBH e SBN).",
+  "lang": "pt-BR",
+  "dir": "ltr",
+  "start_url": "./",
+  "scope": "./",
+  "id": "./",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#F4F2EE",
+  "theme_color": "#F4F2EE",
+  "categories": ["medical", "education", "productivity"],
+  "icons": [
+    { "src": "./icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "./icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "./icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" },
+    { "src": "./icons/favicon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ],
+  "shortcuts": [
+    { "name": "Classes", "url": "./?aba=classes", "icons": [{ "src": "./icons/icon-192.png", "sizes": "192x192" }] },
+    { "name": "Combinações", "url": "./?aba=combos", "icons": [{ "src": "./icons/icon-192.png", "sizes": "192x192" }] },
+    { "name": "Endovenosos", "url": "./?aba=emerg", "icons": [{ "src": "./icons/icon-192.png", "sizes": "192x192" }] }
+  ]
+}

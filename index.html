@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="pt-BR" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Anti-hipertensivos · Guia de bolso DBHA 2025</title>
+<meta name="description" content="Guia visual de bolso dos anti-hipertensivos conforme a Diretriz Brasileira de Hipertensão Arterial 2025 (SBC, SBH e SBN). Classes, combinações, escolha pelo perfil do paciente e drogas endovenosas.">
+<meta name="theme-color" content="#F4F2EE">
+<meta name="color-scheme" content="light dark">
+
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="icon" href="./icons/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="./icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Anti-HAS">
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="Anti-hipertensivos · Guia de bolso">
+<meta property="og:description" content="Classes, combinações e escolha pelo perfil do paciente — DBHA 2025.">
+
+<link rel="stylesheet" href="./assets/styles.css">
+<script>
+  /* aplica o tema antes da primeira pintura, para não piscar branco */
+  try {
+    var t = JSON.parse(localStorage.getItem("ah:tema") || "null");
+    if (!t) t = matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+    document.documentElement.dataset.theme = t;
+    document.querySelector('meta[name="theme-color"]').content = t === "dark" ? "#0E1013" : "#F4F2EE";
+  } catch (e) {}
+</script>
+</head>
+<body>
+
+<header class="wrap hero">
+  <div class="hero-top">
+    <div>
+      <div class="brand-mark"><span id="brand-icon"></span> DBHA 2025 · SBC · SBH · SBN</div>
+      <h1>Anti&#8209;hipertensivos</h1>
+      <p class="hero-sub">Guia de bolso para escolher, combinar e ajustar — organizado pela Diretriz Brasileira de Hipertensão Arterial de 2025.</p>
+    </div>
+    <button id="theme-toggle" class="icon-btn" type="button" aria-label="Alternar tema"></button>
+  </div>
+  <div class="ruler-strip" id="ruler" aria-hidden="true"></div>
+</header>
+
+<main class="wrap" id="painel" role="tabpanel" aria-live="polite"></main>
+
+<noscript>
+  <div class="wrap"><div class="notice">
+    <div class="eyebrow">JavaScript desativado</div>
+    <p>Este guia precisa de JavaScript para funcionar. Ative-o nas configurações do navegador e recarregue a página.</p>
+  </div></div>
+</noscript>
+
+<footer class="wrap foot">
+  <p>Conteúdo de estudo baseado na Diretriz Brasileira de Hipertensão Arterial 2025 (SBC, SBH e SBN) e no PCDT de Hipertensão Arterial Sistêmica do Ministério da Saúde. Doses são referências para adulto com função renal e hepática preservadas — sempre confira antes de prescrever.</p>
+  <div class="foot-row">
+    <button id="btn-instalar" class="ghost-btn" type="button">Instalar no celular</button>
+    <button class="ghost-btn" type="button" onclick="print()">Imprimir</button>
+  </div>
+</footer>
+
+<nav class="tabbar" id="tabbar" role="tablist" aria-label="Seções do guia"></nav>
+
+<script src="./assets/data.js" defer></script>
+<script src="./assets/app.js" defer></script>
+</body>
+</html>
