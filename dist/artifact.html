@@ -215,21 +215,6 @@ h1 {
   max-width: 46ch;
 }
 
-/* linha de autoria, logo abaixo do subtítulo */
-.autoria {
-  margin-top: 10px;
-  font-size: 12.5px;
-  color: var(--faint);
-  letter-spacing: .01em;
-}
-.autoria span {
-  font-family: var(--font-display);
-  font-size: 14.5px;
-  font-weight: 600;
-  color: var(--ink-2);
-  letter-spacing: -.005em;
-}
-
 .icon-btn {
   width: 40px;
   height: 40px;
@@ -258,16 +243,36 @@ h1 {
   right: 0;
   z-index: 62;
   display: flex;
-  justify-content: center;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
   padding: calc(8px + env(safe-area-inset-top)) var(--pad) 8px;
   background: color-mix(in srgb, var(--paper) 84%, transparent);
   -webkit-backdrop-filter: saturate(180%) blur(16px);
   backdrop-filter: saturate(180%) blur(16px);
   border-bottom: 1px solid color-mix(in srgb, var(--line) 60%, transparent);
 }
+/* assinatura fixa, ao lado do seletor: é o único lugar sempre visível */
+.topbar-nome {
+  flex: none;
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.1;
+  letter-spacing: -.012em;
+  color: var(--ink-2);
+  white-space: nowrap;
+}
 .seg-assunto {
-  width: min(100%, 320px);
-  font-size: 12.5px;
+  flex: 1 1 auto;
+  min-width: 0;
+  max-width: 264px;
+  font-size: 12px;
+}
+.seg-assunto button {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 .seg-assunto button { padding: 8px 6px; }
 
@@ -1182,6 +1187,7 @@ html[data-theme="dark"] .tab[aria-selected="true"] { background: var(--surface-2
   } catch (e) {}
 </script>
 <div class="topbar">
+  <span class="topbar-nome">Beatriz Pompeo</span>
   <div class="seg seg-assunto" id="seletor-assunto" role="group" aria-label="Assunto clínico"></div>
 </div>
 
@@ -1191,7 +1197,6 @@ html[data-theme="dark"] .tab[aria-selected="true"] { background: var(--surface-2
       <div class="brand-mark"><span id="brand-icon"></span> <span id="brand-fonte"></span></div>
       <h1 id="titulo"></h1>
       <p class="hero-sub" id="subtitulo"></p>
-      <p class="autoria">por <span>Beatriz Pompeo</span></p>
     </div>
     <button id="theme-toggle" class="icon-btn" type="button" aria-label="Alternar tema"></button>
   </div>

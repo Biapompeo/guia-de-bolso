@@ -79,7 +79,7 @@ const AUDIT = (exigencia) => `(() => {
     ['.result-label', 4.5], ['.result-value', 4.5], ['.result-band', 4.5],
     ['.result-model', 4.5], ['.result-secondary dt', 4.5], ['.result-secondary dd', 7],
     ['.result-action', 7], ['.result-scale-rot', 4.5], ['.helper-note', 4.5],
-    ['.helper-btn', 4.5], ['.ghost-btn', 4.5], ['.foot', 4.5], ['.autoria', 4.5], ['.assinatura-rot', 4.5], ['.assinatura-nome', 7], ['.search-field input', 7],
+    ['.helper-btn', 4.5], ['.ghost-btn', 4.5], ['.foot', 4.5], ['.topbar-nome', 7], ['.assinatura-rot', 4.5], ['.assinatura-nome', 7], ['.search-field input', 7],
   ];
 
   const falhas = [];

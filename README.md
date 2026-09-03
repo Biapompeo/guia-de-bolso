@@ -74,9 +74,9 @@ aba dele em vez de quebrar.
 O assunto escolhido é lembrado entre sessões e aceita atalho por URL:
 `?assunto=has&aba=risco`.
 
-O seletor fica numa barra fixa no topo (`.topbar`), pelo mesmo motivo que a
-barra de seções é fixa embaixo: numa aba longa, um seletor que rola sai de
-vista e deixa de existir para quem está lendo. Precisa ser `position: fixed`
+O seletor fica numa barra fixa no topo (`.topbar`), ao lado da assinatura,
+pelo mesmo motivo que a barra de seções é fixa embaixo: numa aba longa, o que
+rola sai de vista e deixa de existir para quem está lendo. Precisa ser `position: fixed`
 e viver fora do `<header>` — `sticky` não escapa do elemento pai, então
 dentro do cabeçalho ele sairia da tela junto com ele.
 
