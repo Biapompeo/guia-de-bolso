@@ -9,24 +9,24 @@
 :root {
   color-scheme: light;
 
-  --paper:      #F4F2EE;
-  --paper-2:    #EDEAE4;
-  --surface:    #FFFFFF;
-  --surface-2:  #FAF9F7;
-  --ink:        #16181B;
-  --ink-2:      #3B4048;
-  --muted:      #6E747C;
-  --faint:      #969CA4;
-  --line:       #E3DFD8;
-  --line-soft:  #EFECE6;
+  --paper:      #EDE8E0;
+  --paper-2:    #E2DCD1;
+  --surface:    #F8F5EF;
+  --surface-2:  #F2EEE6;
+  --ink:        #27221C;
+  --ink-2:      #48433D;
+  --muted:      #5D5852;
+  --faint:      #6C6761;
+  --line:       #DED7CA;
+  --line-soft:  #E8E2D8;
 
-  --danger:     #B3242F;
-  --warn:       #A8781A;
-  --ok:         #2E7A61;
+  --danger:     #A32029;
+  --warn:       #8A6512;
+  --ok:         #2A6E57;
 
-  --shadow-sm: 0 1px 2px rgba(20, 22, 26, .05);
-  --shadow-md: 0 2px 4px rgba(20, 22, 26, .05), 0 8px 20px -12px rgba(20, 22, 26, .18);
-  --shadow-lg: 0 8px 40px -12px rgba(20, 22, 26, .26);
+--shadow-sm: 0 1px 2px rgba(58, 48, 34, .06);
+  --shadow-md: 0 2px 4px rgba(58, 48, 34, .06), 0 8px 20px -12px rgba(58, 48, 34, .20);
+  --shadow-lg: 0 8px 40px -12px rgba(58, 48, 34, .28);
 
   --r-sm: 8px;
   --r-md: 14px;
@@ -51,7 +51,7 @@
    define --c: propriedades customizadas são resolvidas onde são declaradas,
    então herdar "--c-txt: var(--c)" da raiz devolveria sempre a cor da raiz. */
 .acc {
-  --c-txt: var(--c);
+  --c-txt: var(--c-l, var(--c));
   --c-wash: color-mix(in srgb, var(--c) 9%, transparent);
   --c-edge: color-mix(in srgb, var(--c) 26%, transparent);
 }
@@ -59,24 +59,24 @@
 html[data-theme="dark"] {
   color-scheme: dark;
 
-  --paper:      #0E1013;
-  --paper-2:    #15181C;
-  --surface:    #16191D;
-  --surface-2:  #1B1F24;
-  --ink:        #E9EBEE;
-  --ink-2:      #C3C8CF;
-  --muted:      #949BA4;
-  --faint:      #6E757E;
-  --line:       #262B31;
-  --line-soft:  #1F242A;
+  --paper:      #1A1D20;
+  --paper-2:    #232629;
+  --surface:    #24282C;
+  --surface-2:  #2C3035;
+  --ink:        #E7E3DD;
+  --ink-2:      #C6C2BC;
+  --muted:      #B2AEA8;
+  --faint:      #9B9791;
+  --line:       #343941;
+  --line-soft:  #2B3036;
 
-  --danger:     #E8736E;
+  --danger:     #EE837C;
   --warn:       #E0AE4C;
   --ok:         #5FBF9C;
 
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, .4);
-  --shadow-md: 0 2px 4px rgba(0, 0, 0, .3), 0 8px 24px -14px rgba(0, 0, 0, .8);
-  --shadow-lg: 0 10px 44px -12px rgba(0, 0, 0, .7);
+--shadow-sm: 0 1px 2px rgba(0, 0, 0, .34);
+  --shadow-md: 0 2px 4px rgba(0, 0, 0, .26), 0 8px 24px -14px rgba(0, 0, 0, .66);
+  --shadow-lg: 0 10px 44px -12px rgba(0, 0, 0, .58);
 
   --c-txt: var(--ink);
   --c-wash: color-mix(in srgb, var(--ink) 10%, transparent);
@@ -84,7 +84,7 @@ html[data-theme="dark"] {
 }
 
 html[data-theme="dark"] .acc {
-  --c-txt: color-mix(in oklab, var(--c) 56%, #FFFFFF);
+  --c-txt: var(--c-d, var(--c));
   --c-wash: color-mix(in srgb, var(--c) 17%, transparent);
   --c-edge: color-mix(in srgb, var(--c) 40%, transparent);
 }
@@ -95,31 +95,31 @@ html[data-theme="dark"] .acc {
   :root:not([data-theme="light"]) {
     color-scheme: dark;
 
-    --paper:      #0E1013;
-    --paper-2:    #15181C;
-    --surface:    #16191D;
-    --surface-2:  #1B1F24;
-    --ink:        #E9EBEE;
-    --ink-2:      #C3C8CF;
-    --muted:      #949BA4;
-    --faint:      #6E757E;
-    --line:       #262B31;
-    --line-soft:  #1F242A;
+    --paper:      #1A1D20;
+    --paper-2:    #232629;
+    --surface:    #24282C;
+    --surface-2:  #2C3035;
+    --ink:        #E7E3DD;
+    --ink-2:      #C6C2BC;
+    --muted:      #B2AEA8;
+    --faint:      #9B9791;
+    --line:       #343941;
+    --line-soft:  #2B3036;
 
-    --danger:     #E8736E;
+    --danger:     #EE837C;
     --warn:       #E0AE4C;
     --ok:         #5FBF9C;
 
-    --shadow-sm: 0 1px 2px rgba(0, 0, 0, .4);
-    --shadow-md: 0 2px 4px rgba(0, 0, 0, .3), 0 8px 24px -14px rgba(0, 0, 0, .8);
-    --shadow-lg: 0 10px 44px -12px rgba(0, 0, 0, .7);
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, .34);
+    --shadow-md: 0 2px 4px rgba(0, 0, 0, .26), 0 8px 24px -14px rgba(0, 0, 0, .66);
+    --shadow-lg: 0 10px 44px -12px rgba(0, 0, 0, .58);
 
     --c-txt: var(--ink);
     --c-wash: color-mix(in srgb, var(--ink) 10%, transparent);
     --c-edge: color-mix(in srgb, var(--ink) 24%, transparent);
   }
   :root:not([data-theme="light"]) .acc {
-    --c-txt: color-mix(in oklab, var(--c) 56%, #FFFFFF);
+    --c-txt: var(--c-d, var(--c));
     --c-wash: color-mix(in srgb, var(--c) 17%, transparent);
     --c-edge: color-mix(in srgb, var(--c) 40%, transparent);
   }
@@ -2782,6 +2782,49 @@ function aplicarTema(t) {
   if (meta) meta.content = t === "dark" ? "#0E1013" : "#F4F2EE";
 }
 
+/* ---------- acentos legíveis ---------- */
+/* Cada classe, estágio e veredito tem uma cor de identidade. Ela funciona como
+   trilha e como ponto colorido, mas como TEXTO várias delas não alcançam
+   contraste suficiente — o dourado sobre papel claro é o caso extremo. Em vez
+   de escolher cores novas à mão, deriva-se de cada acento uma variante de
+   texto para cada tema, escurecendo ou clareando só o necessário. */
+const _hex = (h) => { h = h.replace("#", ""); return [0, 2, 4].map((i) => parseInt(h.slice(i, i + 2), 16)); };
+const _lin = (v) => { v /= 255; return v <= 0.04045 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); };
+const _lum = (c) => 0.2126 * _lin(c[0]) + 0.7152 * _lin(c[1]) + 0.0722 * _lin(c[2]);
+const _contraste = (a, b) => {
+  const la = _lum(a), lb = _lum(b);
+  return (Math.max(la, lb) + 0.05) / (Math.min(la, lb) + 0.05);
+};
+const _misturar = (a, b, t) => a.map((v, i) => Math.round(v + (b[i] - v) * t));
+const _paraHex = (c) => "#" + c.map((v) => v.toString(16).padStart(2, "0")).join("");
+
+/* Pior caso de cada tema: no claro o acento pode cair sobre o papel, mais
+   escuro que o cartão; no escuro, sobre o campo de formulário, mais claro. */
+const SUP_CLARA = "#EDE8E0";
+const SUP_ESCURA = "#2C3035";
+
+function _legivel(base, fundo, rumo, alvo) {
+  for (let t = 0; t <= 1.0001; t += 0.02) {
+    const c = _misturar(base, rumo, t);
+    if (_contraste(c, fundo) >= alvo) return _paraHex(c);
+  }
+  return _paraHex(rumo);
+}
+
+const _cacheAcento = {};
+
+/* Devolve as três variáveis inline: identidade, texto no claro, texto no escuro. */
+function acento(cor) {
+  if (_cacheAcento[cor]) return _cacheAcento[cor];
+  const base = _hex(cor);
+  // o texto costuma cair sobre o próprio fundo lavado, mais escuro que o cartão
+  const fundoClaro = _misturar(_hex(SUP_CLARA), base, 0.09);
+  const fundoEscuro = _misturar(_hex(SUP_ESCURA), base, 0.17);
+  const claro = _legivel(base, fundoClaro, [0, 0, 0], 4.5);
+  const escuro = _legivel(base, fundoEscuro, [255, 255, 255], 4.5);
+  return (_cacheAcento[cor] = `--c:${cor};--c-l:${claro};--c-d:${escuro}`);
+}
+
 /* ---------- blocos reutilizáveis ---------- */
 function bloco(titulo, conteudo, mod = "") {
   const corpo = Array.isArray(conteudo)
@@ -2795,7 +2838,7 @@ function bloco(titulo, conteudo, mod = "") {
 /* ---------- aba: início ---------- */
 function viewInicio() {
   const estagios = ESTAGIOS.map(
-    (e) => `<div class="stage acc" style="--c:${e.cor}">
+    (e) => `<div class="stage acc" style="${acento(e.cor)}">
       <span class="stage-dot"></span>
       <div>
         <div class="stage-head">
@@ -2808,7 +2851,7 @@ function viewInicio() {
   ).join("");
 
   const limiares = INICIO_LIMIARES.map(
-    (l) => `<div class="thr acc" style="--c:${l.cor}">
+    (l) => `<div class="thr acc" style="${acento(l.cor)}">
       <span class="thr-pa">${esc(l.pa)}</span>
       <span class="thr-txt">${esc(l.txt)}</span>
     </div>`
@@ -2853,7 +2896,7 @@ function viewInicio() {
 function cardClasse(c) {
   const aberto = state.aberto === c.id;
   const resto = c.drogas.length > 1 ? ` · +${c.drogas.length - 1}` : "";
-  return `<article class="klass acc ${aberto ? "is-open" : ""}" style="--c:${c.cor}" data-id="${c.id}">
+  return `<article class="klass acc ${aberto ? "is-open" : ""}" style="${acento(c.cor)}" data-id="${c.id}">
     <button class="klass-head" aria-expanded="${aberto}" aria-controls="body-${c.id}">
       <span>
         <span class="klass-group">${esc(c.grupo)}</span>
@@ -2930,9 +2973,9 @@ function viewCombos() {
   for (const tipo of ORDEM_COMBO) {
     const itens = COMBOS.filter((c) => c.tipo === tipo);
     if (!itens.length) continue;
-    html += `<div class="group-label acc" style="--c:${COR_COMBO[tipo]}">${esc(ROT_COMBO[tipo])}</div><div class="stack">`;
+    html += `<div class="group-label acc" style="${acento(COR_COMBO[tipo])}">${esc(ROT_COMBO[tipo])}</div><div class="stack">`;
     html += itens.map(
-      (c) => `<article class="combo acc" style="--c:${COR_COMBO[c.tipo]}">
+      (c) => `<article class="combo acc" style="${acento(COR_COMBO[c.tipo])}">
         <h3 class="combo-title">${esc(c.titulo)}</h3>
         <p class="combo-txt">${esc(c.txt)}</p>
         ${c.ex ? `<div class="combo-ex">${esc(c.ex)}</div>` : ""}
@@ -3016,7 +3059,7 @@ function resultadoRiscoHTML() {
   const idx = FAIXAS_RISCO.indexOf(r.faixa);
   const pct = (v) => v.toFixed(1).replace(".", ",") + "%";
 
-  return `<div class="result acc" style="--c:${r.faixa.cor}">
+  return `<div class="result acc" style="${acento(r.faixa.cor)}">
     <div class="result-top">
       <div>
         <div class="result-label">Doença aterosclerótica em 10 anos</div>

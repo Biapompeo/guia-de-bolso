@@ -17,8 +17,39 @@ Feito para o celular: instala na tela de início, abre em tela cheia e
 | **Paciente** | Escolha guiada pela comorbidade (diabetes, DRC, IC, gestação, gota, asma…) |
 | **Endovenoso** | Emergência hipertensiva, a mudança de nomenclatura de 2025 e as drogas IV |
 
-Também: tema claro e escuro, busca que ignora acentos (`gestacao` acha
-"gestação"), estado lembrado entre sessões e versão para impressão.
+Também: tema claro e escuro em tons confortáveis (nem branco puro, nem
+preto), busca que ignora acentos (`gestacao` acha "gestação"), estado
+lembrado entre sessões e versão para impressão.
+
+## Cores
+
+Nenhum dos dois temas usa extremo: o claro é papel quente (`#EDE8E0`) com
+cartões creme (`#F8F5EF`), não branco puro; o escuro é carvão (`#1A1D20`)
+com cartões `#24282C`, não preto. Os neutros formam uma escada de contraste
+verificada — texto corrido acima de 7:1, secundário e rótulos acima de
+4,5:1, em ambos os temas.
+
+As cores de identidade (uma por classe, por estágio e por veredito) valem
+como trilha e como ponto colorido, mas várias não alcançam contraste
+suficiente **como texto** — o dourado sobre papel claro é o caso extremo,
+em 1,6:1. Em vez de repintar a paleta à mão, `acento()` em `assets/app.js`
+deriva de cada cor duas variantes de texto, uma por tema, escurecendo ou
+clareando só o necessário para chegar a 4,5:1 sobre o fundo em que aquele
+texto realmente cai. Isso vai inline como `--c-l` e `--c-d`; o `--c` cru
+segue intacto nas trilhas.
+
+### Verificação
+
+```bash
+python3 -m http.server 8137 &
+npm i playwright
+node tests/contraste.js http://localhost:8137
+```
+
+Percorre as seis abas nos dois temas e mede o contraste real de cada texto
+contra o fundo efetivamente pintado, compondo transparências e resolvendo
+`color-mix`. Sai com código 1 se algo ficar abaixo do alvo. Rode depois de
+mexer em qualquer cor.
 
 ## Calculadora de risco (PREVENT)
 
@@ -156,7 +187,7 @@ manifest.webmanifest     nome, ícones e comportamento do app instalado
 sw.js                    cache offline
 icons/                   ícones do app
 tools/                   empacotador do arquivo único e extrator dos coeficientes
-tests/                   validação da calculadora de risco
+tests/                   validação da calculadora de risco e do contraste
 dist/                    saída gerada: anti-hipertensivos.html
 ```
 

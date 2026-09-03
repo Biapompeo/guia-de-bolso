@@ -7,24 +7,24 @@
 :root {
   color-scheme: light;
 
-  --paper:      #F4F2EE;
-  --paper-2:    #EDEAE4;
-  --surface:    #FFFFFF;
-  --surface-2:  #FAF9F7;
-  --ink:        #16181B;
-  --ink-2:      #3B4048;
-  --muted:      #6E747C;
-  --faint:      #969CA4;
-  --line:       #E3DFD8;
-  --line-soft:  #EFECE6;
+  --paper:      #EDE8E0;
+  --paper-2:    #E2DCD1;
+  --surface:    #F8F5EF;
+  --surface-2:  #F2EEE6;
+  --ink:        #27221C;
+  --ink-2:      #48433D;
+  --muted:      #5D5852;
+  --faint:      #6C6761;
+  --line:       #DED7CA;
+  --line-soft:  #E8E2D8;
 
-  --danger:     #B3242F;
-  --warn:       #A8781A;
-  --ok:         #2E7A61;
+  --danger:     #A32029;
+  --warn:       #8A6512;
+  --ok:         #2A6E57;
 
-  --shadow-sm: 0 1px 2px rgba(20, 22, 26, .05);
-  --shadow-md: 0 2px 4px rgba(20, 22, 26, .05), 0 8px 20px -12px rgba(20, 22, 26, .18);
-  --shadow-lg: 0 8px 40px -12px rgba(20, 22, 26, .26);
+--shadow-sm: 0 1px 2px rgba(58, 48, 34, .06);
+  --shadow-md: 0 2px 4px rgba(58, 48, 34, .06), 0 8px 20px -12px rgba(58, 48, 34, .20);
+  --shadow-lg: 0 8px 40px -12px rgba(58, 48, 34, .28);
 
   --r-sm: 8px;
   --r-md: 14px;
@@ -49,7 +49,7 @@
    define --c: propriedades customizadas são resolvidas onde são declaradas,
    então herdar "--c-txt: var(--c)" da raiz devolveria sempre a cor da raiz. */
 .acc {
-  --c-txt: var(--c);
+  --c-txt: var(--c-l, var(--c));
   --c-wash: color-mix(in srgb, var(--c) 9%, transparent);
   --c-edge: color-mix(in srgb, var(--c) 26%, transparent);
 }
@@ -57,24 +57,24 @@
 html[data-theme="dark"] {
   color-scheme: dark;
 
-  --paper:      #0E1013;
-  --paper-2:    #15181C;
-  --surface:    #16191D;
-  --surface-2:  #1B1F24;
-  --ink:        #E9EBEE;
-  --ink-2:      #C3C8CF;
-  --muted:      #949BA4;
-  --faint:      #6E757E;
-  --line:       #262B31;
-  --line-soft:  #1F242A;
+  --paper:      #1A1D20;
+  --paper-2:    #232629;
+  --surface:    #24282C;
+  --surface-2:  #2C3035;
+  --ink:        #E7E3DD;
+  --ink-2:      #C6C2BC;
+  --muted:      #B2AEA8;
+  --faint:      #9B9791;
+  --line:       #343941;
+  --line-soft:  #2B3036;
 
-  --danger:     #E8736E;
+  --danger:     #EE837C;
   --warn:       #E0AE4C;
   --ok:         #5FBF9C;
 
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, .4);
-  --shadow-md: 0 2px 4px rgba(0, 0, 0, .3), 0 8px 24px -14px rgba(0, 0, 0, .8);
-  --shadow-lg: 0 10px 44px -12px rgba(0, 0, 0, .7);
+--shadow-sm: 0 1px 2px rgba(0, 0, 0, .34);
+  --shadow-md: 0 2px 4px rgba(0, 0, 0, .26), 0 8px 24px -14px rgba(0, 0, 0, .66);
+  --shadow-lg: 0 10px 44px -12px rgba(0, 0, 0, .58);
 
   --c-txt: var(--ink);
   --c-wash: color-mix(in srgb, var(--ink) 10%, transparent);
@@ -82,7 +82,7 @@ html[data-theme="dark"] {
 }
 
 html[data-theme="dark"] .acc {
-  --c-txt: color-mix(in oklab, var(--c) 56%, #FFFFFF);
+  --c-txt: var(--c-d, var(--c));
   --c-wash: color-mix(in srgb, var(--c) 17%, transparent);
   --c-edge: color-mix(in srgb, var(--c) 40%, transparent);
 }
@@ -93,31 +93,31 @@ html[data-theme="dark"] .acc {
   :root:not([data-theme="light"]) {
     color-scheme: dark;
 
-    --paper:      #0E1013;
-    --paper-2:    #15181C;
-    --surface:    #16191D;
-    --surface-2:  #1B1F24;
-    --ink:        #E9EBEE;
-    --ink-2:      #C3C8CF;
-    --muted:      #949BA4;
-    --faint:      #6E757E;
-    --line:       #262B31;
-    --line-soft:  #1F242A;
+    --paper:      #1A1D20;
+    --paper-2:    #232629;
+    --surface:    #24282C;
+    --surface-2:  #2C3035;
+    --ink:        #E7E3DD;
+    --ink-2:      #C6C2BC;
+    --muted:      #B2AEA8;
+    --faint:      #9B9791;
+    --line:       #343941;
+    --line-soft:  #2B3036;
 
-    --danger:     #E8736E;
+    --danger:     #EE837C;
     --warn:       #E0AE4C;
     --ok:         #5FBF9C;
 
-    --shadow-sm: 0 1px 2px rgba(0, 0, 0, .4);
-    --shadow-md: 0 2px 4px rgba(0, 0, 0, .3), 0 8px 24px -14px rgba(0, 0, 0, .8);
-    --shadow-lg: 0 10px 44px -12px rgba(0, 0, 0, .7);
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, .34);
+    --shadow-md: 0 2px 4px rgba(0, 0, 0, .26), 0 8px 24px -14px rgba(0, 0, 0, .66);
+    --shadow-lg: 0 10px 44px -12px rgba(0, 0, 0, .58);
 
     --c-txt: var(--ink);
     --c-wash: color-mix(in srgb, var(--ink) 10%, transparent);
     --c-edge: color-mix(in srgb, var(--ink) 24%, transparent);
   }
   :root:not([data-theme="light"]) .acc {
-    --c-txt: color-mix(in oklab, var(--c) 56%, #FFFFFF);
+    --c-txt: var(--c-d, var(--c));
     --c-wash: color-mix(in srgb, var(--c) 17%, transparent);
     --c-edge: color-mix(in srgb, var(--c) 40%, transparent);
   }

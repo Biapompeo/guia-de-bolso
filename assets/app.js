@@ -115,6 +115,49 @@ function aplicarTema(t) {
   if (meta) meta.content = t === "dark" ? "#0E1013" : "#F4F2EE";
 }
 
+/* ---------- acentos legíveis ---------- */
+/* Cada classe, estágio e veredito tem uma cor de identidade. Ela funciona como
+   trilha e como ponto colorido, mas como TEXTO várias delas não alcançam
+   contraste suficiente — o dourado sobre papel claro é o caso extremo. Em vez
+   de escolher cores novas à mão, deriva-se de cada acento uma variante de
+   texto para cada tema, escurecendo ou clareando só o necessário. */
+const _hex = (h) => { h = h.replace("#", ""); return [0, 2, 4].map((i) => parseInt(h.slice(i, i + 2), 16)); };
+const _lin = (v) => { v /= 255; return v <= 0.04045 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); };
+const _lum = (c) => 0.2126 * _lin(c[0]) + 0.7152 * _lin(c[1]) + 0.0722 * _lin(c[2]);
+const _contraste = (a, b) => {
+  const la = _lum(a), lb = _lum(b);
+  return (Math.max(la, lb) + 0.05) / (Math.min(la, lb) + 0.05);
+};
+const _misturar = (a, b, t) => a.map((v, i) => Math.round(v + (b[i] - v) * t));
+const _paraHex = (c) => "#" + c.map((v) => v.toString(16).padStart(2, "0")).join("");
+
+/* Pior caso de cada tema: no claro o acento pode cair sobre o papel, mais
+   escuro que o cartão; no escuro, sobre o campo de formulário, mais claro. */
+const SUP_CLARA = "#EDE8E0";
+const SUP_ESCURA = "#2C3035";
+
+function _legivel(base, fundo, rumo, alvo) {
+  for (let t = 0; t <= 1.0001; t += 0.02) {
+    const c = _misturar(base, rumo, t);
+    if (_contraste(c, fundo) >= alvo) return _paraHex(c);
+  }
+  return _paraHex(rumo);
+}
+
+const _cacheAcento = {};
+
+/* Devolve as três variáveis inline: identidade, texto no claro, texto no escuro. */
+function acento(cor) {
+  if (_cacheAcento[cor]) return _cacheAcento[cor];
+  const base = _hex(cor);
+  // o texto costuma cair sobre o próprio fundo lavado, mais escuro que o cartão
+  const fundoClaro = _misturar(_hex(SUP_CLARA), base, 0.09);
+  const fundoEscuro = _misturar(_hex(SUP_ESCURA), base, 0.17);
+  const claro = _legivel(base, fundoClaro, [0, 0, 0], 4.5);
+  const escuro = _legivel(base, fundoEscuro, [255, 255, 255], 4.5);
+  return (_cacheAcento[cor] = `--c:${cor};--c-l:${claro};--c-d:${escuro}`);
+}
+
 /* ---------- blocos reutilizáveis ---------- */
 function bloco(titulo, conteudo, mod = "") {
   const corpo = Array.isArray(conteudo)
@@ -128,7 +171,7 @@ function bloco(titulo, conteudo, mod = "") {
 /* ---------- aba: início ---------- */
 function viewInicio() {
   const estagios = ESTAGIOS.map(
-    (e) => `<div class="stage acc" style="--c:${e.cor}">
+    (e) => `<div class="stage acc" style="${acento(e.cor)}">
       <span class="stage-dot"></span>
       <div>
         <div class="stage-head">
@@ -141,7 +184,7 @@ function viewInicio() {
   ).join("");
 
   const limiares = INICIO_LIMIARES.map(
-    (l) => `<div class="thr acc" style="--c:${l.cor}">
+    (l) => `<div class="thr acc" style="${acento(l.cor)}">
       <span class="thr-pa">${esc(l.pa)}</span>
       <span class="thr-txt">${esc(l.txt)}</span>
     </div>`
@@ -186,7 +229,7 @@ function viewInicio() {
 function cardClasse(c) {
   const aberto = state.aberto === c.id;
   const resto = c.drogas.length > 1 ? ` · +${c.drogas.length - 1}` : "";
-  return `<article class="klass acc ${aberto ? "is-open" : ""}" style="--c:${c.cor}" data-id="${c.id}">
+  return `<article class="klass acc ${aberto ? "is-open" : ""}" style="${acento(c.cor)}" data-id="${c.id}">
     <button class="klass-head" aria-expanded="${aberto}" aria-controls="body-${c.id}">
       <span>
         <span class="klass-group">${esc(c.grupo)}</span>
@@ -263,9 +306,9 @@ function viewCombos() {
   for (const tipo of ORDEM_COMBO) {
     const itens = COMBOS.filter((c) => c.tipo === tipo);
     if (!itens.length) continue;
-    html += `<div class="group-label acc" style="--c:${COR_COMBO[tipo]}">${esc(ROT_COMBO[tipo])}</div><div class="stack">`;
+    html += `<div class="group-label acc" style="${acento(COR_COMBO[tipo])}">${esc(ROT_COMBO[tipo])}</div><div class="stack">`;
     html += itens.map(
-      (c) => `<article class="combo acc" style="--c:${COR_COMBO[c.tipo]}">
+      (c) => `<article class="combo acc" style="${acento(COR_COMBO[c.tipo])}">
         <h3 class="combo-title">${esc(c.titulo)}</h3>
         <p class="combo-txt">${esc(c.txt)}</p>
         ${c.ex ? `<div class="combo-ex">${esc(c.ex)}</div>` : ""}
@@ -349,7 +392,7 @@ function resultadoRiscoHTML() {
   const idx = FAIXAS_RISCO.indexOf(r.faixa);
   const pct = (v) => v.toFixed(1).replace(".", ",") + "%";
 
-  return `<div class="result acc" style="--c:${r.faixa.cor}">
+  return `<div class="result acc" style="${acento(r.faixa.cor)}">
     <div class="result-top">
       <div>
         <div class="result-label">Doença aterosclerótica em 10 anos</div>
