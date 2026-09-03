@@ -32,6 +32,7 @@
   --r-xl: 26px;
 
   --wrap: 680px;
+  --topbar-h: calc(55px + env(safe-area-inset-top));
   --pad: clamp(16px, 4.5vw, 24px);
 
   --font-body: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
@@ -142,6 +143,7 @@ body {
   text-rendering: optimizeLegibility;
   overflow-wrap: break-word;
   min-height: 100dvh;
+  padding-top: var(--topbar-h);
   padding-bottom: calc(96px + env(safe-area-inset-bottom));
   -webkit-tap-highlight-color: transparent;
 }
@@ -170,7 +172,7 @@ strong { font-weight: 650; }
 
 /* ---------- Cabeçalho ---------- */
 .hero {
-  padding-top: calc(22px + env(safe-area-inset-top));
+  padding-top: 20px;
   padding-bottom: 18px;
 }
 
@@ -227,13 +229,30 @@ h1 {
 .icon-btn:active { transform: scale(.92); }
 .icon-btn:hover { color: var(--ink); border-color: color-mix(in srgb, var(--ink) 22%, transparent); }
 
-/* seletor de assunto clínico, acima do título */
-.seg-assunto {
-  max-width: 300px;
-  margin-bottom: 18px;
-  font-size: 13px;
+/* Seletor de assunto clínico. Fixo no topo pelo mesmo motivo que a barra de
+   seções é fixa embaixo: quem rolasse uma aba longa perdia o seletor de vista
+   e não tinha como voltar sem rolar a página inteira. Precisa ser fixed, e
+   não sticky: sticky não escapa do elemento pai, então dentro do cabeçalho
+   ele sairia da tela junto com ele. */
+.topbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 62;
+  display: flex;
+  justify-content: center;
+  padding: calc(8px + env(safe-area-inset-top)) var(--pad) 8px;
+  background: color-mix(in srgb, var(--paper) 84%, transparent);
+  -webkit-backdrop-filter: saturate(180%) blur(16px);
+  backdrop-filter: saturate(180%) blur(16px);
+  border-bottom: 1px solid color-mix(in srgb, var(--line) 60%, transparent);
 }
-.seg-assunto button { padding: 9px 6px; }
+.seg-assunto {
+  width: min(100%, 320px);
+  font-size: 12.5px;
+}
+.seg-assunto button { padding: 8px 6px; }
 
 /* faixa cromática dos estágios, sob o cabeçalho */
 .ruler-strip {
@@ -407,7 +426,7 @@ h1 {
 /* ---------- Busca ---------- */
 .search-bar {
   position: sticky;
-  top: 0;
+  top: var(--topbar-h);
   z-index: 30;
   padding: 10px 0 12px;
   background: linear-gradient(var(--paper) 86%, transparent);
@@ -1094,7 +1113,8 @@ html[data-theme="dark"] .tab[aria-selected="true"] { background: var(--surface-2
 /* ---------- Impressão ---------- */
 @media print {
   body { padding: 0; background: #fff; }
-  .tabbar, .search-bar, .chips, .icon-btn, .foot-row { display: none !important; }
+  .tabbar, .topbar, .search-bar, .chips, .icon-btn, .foot-row { display: none !important; }
+  body { padding-top: 0; }
   .klass-body { grid-template-rows: 1fr !important; }
   .panel { animation: none; display: block !important; }
   [hidden] { display: block !important; }
