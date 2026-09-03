@@ -2,7 +2,7 @@
    Service worker — deixa o guia disponível sem internet
    ================================================================= */
 
-const VERSAO = "v3";
+const VERSAO = "v4";
 const CACHE = "anti-hipertensivos-" + VERSAO;
 
 const SHELL = [
@@ -12,6 +12,7 @@ const SHELL = [
   "./assets/prevent-betas.js",
   "./assets/prevent.js",
   "./assets/data.js",
+  "./assets/data-diabetes.js",
   "./assets/app.js",
   "./manifest.webmanifest",
   "./icons/favicon.svg",

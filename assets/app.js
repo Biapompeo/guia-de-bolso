@@ -32,6 +32,9 @@ const ICON = {
   perfis: '<svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.4"/><path d="M4.5 20a7.5 7.5 0 0 1 15 0"/></svg>',
   emerg: '<svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 4.5 13.5H11L10 22l8.5-11.5H12L13 2z"/></svg>',
   risco: '<svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 0-9 9"/><path d="M12 12l5-4"/><circle cx="12" cy="12" r="1.4" fill="currentColor"/><path d="M19 16.5v3M19 22h.01"/></svg>',
+  fluxo: '<svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="2.5" width="8" height="5" rx="1.4"/><rect x="2.5" y="16.5" width="8" height="5" rx="1.4"/><rect x="13.5" y="16.5" width="8" height="5" rx="1.4"/><path d="M12 7.5v4M6.5 16.5v-2.5h11v2.5"/></svg>',
+  rim: '<svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3.5c-3 0-5 2.4-5 6 0 4.6 2.6 8.4 5.4 10.6 1 .8 2.3.1 2.3-1.2V9.6c0-3.4-1.3-6.1-2.7-6.1z"/><path d="M15 3.5c3 0 5 2.4 5 6 0 4.6-2.6 8.4-5.4 10.6-1 .8-2.3.1-2.3-1.2"/></svg>',
+  hipo: '<svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18M4.5 7.5l15 9M19.5 7.5l-15 9"/></svg>',
   search: '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>',
   x: '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg>',
   caret: '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>',
@@ -68,12 +71,16 @@ const ASSUNTOS = {
   dm: {
     rot: "Diabetes",
     titulo: "Diabetes tipo 2",
-    fonte: "SBD 2025",
-    sub: "Tratamento do diabetes tipo 2 pela Diretriz da Sociedade Brasileira de Diabetes.",
-    rodape: "Conteúdo de estudo baseado na Diretriz da Sociedade Brasileira de Diabetes 2025. Doses são referências para adulto com função renal e hepática preservadas — sempre confira antes de prescrever.",
+    fonte: "PCDT · MS · Portaria nº 13/2026",
+    sub: "Tratamento do diabete melito tipo 2 pelo Protocolo Clínico e Diretrizes Terapêuticas do Ministério da Saúde.",
+    rodape: "Conteúdo de estudo baseado no PCDT do Diabete Melito Tipo 2 (Ministério da Saúde, Portaria SCTIE/MS nº 13, de 21 de fevereiro de 2026). O recorte é o do SUS: acarbose, DPP-4, agonistas de GLP-1, meglitinidas e tiazolidinedionas não estão incorporados e por isso não aparecem aqui. Sempre confira antes de prescrever.",
     regua: false,
     abas: [
-      { id: "dm-inicio", rot: "Em breve", icon: ICON.inicio },
+      { id: "dm-inicio", rot: "Início", icon: ICON.inicio },
+      { id: "dm-fluxo", rot: "Fluxo", icon: ICON.fluxo },
+      { id: "dm-classes", rot: "Classes", icon: ICON.classes },
+      { id: "dm-rim", rot: "Rim", icon: ICON.rim },
+      { id: "dm-hipo", rot: "Hipo", icon: ICON.hipo },
     ],
   },
 };
@@ -97,8 +104,9 @@ const abaUrl = _url.get("aba");
 if (abaUrl && temAba(abaUrl)) state.aba = abaUrl;
 if (!temAba(state.aba)) state.aba = abas()[0].id;
 
-const GRUPOS = ["Todos", ...new Set(CLASSES.map((c) => c.grupo))];
-if (!GRUPOS.includes(state.grupo)) state.grupo = "Todos";
+const CLASSES_DE = { has: CLASSES, dm: DM_CLASSES };
+const classesAtuais = () => CLASSES_DE[state.assunto] || [];
+const gruposAtuais = () => ["Todos", ...new Set(classesAtuais().map((c) => c.grupo))];
 
 /* Entradas da calculadora. De propósito não são gravadas em disco:
    são dados de paciente, e o app não deve guardá-los. */
@@ -293,7 +301,7 @@ function cardClasse(c) {
 
 function filtrar() {
   const q = norm(state.busca.trim());
-  return CLASSES.filter((c) => {
+  return classesAtuais().filter((c) => {
     if (state.grupo !== "Todos" && c.grupo !== state.grupo) return false;
     if (!q) return true;
     const alvo = norm(
@@ -329,7 +337,7 @@ function viewClasses() {
     </div>
   </div>
   <div class="chips" id="chips" role="group" aria-label="Filtrar por grupo">
-    ${GRUPOS.map(
+    ${gruposAtuais().map(
       (g) => `<button class="chip" data-grupo="${esc(g)}" aria-pressed="${g === state.grupo}">${esc(g)}</button>`
     ).join("")}
   </div>
@@ -525,6 +533,90 @@ function viewRisco() {
   </p>`;
 }
 
+
+/* ---------- diabetes ---------- */
+function tabelaDm(t, colunas, corDe) {
+  const cabeca = colunas.map((c, i) =>
+    `<th style="${corDe ? `color:${corDe(i)}` : ""}">${esc(typeof c === "string" ? c : c.rot)}</th>`
+  ).join("");
+  const corpo = t.linhas.map(
+    (l) => `<tr>
+      <th scope="row">${esc(l.exame)} <span class="un">${esc(l.un)}</span></th>
+      ${l.v.map((v) => `<td>${esc(v)}</td>`).join("")}
+    </tr>`
+  ).join("");
+  return `<div class="tabela-rolo"><table class="tabela">
+    <thead><tr><th></th>${cabeca}</tr></thead><tbody>${corpo}</tbody>
+  </table></div>`;
+}
+
+function viewDmInicio() {
+  const d = DM_DIAGNOSTICO, m = DM_METAS;
+  return `
+  <section class="card card-pad">
+    <div class="eyebrow">Diagnóstico · a partir dos 18 anos</div>
+    <h2 class="section-title" style="margin:6px 0 4px">${esc(d.titulo)}</h2>
+    ${tabelaDm(d, d.colunas)}
+    <p class="footnote">${esc(d.nota)}</p>
+  </section>
+
+  <section class="card card-pad" style="margin-top:10px">
+    <div class="eyebrow">Controle glicêmico</div>
+    <h2 class="section-title" style="margin:6px 0 4px">${esc(m.titulo)}</h2>
+    ${tabelaDm(m, m.colunas, (i) => m.colunas[i].cor)}
+    <div style="margin-top:6px">
+      ${m.legenda.map(([t, dsc]) => `<div style="padding:11px 0;border-top:1px solid var(--line-soft)">
+        <div class="stage-name">${esc(t)}</div>
+        <div class="stage-note">${esc(dsc)}</div>
+      </div>`).join("")}
+    </div>
+    <p class="footnote">${esc(m.nota)}</p>
+  </section>`;
+}
+
+function viewDmFluxo() {
+  return `<p class="tab-intro">Fluxograma de tratamento do PCDT para adultos com DM2. O que decide o ponto de partida é o tempo desde o diagnóstico e a presença de fator de risco.</p>
+  ${DM_FLUXO.map((b) => `<div class="group-label acc" style="${acento(b.cor)}">${esc(b.passo)}</div>
+    <div class="card rows">
+      ${b.itens.map((i) => `<div class="row">
+        <div class="row-title">${esc(i.t)}</div>
+        <div class="row-note" style="margin-top:4px">${esc(i.d)}</div>
+      </div>`).join("")}
+    </div>`).join("")}`;
+}
+
+function viewDmClasses() {
+  return viewClasses();
+}
+
+function viewDmRim() {
+  const r = DM_RIM;
+  return `<p class="tab-intro">${esc(r.nota)}</p>
+  <div class="card rows">
+    ${r.faixas.map((f) => `<div class="row acc" style="${acento(f.cor)};border-left:3px solid var(--c)">
+      <div class="row-title">${esc(f.tfg)}</div>
+      <div class="row-main" style="color:var(--ink)">${esc(f.metfor)}</div>
+      ${f.meta ? `<div class="row-note">${esc(f.meta)}</div>` : ""}
+      <div class="row-note">${esc(f.extra)}</div>
+    </div>`).join("")}
+  </div>
+  <p class="footnote">${esc(r.rodape)}</p>`;
+}
+
+function viewDmHipo() {
+  const h = DM_HIPO;
+  return `<p class="tab-intro">${esc(h.intro)}</p>
+  <div class="stack">
+    ${h.niveis.map((n) => `<article class="combo acc" style="${acento(n.cor)}">
+      <div class="group-label" style="margin:0 0 8px;color:var(--c-txt)">${esc(n.n)} · ${esc(n.rot)}</div>
+      <h3 class="combo-title">${esc(n.faixa)}</h3>
+      <p class="combo-txt">${esc(n.obs)}</p>
+      <div class="result-action" style="margin-top:12px">${esc(n.trat)}</div>
+    </article>`).join("")}
+  </div>
+  <p class="footnote">${esc(h.nota)}</p>`;
+}
+
 /* ---------- assunto sem conteúdo ainda ---------- */
 function viewEmBreve() {
   return `<div class="card card-pad" style="text-align:center;padding:38px 22px">
@@ -543,7 +635,11 @@ function viewEmBreve() {
 
 /* ---------- render ---------- */
 const VIEWS = {
-  "dm-inicio": viewEmBreve,
+  "dm-inicio": viewDmInicio,
+  "dm-fluxo": viewDmFluxo,
+  "dm-classes": viewDmClasses,
+  "dm-rim": viewDmRim,
+  "dm-hipo": viewDmHipo,
   inicio: viewInicio,
   risco: viewRisco,
   classes: viewClasses,
@@ -574,7 +670,7 @@ function renderBarra() {
 
 function renderAba() {
   $("#painel").innerHTML = `<div class="panel">${VIEWS[state.aba]()}</div>`;
-  if (state.aba === "classes") {
+  if (state.aba === "classes" || state.aba === "dm-classes") {
     renderListaClasses();
     $("#busca").value = state.busca;
   }
@@ -591,6 +687,7 @@ function irParaAssunto(id) {
   state.aba = abas()[0].id;
   state.aberto = null;
   state.busca = "";
+  state.grupo = "Todos";
   renderCabecalho();
   renderBarra();
   renderAba();

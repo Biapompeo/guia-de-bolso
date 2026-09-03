@@ -886,6 +886,58 @@ h1 {
 }
 .group-label:first-child { margin-top: 0; }
 
+/* ---------- Tabelas (diagnóstico e metas) ---------- */
+.tabela-rolo {
+  overflow-x: auto;
+  margin: 12px calc(var(--pad) * -1) 0;
+  padding: 0 var(--pad);
+  scrollbar-width: none;
+}
+.tabela-rolo::-webkit-scrollbar { display: none; }
+.tabela {
+  width: 100%;
+  border-collapse: collapse;
+  font-variant-numeric: tabular-nums;
+}
+.tabela th, .tabela td {
+  padding: 9px 8px;
+  text-align: right;
+  white-space: nowrap;
+  border-top: 1px solid var(--line-soft);
+}
+.tabela thead th {
+  border-top: 0;
+  border-bottom: 1px solid var(--line);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  color: var(--muted);
+  vertical-align: bottom;
+  white-space: normal;
+  min-width: 62px;
+}
+/* a primeira coluna gruda ao rolar: sem ela, num celular a coluna que
+   importa sai da tela e o leitor não percebe que existe mais conteúdo */
+.tabela tbody th, .tabela thead th:first-child {
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  background: var(--surface);
+  text-align: left;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--ink);
+  white-space: normal;
+  padding-left: 0;
+  padding-right: 12px;
+  min-width: 108px;
+}
+.tabela tbody th .un { font-weight: 500; color: var(--faint); font-size: 11.5px; }
+.tabela td { font-size: 13.5px; color: var(--ink-2); }
+.tabela tbody tr:hover td { color: var(--ink); }
+.tabela td:last-child { padding-right: 0; }
+
 /* ---------- Listas (perfis / EV) ---------- */
 .rows { overflow: hidden; }
 .row {
@@ -2688,6 +2740,276 @@ const EMERGENCIA = [
   { d: "Furosemida IV", u: "Edema agudo de pulmão, congestão", c: "Não usar se houver hipovolemia" },
 ];
 
+/* ---------------------------------------------------------------
+   DIABETE MELITO TIPO 2 — base de conteúdo
+
+   Fonte: Protocolo Clínico e Diretrizes Terapêuticas do Diabete
+   Melito Tipo 2, Ministério da Saúde / Conitec.
+   Portaria SCTIE/MS nº 13, de 21 de fevereiro de 2026, que revoga
+   a Portaria SECTICS/MS nº 7, de 28 de fevereiro de 2024.
+
+   O recorte é o do SUS: acarbose, inibidores de DPP-4, agonistas
+   de GLP-1, meglitinidas e tiazolidinedionas não estão
+   incorporados e por isso não aparecem aqui.
+----------------------------------------------------------------*/
+
+const DM_DIAGNOSTICO = {
+  titulo: "Critérios diagnósticos",
+  colunas: ["Normal", "Pré-diabetes", "DM2"],
+  linhas: [
+    { exame: "Glicemia de jejum", un: "mg/dL", v: ["< 100", "100–125", "≥ 126"] },
+    { exame: "Glicemia aleatória com sintomas", un: "mg/dL", v: ["—", "—", "≥ 200"] },
+    { exame: "TTGO 1 hora", un: "mg/dL", v: ["< 155", "155–208", "≥ 209"] },
+    { exame: "TTGO 2 horas", un: "mg/dL", v: ["< 140", "140–199", "≥ 200"] },
+    { exame: "HbA1c", un: "%", v: ["< 5,7", "5,7–6,4", "≥ 6,5"] },
+  ],
+  nota: "Jejum de 8 a 12 horas; TTGO com carga de 75 g de glicose anidra. No assintomático, o diagnóstico exige dois resultados alterados — do mesmo teste em amostras diferentes, ou de dois testes na mesma amostra. A dupla mais prática é glicemia de jejum e HbA1c na mesma coleta. No sintomático, uma glicemia aleatória ≥ 200 já confirma.",
+};
+
+const DM_METAS = {
+  titulo: "Metas por população",
+  colunas: [
+    { rot: "Adulto com DM2", cor: "#2E8B6F" },
+    { rot: "Idoso saudável", cor: "#C9A227" },
+    { rot: "Idoso comprometido", cor: "#D97A1F" },
+    { rot: "Idoso muito comprometido", cor: "#C1462F" },
+  ],
+  linhas: [
+    { exame: "HbA1c", un: "%", v: ["< 7,0", "< 7,5", "< 8,0", "Evitar sintomas"] },
+    { exame: "Glicemia de jejum", un: "mg/dL", v: ["80–130", "80–130", "90–150", "100–180"] },
+    { exame: "Glicemia 2 h pós-prandial", un: "mg/dL", v: ["< 180", "< 180", "< 180", "—"] },
+    { exame: "Glicemia ao deitar", un: "mg/dL", v: ["90–150", "90–150", "100–180", "110–200"] },
+  ],
+  legenda: [
+    ["Idoso saudável", "Poucas comorbidades crônicas, estado funcional e cognitivo preservados."],
+    ["Idoso comprometido", "Múltiplas comorbidades crônicas, comprometimento funcional leve a moderado e cognitivo moderado."],
+    ["Idoso muito comprometido", "Doença terminal, IC classe NYHA IV, doença pulmonar em oxigenoterapia, diálise, comprometimento funcional e cognitivo grave."],
+  ],
+  nota: "Em criança e adolescente a meta de HbA1c é < 7,0%, com glicemia de jejum entre 70 e 130 mg/dL. No idoso vulnerável, HbA1c < 7,0% associou-se a maior mortalidade — metas agressivas são desencorajadas nessa população.",
+};
+
+const DM_FLUXO = [
+  {
+    passo: "Onde começa",
+    cor: "#2E8B6F",
+    itens: [
+      { t: "Menos de 3 meses de diagnóstico e sem fator de risco", d: "Só mudança de modo de vida. Reavaliar em 3 meses e, se não houver resposta, iniciar metformina." },
+      { t: "3 meses ou mais de diagnóstico, ou com fator de risco", d: "Metformina junto com a mudança de modo de vida, já de saída. O atraso em introduzir e intensificar é determinante para as complicações crônicas." },
+    ],
+  },
+  {
+    passo: "Atalho para a insulina",
+    cor: "#B3242F",
+    itens: [
+      { t: "Insulinoterapia desde o início", d: "HbA1c > 9%, glicemia de jejum ≥ 300 mg/dL, sintomas de hiperglicemia aguda (poliúria, polidipsia, perda ponderal) ou intercorrência médica e internação por DM2." },
+      { t: "HbA1c > 7,5% ao diagnóstico", d: "Pode-se considerar já começar com terapia combinada. A segunda linha sugerida é sulfonilureia, iSGLT2 ou insulina." },
+    ],
+  },
+  {
+    passo: "Escalonamento",
+    cor: "#2E7D9A",
+    itens: [
+      { t: "1. Metformina", d: "Monoterapia, com titulação lenta até 2.550 mg/dia." },
+      { t: "2. Somar sulfonilureia", d: "Se não atingiu a meta ou não tolerou a metformina. No idoso, preferir gliclazida à glibenclamida." },
+      { t: "3. Somar dapagliflozina", d: "Só para quem preenche os critérios de elegibilidade do SUS. Quem não preenche vai direto para a insulinoterapia." },
+      { t: "4. Insulinoterapia", d: "Os hipoglicemiantes orais podem ser mantidos a critério médico, sobretudo a metformina nos casos com resistência à insulina." },
+    ],
+  },
+  {
+    passo: "Ritmo de reavaliação",
+    cor: "#8A6516",
+    itens: [
+      { t: "Avaliar o estado glicêmico em 2 a 6 meses, no máximo", d: "Com a HbA1c na meta, dosar pelo menos duas vezes por ano. Fora da meta, a cada 3 meses, e intensificar o tratamento." },
+      { t: "Reavaliar o esquema", d: "Sempre que houver diagnóstico de doença renal do diabetes ou de doença cardiovascular." },
+    ],
+  },
+];
+
+const DM_CLASSES = [
+  {
+    id: "dm-metformina",
+    grupo: "Orais no SUS",
+    nome: "Metformina",
+    cor: "#2F6F5F",
+    primeiraLinha: true,
+    drogas: [
+      "Cloridrato de metformina 500 mg e 850 mg",
+      "Início: 500 ou 850 mg, 1×/dia, durante ou após o café ou o jantar",
+      "Após 5 a 7 dias sem eventos adversos: 500 ou 850 mg, 2×/dia",
+      "Dose máxima efetiva: 850 mg no café, almoço e jantar — 2.550 mg/dia",
+    ],
+    mecanismo:
+      "Biguanida. Reduz a produção hepática de glicose e aumenta a captação muscular de glicose, sem estimular a secreção de insulina.",
+    indicacoes: [
+      "Primeira opção terapêutica no DM2",
+      "Também primeira escolha no idoso: boa eficácia, baixo risco de hipoglicemia e benefício cardiovascular",
+      "Manter ao iniciar insulina, para preservar o benefício glicêmico e metabólico",
+      "Criança e adolescente assintomáticos com HbA1c < 8,5% e função renal normal",
+    ],
+    contraindicacoes: [
+      "TFG < 30 mL/min/1,73 m²",
+      "Gravidez e amamentação",
+      "Insuficiência hepática descompensada, insuficiência cardíaca ou pulmonar",
+      "Acidose grave, sepse, hipotensão, infecção grave",
+      "Alcoolismo",
+      "Pré e pós-operatório, e exame de imagem com contraste",
+    ],
+    adversos:
+      "Gastrointestinais: diarreia, náuseas, vômitos, dor e distensão abdominal, dispepsia, flatulência, gosto metálico. Deficiência de vitamina B12. Acidose láctica é rara.",
+    pearl:
+      "Reduz HbA1c em 1,5% a 2% e a glicemia de jejum em 60 a 70 mg/dL, sem hipoglicemia, sem ganho de peso e com custo baixo. Entre TFG 30 e 45 não passar de 1 g/dia; abaixo de 30, suspender. Começar baixo e subir devagar resolve a maior parte da intolerância gastrointestinal — e a formulação de liberação prolongada, na Farmácia Popular, é mais bem tolerada.",
+  },
+  {
+    id: "dm-sulfonilureia",
+    grupo: "Orais no SUS",
+    nome: "Sulfonilureias",
+    cor: "#B8871B",
+    primeiraLinha: false,
+    drogas: [
+      "Gliclazida MR 30 e 60 mg, 1×/dia — máximo 120 mg/dia",
+      "Gliclazida 80 mg",
+      "Glibenclamida 5 mg, 1 a 2×/dia — máximo 20 mg/dia",
+    ],
+    mecanismo:
+      "Secretagogos de insulina: promovem a liberação de insulina pelas células beta pancreáticas. É esse mesmo mecanismo que traz o risco de hipoglicemia.",
+    indicacoes: [
+      "Segunda linha, associada à metformina, quando é preciso intensificar",
+      "No idoso, preferir gliclazida à glibenclamida",
+      "Gliclazida MR quando há hipoglicemia recorrente ou risco aumentado dela",
+      "Gliclazida MR pode ser usada na insuficiência renal leve a moderada, com monitoramento cauteloso",
+    ],
+    contraindicacoes: [
+      "TFG < 30 mL/min/1,73 m² — a gliclazida MR pode ser considerada com muita cautela e dose reduzida",
+      "Gravidez e lactação",
+      "Insuficiência hepática",
+      "Infecção grave, sinais de deficiência grave de insulina",
+      "Glibenclamida: não recomendada a partir dos 60 anos",
+    ],
+    adversos:
+      "Hipoglicemia, mais frequente e mais grave com a glibenclamida. Ganho de peso.",
+    pearl:
+      "Eficácia igual à da metformina — 1,5% a 2% de HbA1c e 60 a 70 mg/dL de glicemia de jejum — mas ao custo de hipoglicemia e ganho de peso. No idoso, evitar tanto as de ação curta quanto as de ação prolongada; se for preciso usar, as de ação curta são preferidas, para não prolongar a hipoglicemia. Como a metformina, em geral não devem ser usadas em paciente internado.",
+  },
+  {
+    id: "dm-isglt2",
+    grupo: "Orais no SUS",
+    nome: "iSGLT2 — dapagliflozina",
+    cor: "#2E7D9A",
+    primeiraLinha: false,
+    drogas: ["Dapagliflozina 10 mg, 1×/dia"],
+    mecanismo:
+      "Inibe o cotransportador sódio-glicose 2 no túbulo proximal: bloqueia a reabsorção de glicose e de sódio, produzindo glicosúria e natriurese. O efeito independe da secreção e da ação da insulina.",
+    indicacoes: [
+      "Elegível quem precisa de segunda intensificação e tem 40 anos ou mais com doença cardiovascular estabelecida",
+      "Doença estabelecida: infarto prévio, revascularização ou angioplastia coronária prévia, angina estável ou instável, AVC isquêmico ou AIT prévios, IC com fração de ejeção abaixo de 40%",
+      "Ou homem a partir de 55 anos e mulher a partir de 60, com alto risco cardiovascular — definido por hipertensão, dislipidemia ou tabagismo",
+      "Quem tem DM2 com doença renal crônica ou insuficiência cardíaca deve seguir também os PCDT dessas condições",
+    ],
+    contraindicacoes: [
+      "TFG estimada persistentemente < 25 mL/min/1,73 m² — não iniciar",
+      "Gravidez e lactação",
+      "Cautela no idoso: mais cetoacidose euglicêmica e mais infecção urogenital, sobretudo em mulheres no primeiro mês",
+    ],
+    adversos:
+      "Infecção do trato geniturinário, cetoacidose euglicêmica, fasciíte necrosante do períneo, depleção de volume intravascular.",
+    pearl:
+      "Reduz pouco a glicemia — 0,5% a 1,0% de HbA1c e cerca de 30 mg/dL de jejum — e quase não causa hipoglicemia. O que ela entrega está fora da glicemia: menos eventos e menos mortalidade cardiovascular, menos hospitalização por insuficiência cardíaca e preservação da função renal. Abaixo de TFG 45 a eficácia glicêmica cai. Atenção a uma divergência dentro do próprio PCDT: os Critérios de Inclusão e a seção 8.3.3 dizem homens a partir de 55 anos, enquanto a nota (g) do fluxograma diz 65 — o texto normativo diz 55.",
+  },
+  {
+    id: "dm-basal",
+    grupo: "Insulinas",
+    nome: "Insulina basal — NPH e análogas de ação prolongada",
+    cor: "#7A56A6",
+    primeiraLinha: false,
+    drogas: [
+      "Insulina humana NPH 100 U/mL",
+      "Análogas de ação prolongada: glargina 100 U, glargina 300 U, degludeca",
+      "Início: 10 U, ou 0,1 a 0,2 U/kg, à noite antes de dormir",
+      "Titular 2 U a cada 3 dias até a glicemia de jejum entre 80 e 130 mg/dL",
+    ],
+    mecanismo:
+      "Mantém a glicemia entre as refeições e durante o sono. As análogas de ação prolongada dão menos hipoglicemia noturna e total que a NPH; só a degludeca mostrou menos hipoglicemia grave que NPH e glargina.",
+    indicacoes: [
+      "Falha do controle glicêmico com os hipoglicemiantes orais disponíveis",
+      "HbA1c > 9% ou glicemia de jejum ≥ 300 mg/dL",
+      "Sintomas de hiperglicemia aguda, intercorrência médica ou internação por DM2",
+      "Análogas de ação prolongada priorizadas em: risco de hipoglicemia noturna e grave (degludeca), IMC < 30, idoso, grande variabilidade glicêmica, redução das funções renal e hepática, gestante, e dificuldade com múltiplas doses",
+    ],
+    contraindicacoes: [
+      "Não há contraindicação absoluta",
+      "Vigiar hipoglicemia — é o principal evento adverso, com risco de perda de consciência",
+      "Reações alérgicas são raras, em geral cutâneas",
+    ],
+    adversos:
+      "Hipoglicemia, sobretudo no início e nas intensificações. Ganho de peso.",
+    pearl:
+      "Se a glicemia de jejum cair abaixo de 70 ou houver hipoglicemia noturna, reduzir 2 a 4 U. Com o jejum na meta mas a HbA1c ainda alta, entra a segunda dose de NPH: pegar 80% da dose noturna e dividir em 2/3 pela manhã e 1/3 à noite. Reconheça a basal em excesso — dose acima de 0,5 U/kg/dia, queda maior que 50 mg/dL entre o deitar e o despertar, pós-prandial acima de 180 com jejum na meta, hipoglicemias e grande variabilidade. A troca de NPH 1×/dia por glargina é 1 U para 1 U; vindo de duas ou mais doses, reduzir 20% do total.",
+  },
+  {
+    id: "dm-bolus",
+    grupo: "Insulinas",
+    nome: "Insulina bolus — regular e análogas de ação rápida",
+    cor: "#9E3A68",
+    primeiraLinha: false,
+    drogas: [
+      "Insulina humana regular 100 U/mL",
+      "Análogas de ação rápida 100 U/mL",
+      "Primeira dose: 3 a 4 U na refeição de maior glicemia pós-prandial",
+      "Titular 1 U, duas vezes por semana, até pós-prandial entre 90 e 180 mg/dL",
+    ],
+    mecanismo:
+      "Cobre a necessidade de insulina depois das refeições e corrige hiperglicemias. O nome vem da ação rápida, não da forma de administrar.",
+    indicacoes: [
+      "HbA1c acima da meta com glicemia de jejum adequada, já em duas doses diárias de NPH",
+      "Hiperglicemia pós-prandial acima de 180 mg/dL com pré-prandial adequada",
+      "Segunda e terceira doses nas refeições cuja pós-prandial siga acima de 180 mg/dL",
+    ],
+    contraindicacoes: [
+      "Não há contraindicação absoluta",
+      "Vigiar hipoglicemia",
+    ],
+    adversos: "Hipoglicemia. Ganho de peso.",
+    pearl:
+      "A dose total diária fica entre 0,5 e 1,0 U/kg/dia, chegando a 1,5 no muito obeso e resistente, dividida meio a meio entre basal e bolus. Para corrigir, o fator de correção inicial é 50 — 1 U para cada 50 mg/dL acima do limite superior da meta — ou, alternativamente, 1800 dividido pela dose total diária. Depois de acertar a glicemia após o jantar, lembre de reduzir a dose de antes de dormir.",
+  },
+];
+
+const DM_RIM = {
+  titulo: "Estratégia conforme a função renal",
+  nota: "TFG em mL/min/1,73 m², estimada pela CKD-EPI a partir da creatinina sérica. O rastreamento da doença renal do diabetes usa a razão albumina/creatinina em amostra isolada de urina mais a TFG, já no diagnóstico do DM2, repetido de 1 a 4 vezes ao ano conforme o risco. Se a TFG cair mais de 30%, suspender e investigar estenose de artéria renal.",
+  faixas: [
+    { tfg: "TFG > 60 com RAC > 30", cor: "#2E8B6F", metfor: "Metformina mantida", meta: "Meta de HbA1c 7% a 7,9%", extra: "Controle adicional: insulina ou gliclazida MR" },
+    { tfg: "TFG 59–45", cor: "#C9A227", metfor: "Metformina mantida", meta: "Meta de HbA1c 7% a 7,9%", extra: "Controle adicional: insulina ou gliclazida MR" },
+    { tfg: "TFG 44–30", cor: "#D97A1F", metfor: "Metformina reduzida para ≤ 1 g/dia", meta: "", extra: "Controle adicional: insulina; gliclazida MR pode ser considerada" },
+    { tfg: "TFG 29–20", cor: "#C1462F", metfor: "Evitar metformina", meta: "", extra: "Controle adicional: insulina. Cautela com gliclazida MR" },
+    { tfg: "TFG < 20", cor: "#8E1F2F", metfor: "Evitar metformina", meta: "", extra: "Controle adicional: insulina. Evitar sulfonilureias" },
+  ],
+  rodape: "Os iSGLT2 são recomendados em todas as faixas, conforme os critérios de inclusão do PCDT — a dapagliflozina não deve ser iniciada com TFG < 25.",
+};
+
+const DM_HIPO = {
+  titulo: "Hipoglicemia",
+  intro: "Glicemia aleatória abaixo de 70 mg/dL. É a complicação aguda mais frequente e o principal fator que limita o controle glicêmico.",
+  niveis: [
+    {
+      n: "Nível 1", faixa: "≥ 54 e < 70 mg/dL", rot: "Alerta", cor: "#C9A227",
+      obs: "Identificar e tratar, pelo risco de queda progressiva — sobretudo em quem não reconhece as hipoglicemias.",
+      trat: "15 g de carboidrato de absorção rápida: 1 colher de sopa de açúcar ou mel, 150 mL de suco de laranja ou de refrigerante comum, 1 fruta, ou 4 bolachas maisena. Reavaliar em 15 minutos e repetir se não normalizou.",
+    },
+    {
+      n: "Nível 2", faixa: "< 54 mg/dL", rot: "Clinicamente importante", cor: "#D97A1F",
+      obs: "Limiar dos sintomas neuroglicopênicos: dificuldade de concentração, confusão mental, alteração visual, tontura. Episódios repetidos rebaixam o limiar de percepção.",
+      trat: "Se consciente, 30 g de carboidrato de absorção rápida — mel, açúcar ou carboidrato em gel.",
+    },
+    {
+      n: "Nível 3", faixa: "Qualquer valor", rot: "Emergência", cor: "#B3242F",
+      obs: "Comprometimento grave da cognição ou coma, exigindo assistência de terceiros. Não depende de um valor de glicemia.",
+      trat: "Intervenção de emergência médica.",
+    },
+  ],
+  nota: "Alimentos com gordura retardam a resposta glicêmica. Controlar a quantidade de carboidrato evita o pico de hiperglicemia depois. Para prevenir hipoglicemia noturna, um lanche antes de dormir com carboidrato, proteína e gordura — um copo de leite, por exemplo.",
+};
+
 /* =================================================================
    Anti-hipertensivos — aplicação
    ================================================================= */
@@ -2722,6 +3044,9 @@ const ICON = {
   perfis: '<svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.4"/><path d="M4.5 20a7.5 7.5 0 0 1 15 0"/></svg>',
   emerg: '<svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 4.5 13.5H11L10 22l8.5-11.5H12L13 2z"/></svg>',
   risco: '<svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 0-9 9"/><path d="M12 12l5-4"/><circle cx="12" cy="12" r="1.4" fill="currentColor"/><path d="M19 16.5v3M19 22h.01"/></svg>',
+  fluxo: '<svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="2.5" width="8" height="5" rx="1.4"/><rect x="2.5" y="16.5" width="8" height="5" rx="1.4"/><rect x="13.5" y="16.5" width="8" height="5" rx="1.4"/><path d="M12 7.5v4M6.5 16.5v-2.5h11v2.5"/></svg>',
+  rim: '<svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3.5c-3 0-5 2.4-5 6 0 4.6 2.6 8.4 5.4 10.6 1 .8 2.3.1 2.3-1.2V9.6c0-3.4-1.3-6.1-2.7-6.1z"/><path d="M15 3.5c3 0 5 2.4 5 6 0 4.6-2.6 8.4-5.4 10.6-1 .8-2.3.1-2.3-1.2"/></svg>',
+  hipo: '<svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18M4.5 7.5l15 9M19.5 7.5l-15 9"/></svg>',
   search: '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>',
   x: '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg>',
   caret: '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>',
@@ -2758,12 +3083,16 @@ const ASSUNTOS = {
   dm: {
     rot: "Diabetes",
     titulo: "Diabetes tipo 2",
-    fonte: "SBD 2025",
-    sub: "Tratamento do diabetes tipo 2 pela Diretriz da Sociedade Brasileira de Diabetes.",
-    rodape: "Conteúdo de estudo baseado na Diretriz da Sociedade Brasileira de Diabetes 2025. Doses são referências para adulto com função renal e hepática preservadas — sempre confira antes de prescrever.",
+    fonte: "PCDT · MS · Portaria nº 13/2026",
+    sub: "Tratamento do diabete melito tipo 2 pelo Protocolo Clínico e Diretrizes Terapêuticas do Ministério da Saúde.",
+    rodape: "Conteúdo de estudo baseado no PCDT do Diabete Melito Tipo 2 (Ministério da Saúde, Portaria SCTIE/MS nº 13, de 21 de fevereiro de 2026). O recorte é o do SUS: acarbose, DPP-4, agonistas de GLP-1, meglitinidas e tiazolidinedionas não estão incorporados e por isso não aparecem aqui. Sempre confira antes de prescrever.",
     regua: false,
     abas: [
-      { id: "dm-inicio", rot: "Em breve", icon: ICON.inicio },
+      { id: "dm-inicio", rot: "Início", icon: ICON.inicio },
+      { id: "dm-fluxo", rot: "Fluxo", icon: ICON.fluxo },
+      { id: "dm-classes", rot: "Classes", icon: ICON.classes },
+      { id: "dm-rim", rot: "Rim", icon: ICON.rim },
+      { id: "dm-hipo", rot: "Hipo", icon: ICON.hipo },
     ],
   },
 };
@@ -2787,8 +3116,9 @@ const abaUrl = _url.get("aba");
 if (abaUrl && temAba(abaUrl)) state.aba = abaUrl;
 if (!temAba(state.aba)) state.aba = abas()[0].id;
 
-const GRUPOS = ["Todos", ...new Set(CLASSES.map((c) => c.grupo))];
-if (!GRUPOS.includes(state.grupo)) state.grupo = "Todos";
+const CLASSES_DE = { has: CLASSES, dm: DM_CLASSES };
+const classesAtuais = () => CLASSES_DE[state.assunto] || [];
+const gruposAtuais = () => ["Todos", ...new Set(classesAtuais().map((c) => c.grupo))];
 
 /* Entradas da calculadora. De propósito não são gravadas em disco:
    são dados de paciente, e o app não deve guardá-los. */
@@ -2983,7 +3313,7 @@ function cardClasse(c) {
 
 function filtrar() {
   const q = norm(state.busca.trim());
-  return CLASSES.filter((c) => {
+  return classesAtuais().filter((c) => {
     if (state.grupo !== "Todos" && c.grupo !== state.grupo) return false;
     if (!q) return true;
     const alvo = norm(
@@ -3019,7 +3349,7 @@ function viewClasses() {
     </div>
   </div>
   <div class="chips" id="chips" role="group" aria-label="Filtrar por grupo">
-    ${GRUPOS.map(
+    ${gruposAtuais().map(
       (g) => `<button class="chip" data-grupo="${esc(g)}" aria-pressed="${g === state.grupo}">${esc(g)}</button>`
     ).join("")}
   </div>
@@ -3215,6 +3545,90 @@ function viewRisco() {
   </p>`;
 }
 
+
+/* ---------- diabetes ---------- */
+function tabelaDm(t, colunas, corDe) {
+  const cabeca = colunas.map((c, i) =>
+    `<th style="${corDe ? `color:${corDe(i)}` : ""}">${esc(typeof c === "string" ? c : c.rot)}</th>`
+  ).join("");
+  const corpo = t.linhas.map(
+    (l) => `<tr>
+      <th scope="row">${esc(l.exame)} <span class="un">${esc(l.un)}</span></th>
+      ${l.v.map((v) => `<td>${esc(v)}</td>`).join("")}
+    </tr>`
+  ).join("");
+  return `<div class="tabela-rolo"><table class="tabela">
+    <thead><tr><th></th>${cabeca}</tr></thead><tbody>${corpo}</tbody>
+  </table></div>`;
+}
+
+function viewDmInicio() {
+  const d = DM_DIAGNOSTICO, m = DM_METAS;
+  return `
+  <section class="card card-pad">
+    <div class="eyebrow">Diagnóstico · a partir dos 18 anos</div>
+    <h2 class="section-title" style="margin:6px 0 4px">${esc(d.titulo)}</h2>
+    ${tabelaDm(d, d.colunas)}
+    <p class="footnote">${esc(d.nota)}</p>
+  </section>
+
+  <section class="card card-pad" style="margin-top:10px">
+    <div class="eyebrow">Controle glicêmico</div>
+    <h2 class="section-title" style="margin:6px 0 4px">${esc(m.titulo)}</h2>
+    ${tabelaDm(m, m.colunas, (i) => m.colunas[i].cor)}
+    <div style="margin-top:6px">
+      ${m.legenda.map(([t, dsc]) => `<div style="padding:11px 0;border-top:1px solid var(--line-soft)">
+        <div class="stage-name">${esc(t)}</div>
+        <div class="stage-note">${esc(dsc)}</div>
+      </div>`).join("")}
+    </div>
+    <p class="footnote">${esc(m.nota)}</p>
+  </section>`;
+}
+
+function viewDmFluxo() {
+  return `<p class="tab-intro">Fluxograma de tratamento do PCDT para adultos com DM2. O que decide o ponto de partida é o tempo desde o diagnóstico e a presença de fator de risco.</p>
+  ${DM_FLUXO.map((b) => `<div class="group-label acc" style="${acento(b.cor)}">${esc(b.passo)}</div>
+    <div class="card rows">
+      ${b.itens.map((i) => `<div class="row">
+        <div class="row-title">${esc(i.t)}</div>
+        <div class="row-note" style="margin-top:4px">${esc(i.d)}</div>
+      </div>`).join("")}
+    </div>`).join("")}`;
+}
+
+function viewDmClasses() {
+  return viewClasses();
+}
+
+function viewDmRim() {
+  const r = DM_RIM;
+  return `<p class="tab-intro">${esc(r.nota)}</p>
+  <div class="card rows">
+    ${r.faixas.map((f) => `<div class="row acc" style="${acento(f.cor)};border-left:3px solid var(--c)">
+      <div class="row-title">${esc(f.tfg)}</div>
+      <div class="row-main" style="color:var(--ink)">${esc(f.metfor)}</div>
+      ${f.meta ? `<div class="row-note">${esc(f.meta)}</div>` : ""}
+      <div class="row-note">${esc(f.extra)}</div>
+    </div>`).join("")}
+  </div>
+  <p class="footnote">${esc(r.rodape)}</p>`;
+}
+
+function viewDmHipo() {
+  const h = DM_HIPO;
+  return `<p class="tab-intro">${esc(h.intro)}</p>
+  <div class="stack">
+    ${h.niveis.map((n) => `<article class="combo acc" style="${acento(n.cor)}">
+      <div class="group-label" style="margin:0 0 8px;color:var(--c-txt)">${esc(n.n)} · ${esc(n.rot)}</div>
+      <h3 class="combo-title">${esc(n.faixa)}</h3>
+      <p class="combo-txt">${esc(n.obs)}</p>
+      <div class="result-action" style="margin-top:12px">${esc(n.trat)}</div>
+    </article>`).join("")}
+  </div>
+  <p class="footnote">${esc(h.nota)}</p>`;
+}
+
 /* ---------- assunto sem conteúdo ainda ---------- */
 function viewEmBreve() {
   return `<div class="card card-pad" style="text-align:center;padding:38px 22px">
@@ -3233,7 +3647,11 @@ function viewEmBreve() {
 
 /* ---------- render ---------- */
 const VIEWS = {
-  "dm-inicio": viewEmBreve,
+  "dm-inicio": viewDmInicio,
+  "dm-fluxo": viewDmFluxo,
+  "dm-classes": viewDmClasses,
+  "dm-rim": viewDmRim,
+  "dm-hipo": viewDmHipo,
   inicio: viewInicio,
   risco: viewRisco,
   classes: viewClasses,
@@ -3264,7 +3682,7 @@ function renderBarra() {
 
 function renderAba() {
   $("#painel").innerHTML = `<div class="panel">${VIEWS[state.aba]()}</div>`;
-  if (state.aba === "classes") {
+  if (state.aba === "classes" || state.aba === "dm-classes") {
     renderListaClasses();
     $("#busca").value = state.busca;
   }
@@ -3281,6 +3699,7 @@ function irParaAssunto(id) {
   state.aba = abas()[0].id;
   state.aberto = null;
   state.busca = "";
+  state.grupo = "Todos";
   renderCabecalho();
   renderBarra();
   renderAba();

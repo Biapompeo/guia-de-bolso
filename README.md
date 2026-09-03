@@ -5,8 +5,8 @@ clínico; a barra inferior mostra as abas daquele assunto.
 
 - **Hipertensão** — completo, pela **Diretriz Brasileira de Hipertensão
   Arterial 2025** (SBC, SBH e SBN).
-- **Diabetes tipo 2** — estrutura pronta, conteúdo em preparação, pela
-  **Diretriz da Sociedade Brasileira de Diabetes 2025**.
+- **Diabete melito tipo 2** — pelo **PCDT do Ministério da Saúde**
+  (Portaria SCTIE/MS nº 13, de 21 de fevereiro de 2026).
 
 Feito para o celular: instala na tela de início, abre em tela cheia e
 **funciona sem internet** depois da primeira visita.
@@ -27,6 +27,26 @@ Feito para o celular: instala na tela de início, abre em tela cheia e
 Também: tema claro e escuro em tons confortáveis (nem branco puro, nem
 preto), busca que ignora acentos (`gestacao` acha "gestação"), estado
 lembrado entre sessões e versão para impressão.
+
+### Diabete melito tipo 2
+
+| Aba | Conteúdo |
+| --- | --- |
+| **Início** | Critérios diagnósticos e metas glicêmicas por população, com a definição de idoso saudável, comprometido e muito comprometido |
+| **Fluxo** | O fluxograma do PCDT: onde começa, o atalho para insulina, o escalonamento em quatro degraus e o ritmo de reavaliação |
+| **Classes** | Metformina, sulfonilureias, dapagliflozina e as insulinas basal e bolus — mesma estrutura e mesma busca das classes de hipertensão |
+| **Rim** | Estratégia conforme a faixa de TFG, do Quadro 11 |
+| **Hipo** | Os três níveis de hipoglicemia e o tratamento de cada um |
+
+O recorte é o do SUS. Acarbose, inibidores de DPP-4, agonistas de GLP-1,
+meglitinidas e tiazolidinedionas não estão incorporados e por isso não
+aparecem — o PCDT é explícito quanto a isso.
+
+> **Divergência dentro do próprio PCDT.** Para a elegibilidade à
+> dapagliflozina, os Critérios de Inclusão (seção 6) e a seção 8.3.3 dizem
+> **homens a partir de 55 anos**; a nota (g) do fluxograma da Figura 2 diz
+> **65**. O app segue o texto normativo, que traz 55 duas vezes, e registra
+> a divergência na própria classe.
 
 ## Acrescentar um assunto
 

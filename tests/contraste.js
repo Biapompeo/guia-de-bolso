@@ -74,6 +74,7 @@ const AUDIT = (exigencia) => `(() => {
     ['.step-name', 7], ['.step-txt', 4.5], ['.combo-title', 7], ['.combo-txt', 4.5],
     ['.combo-ex', 4.5], ['.group-label', 4.5], ['.row-title', 7], ['.row-main', 4.5],
     ['.row-note', 4.5], ['.notice p', 7], ['.chip', 4.5], ['.tab', 4.5],
+    ['.tabela thead th', 4.5], ['.tabela tbody th', 7], ['.tabela td', 7],
     ['.field label', 4.5], ['.field input', 7], ['.seg button', 4.5], ['.toggle', 4.5],
     ['.result-label', 4.5], ['.result-value', 4.5], ['.result-band', 4.5],
     ['.result-model', 4.5], ['.result-secondary dt', 4.5], ['.result-secondary dd', 7],
@@ -104,15 +105,20 @@ const AUDIT = (exigencia) => `(() => {
     const ctx = await b.newContext({ viewport:{width:390,height:844}, deviceScaleFactor:2, isMobile:true, locale:'pt-BR', colorScheme: tema });
     const p = await ctx.newPage();
     const todas = [];
-    for (const aba of ['inicio','risco','classes','combos','perfis','emerg']) {
-      await p.goto(BASE + '/?aba=' + aba, { waitUntil:'networkidle' });
+    const ROTEIRO = [
+      ['has', ['inicio','risco','classes','combos','perfis','emerg']],
+      ['dm',  ['dm-inicio','dm-fluxo','dm-classes','dm-rim','dm-hipo']],
+    ];
+    for (const [assunto, abas] of ROTEIRO) for (const aba of abas) {
+      await p.goto(`${BASE}/?assunto=${assunto}&aba=${aba}`, { waitUntil:'networkidle' });
       if (aba === 'classes') { await p.click('.klass[data-id="ieca"] .klass-head'); await p.waitForTimeout(400); }
+      if (aba === 'dm-classes') { await p.click('.klass[data-id="dm-isglt2"] .klass-head'); await p.waitForTimeout(400); }
       if (aba === 'risco') {
         for (const [id,v] of [['idade','58'],['pas','152'],['colesterolTotal','230'],['hdl','40'],['tfg','72']]) await p.fill('#r-'+id, v);
         await p.waitForTimeout(300);
       }
       const f = await p.evaluate(AUDIT(tema === 'dark' ? 1.22 : 1));
-      f.forEach(x => todas.push(aba + ' :: ' + x));
+      f.forEach(x => todas.push(assunto + '/' + aba + ' :: ' + x));
     }
     const unico = [...new Set(todas)];
     console.log('\n===== TEMA ' + tema.toUpperCase() + ' =====');
