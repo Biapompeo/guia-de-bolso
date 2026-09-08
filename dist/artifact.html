@@ -276,25 +276,34 @@ h1 {
   flex: none;
   font-family: var(--font-assinatura);
   font-style: italic;
-  font-size: 16px;   /* a Cormorant tem altura-x baixa e pede mais corpo */
+  font-size: 15px;   /* a Cormorant tem altura-x baixa e pede mais corpo */
   font-weight: 600;
   line-height: 1.1;
   letter-spacing: .004em;
   color: var(--ink-2);
   white-space: nowrap;
 }
+/* Com três assuntos os rótulos deixaram de caber em colunas de largura igual
+   numa tela de 320 px — "Hipertensão" pedia 83 px e recebia 58. As colunas
+   passam a ter no mínimo a largura do próprio texto, e a barra rola de lado
+   quando não couber. Assim nenhum rótulo é cortado, por mais assuntos que
+   venham depois. */
 .seg-assunto {
   flex: 1 1 auto;
   min-width: 0;
-  max-width: 264px;
+  max-width: 340px;
   font-size: 12px;
+  grid-auto-columns: minmax(max-content, 1fr);
+  overflow-x: auto;
+  scrollbar-width: none;
+  scroll-snap-type: x proximity;
 }
+.seg-assunto::-webkit-scrollbar { display: none; }
 .seg-assunto button {
-  overflow: hidden;
-  text-overflow: ellipsis;
+  padding: 8px 10px;
   white-space: nowrap;
+  scroll-snap-align: center;
 }
-.seg-assunto button { padding: 8px 6px; }
 
 /* faixa cromática dos estágios, sob o cabeçalho */
 .ruler-strip {
@@ -912,6 +921,19 @@ h1 {
   margin-top: 11px;
   padding-top: 10px;
   border-top: 1px dashed var(--line);
+}
+
+/* selo de força da recomendação. Sem fundo tingido: a tinta de fundo clareia
+   o contraste no tema escuro e derrubava o selo abaixo do alvo. */
+.selo-contra {
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: .02em;
+  white-space: nowrap;
+  color: var(--danger);
+  border: 1px solid color-mix(in srgb, var(--danger) 40%, transparent);
+  border-radius: 999px;
+  padding: 3px 9px;
 }
 
 .group-label {
@@ -3149,6 +3171,152 @@ const DM_RASTREIO = {
   },
 };
 
+/* ---------------------------------------------------------------
+   RASTREAMENTO — base de conteúdo
+
+   Fontes, todas do Ministério da Saúde:
+
+   Colo do útero — Diretrizes Brasileiras para o Rastreamento do
+   Câncer de Colo do Útero, Parte I: rastreamento organizado com
+   testes moleculares para DNA-HPV oncogênico. Portaria Conjunta
+   SAES/SECTICS nº 13, de 29 de julho de 2025.
+
+   Mama — Sumário Executivo das Diretrizes para a Detecção Precoce
+   do Câncer de Mama no Brasil. INCA, 2017.
+
+   Próstata — Nota Técnica nº 9/2023-COSAH/CGACI/DGCI/SAPS/MS,
+   que reafirma a Nota Técnica Conjunta SAS/MS e INCA nº 001/2015.
+
+   Diabete melito tipo 2 — PCDT do DM2, Portaria SCTIE/MS nº 13, de
+   21 de fevereiro de 2026, seção 4. O detalhe está no assunto
+   Diabetes, aba Rastrear.
+----------------------------------------------------------------*/
+
+const RAST_IDADE = [
+  {
+    idade: "25 anos", cor: "#9E3A68",
+    quem: "Mulheres e pessoas com colo do útero",
+    oque: "Teste de DNA-HPV oncogênico",
+    intervalo: "A cada 5 anos, se negativo",
+    nota: "Antes dos 25 não se rastreia — nem com teste molecular, nem com citologia.",
+  },
+  {
+    idade: "35 anos", cor: "#2F6F5F",
+    quem: "Todos",
+    oque: "Glicemia de jejum",
+    intervalo: "A cada 3 anos, se normal",
+    nota: "Antes disso, se houver sobrepeso ou obesidade e ao menos um fator de risco. Detalhe no assunto Diabetes.",
+  },
+  {
+    idade: "50 anos", cor: "#B33A2F",
+    quem: "Mulheres",
+    oque: "Mamografia",
+    intervalo: "Bienal",
+    nota: "O Ministério recomenda contra o rastreamento com mamografia antes dos 50 anos.",
+  },
+];
+
+const RAST_ENCERRAR = [
+  { o: "Mama", quando: "Aos 70 anos", cor: "#B33A2F", d: "Recomendação contrária fraca dos 70 aos 74, e contrária forte a partir dos 75." },
+  { o: "Colo do útero", quando: "Após os 60", cor: "#9E3A68", d: "Encerra-se quando o último teste feito acima dos 60 anos vier negativo. Quem nunca testou e tem mais de 60 deve fazer um teste; se negativo, encerra." },
+  { o: "Diabete melito tipo 2", quando: "Sem idade de encerramento", cor: "#2F6F5F", d: "O PCDT não define idade para parar de rastrear." },
+];
+
+const RAST_PROSTATA = {
+  fonte: "Nota Técnica nº 9/2023 · SAPS/MS",
+  posicao: "O Ministério da Saúde não recomenda o rastreamento populacional do câncer de próstata.",
+  porque: [
+    "As revisões sistemáticas mostram que rastrear aumenta muito o diagnóstico, sem redução significativa da mortalidade específica, e com danos importantes.",
+    "Em autópsias de homens que morreram por outras causas, 37% dos que tinham entre 40 e 50 anos já apresentavam achados histológicos de câncer — e 60% acima dos 79. Rastrear encontraria boa parte desses tumores indolentes.",
+    "O sobretratamento cobra caro em disfunção sexual e urinária. A investigação em si traz biópsia, dor, sangramento, infecção, ansiedade.",
+    "Muitos homens com doença menos agressiva morrem com o câncer, não do câncer — e no momento do diagnóstico nem sempre dá para saber qual é qual.",
+  ],
+  conduta: [
+    { t: "Não convocar assintomáticos", d: "Nada de campanhas para PSA ou toque retal em homens sem sintomas." },
+    { t: "Quem pedir, decide informado", d: "Ao homem que procurar espontaneamente o exame, expor o balanço entre riscos e benefícios e decidir junto." },
+    { t: "Sintoma urinário investiga-se", d: "Dificuldade de urinar, jato fraco, aumento da frequência de dia ou à noite, sangue na urina — investigação diagnóstica célere, com a atenção primária como porta de entrada." },
+    { t: "Risco elevado tem exame", d: "PSA e toque retal seguem indicados na avaliação de homens com risco elevado de neoplasia significativa e naqueles com sintomas, para confirmação diagnóstica." },
+  ],
+  risco: "Idade é o principal fator: mais incidente a partir da sexta década. Somam-se histórico familiar de câncer de próstata antes dos 60 anos, obesidade para tipos avançados, e exposição ocupacional a agentes químicos, responsável por 1% dos casos.",
+};
+
+const RAST_MAMA = {
+  fonte: "Diretrizes para a Detecção Precoce do Câncer de Mama no Brasil · INCA, 2017",
+  faixas: [
+    { idade: "Menos de 50 anos", dir: "contra", forca: "forte", cor: "#8E1F2F", d: "Os possíveis danos claramente superam os possíveis benefícios." },
+    { idade: "50 a 59 anos", dir: "favor", forca: "fraca", cor: "#C9A227", d: "Benefícios e danos provavelmente são semelhantes." },
+    { idade: "60 a 69 anos", dir: "favor", forca: "fraca", cor: "#2E8B6F", d: "Os possíveis benefícios provavelmente superam os possíveis danos." },
+    { idade: "70 a 74 anos", dir: "contra", forca: "fraca", cor: "#D97A1F", d: "O equilíbrio entre danos e benefícios é incerto." },
+    { idade: "75 anos ou mais", dir: "contra", forca: "forte", cor: "#8E1F2F", d: "Os possíveis danos provavelmente superam os possíveis benefícios." },
+  ],
+  periodicidade: "Bienal nas faixas recomendadas — recomendação favorável forte, comparada a periodicidades menores que a bienal.",
+  contra: [
+    { o: "Autoexame das mamas", forca: "contrária fraca", d: "Contra o ensino do autoexame como método de rastreamento." },
+    { o: "Ultrassonografia", forca: "contrária forte", d: "Isolada ou somada à mamografia." },
+    { o: "Ressonância magnética", forca: "contrária forte", d: "Em mulheres com risco padrão, isolada ou como complemento à mamografia." },
+    { o: "Termografia", forca: "contrária forte", d: "Isolada ou somada à mamografia." },
+    { o: "Tomossíntese", forca: "contrária forte", d: "Isolada ou somada à mamografia convencional." },
+  ],
+  semRec: {
+    o: "Exame clínico das mamas",
+    d: "Ausência de recomendação: o equilíbrio entre possíveis danos e benefícios é incerto. Não é um \"não\" — é a diretriz dizendo que não sabe.",
+  },
+  sinais: [
+    "Qualquer nódulo mamário em mulheres com mais de 50 anos",
+    "Nódulo mamário em mulheres com mais de 30 anos que persista por mais de um ciclo menstrual",
+    "Nódulo de consistência endurecida e fixo, ou que venha aumentando de tamanho, em mulheres adultas de qualquer idade",
+    "Descarga papilar sanguinolenta unilateral",
+    "Lesão eczematosa da pele que não responde a tratamento tópico",
+    "Homens com mais de 50 anos com tumoração palpável unilateral",
+    "Presença de linfadenopatia axilar",
+    "Aumento progressivo da mama com sinais de edema, como pele em casca de laranja",
+    "Retração na pele da mama",
+    "Mudança no formato do mamilo",
+  ],
+  precoce: [
+    { t: "Estratégias de conscientização", d: "Recomendação favorável fraca, para o diagnóstico precoce." },
+    { t: "Confirmação em um único serviço", d: "Toda a avaliação diagnóstica, após a identificação de sinais e sintomas suspeitos na atenção primária, feita em um mesmo centro de referência. Favorável fraca." },
+  ],
+};
+
+const RAST_COLO = {
+  fonte: "Portaria Conjunta SAES/SECTICS nº 13, de 29 de julho de 2025",
+  virada: "O rastreamento deixa de ser citológico. O exame primário passa a ser o teste de DNA-HPV oncogênico com genotipagem parcial ou estendida — recomendação forte, por reduzir mais a incidência e a mortalidade. O coteste, isto é, citologia e teste de HPV ao mesmo tempo, não é recomendado.",
+  quem: [
+    { t: "Início aos 25 anos", d: "Entre 25 e 29 a recomendação é condicional; a partir dos 30, forte.", cor: "#2E8B6F" },
+    { t: "Antes dos 25, não rastrear", d: "Recomendação forte. Se o teste for feito por engano nessa faixa, o resultado não deve ser considerado, qualquer que seja o tipo viral — orienta-se a mulher sobre a história natural da infecção e o início aos 25.", cor: "#B3242F" },
+    { t: "Encerrar após os 60", d: "Quando o último teste feito acima dos 60 anos vier negativo. Quem tem mais de 60 e nunca testou deve fazer um teste; negativo, encerra-se; positivo, segue o manejo de risco padrão.", cor: "#8A6516" },
+    { t: "Independe da vacinação", d: "O status vacinal contra HPV não muda o rastreamento por ora, embora se recomende vincular os dois registros.", cor: "#7A56A6" },
+  ],
+  conduta: [
+    { res: "Negativo", cor: "#2E8B6F", acao: "Repetir em 5 anos", d: "Recomendação forte, evidência de certeza alta." },
+    { res: "HPV 16 e/ou 18", cor: "#B3242F", acao: "Colposcopia", d: "Encaminhamento direto, sem passar por citologia." },
+    { res: "Outros tipos oncogênicos", cor: "#D97A1F", acao: "Citologia reflexa", d: "De preferência na mesma amostra e sem novo pedido. Alterada (ASC-US ou mais) ou insatisfatória, encaminhar para colposcopia; negativa, repetir o teste em 12 meses." },
+    { res: "Inválido para todos os tipos", cor: "#6B7079", acao: "Nova coleta", d: "Nova amostra colhida por profissional de saúde, para repetir o teste." },
+  ],
+  apos: [
+    { t: "Triagem negativa", d: "Depois de colposcopia ou citologia reflexa negativa, repetir o teste de DNA-HPV em 12 meses." },
+    { t: "Novo teste negativo", d: "Retorno ao rastreamento de rotina, em 5 anos." },
+    { t: "Novo teste positivo para 16 ou 18", d: "Colposcopia." },
+    { t: "Novo teste positivo para outros tipos, com citologia reflexa ainda negativa", d: "Repetir em mais 12 meses. Se aos 24 meses da citologia reflexa inicial — ou a qualquer tempo depois — seguir positivo para qualquer tipo oncogênico, colposcopia, independentemente do resultado da nova citologia." },
+  ],
+  especiais: [
+    { t: "HIV/aids e outras imunossupressões", cor: "#B3242F", d: "Iniciar após o começo da atividade sexual, e não aos 25. Intervalo de 3 anos, e não 5, após teste negativo. Qualquer tipo detectado leva à colposcopia, independentemente da citologia reflexa. E o rastreamento não se encerra." },
+    { t: "Gestantes", cor: "#9E3A68", d: "Quem precisa regularizar o rastreamento pode fazer o teste no pré-natal. A coleta é segura na gestação, inclusive de endocérvice e em qualquer idade gestacional." },
+    { t: "Pós-menopausa", cor: "#2E7D9A", d: "As mesmas orientações do risco padrão." },
+    { t: "Histerectomia total por lesão benigna", cor: "#2E8B6F", d: "Sem história de diagnóstico ou tratamento de lesão de alto grau e com exames anteriores normais, pode ser excluída do rastreamento." },
+    { t: "Histerectomia por lesão precursora ou câncer", cor: "#8E1F2F", d: "Manter o rastreamento, com coleta vaginal, por pelo menos 25 anos ou indefinidamente." },
+    { t: "Sem história de atividade sexual", cor: "#6B7079", d: "Não devem ser submetidas ao rastreamento — recomendação forte." },
+    { t: "Mais de 60 anos com NIC2, NIC3 ou AIS tratados", cor: "#8A6516", d: "Manter o rastreamento enquanto for possível e aceitável, até 25 anos após o tratamento." },
+  ],
+  coleta: [
+    "A amostra deve ser obtida por médico ou enfermeiro, com aconselhamento prévio.",
+    "Deve haver disponibilização de insumos para autocoleta, oferecida por profissional de saúde.",
+    "Se a citologia reflexa for necessária e a amostra inicial tiver vindo de autocoleta, é preciso nova coleta por profissional.",
+    "Pessoas LBTQIA+ seguem as mesmas orientações do risco padrão, com oferta de autocoleta a considerar.",
+  ],
+};
+
 /* =================================================================
    Anti-hipertensivos — aplicação
    ================================================================= */
@@ -3183,6 +3351,10 @@ const ICON = {
   perfis: '<svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.4"/><path d="M4.5 20a7.5 7.5 0 0 1 15 0"/></svg>',
   emerg: '<svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 4.5 13.5H11L10 22l8.5-11.5H12L13 2z"/></svg>',
   risco: '<svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 0-9 9"/><path d="M12 12l5-4"/><circle cx="12" cy="12" r="1.4" fill="currentColor"/><path d="M19 16.5v3M19 22h.01"/></svg>',
+  idade: '<svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 19h18M6 19V9M12 19V5M18 19v-6"/></svg>',
+  colo: '<svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21c-4-3.5-6-6.5-6-10a6 6 0 0 1 12 0c0 3.5-2 6.5-6 10z"/><circle cx="12" cy="11" r="2.2"/></svg>',
+  mama: '<svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="2.4"/></svg>',
+  prostata: '<svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.6-3.6M8.2 8.2l5.6 5.6M13.8 8.2l-5.6 5.6"/></svg>',
   rastreio: '<svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m20 20-4.7-4.7M8 10.5h5M10.5 8v5"/></svg>',
   fluxo: '<svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="2.5" width="8" height="5" rx="1.4"/><rect x="2.5" y="16.5" width="8" height="5" rx="1.4"/><rect x="13.5" y="16.5" width="8" height="5" rx="1.4"/><path d="M12 7.5v4M6.5 16.5v-2.5h11v2.5"/></svg>',
   rim: '<svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3.5c-3 0-5 2.4-5 6 0 4.6 2.6 8.4 5.4 10.6 1 .8 2.3.1 2.3-1.2V9.6c0-3.4-1.3-6.1-2.7-6.1z"/><path d="M15 3.5c3 0 5 2.4 5 6 0 4.6-2.6 8.4-5.4 10.6-1 .8-2.3.1-2.3-1.2"/></svg>',
@@ -3218,6 +3390,20 @@ const ASSUNTOS = {
       { id: "combos", rot: "Combinar", icon: ICON.combos },
       { id: "perfis", rot: "Paciente", icon: ICON.perfis },
       { id: "emerg", rot: "EV", icon: ICON.emerg },
+    ],
+  },
+  rast: {
+    rot: "Rastreio",
+    titulo: "Rastreamento",
+    fonte: "Ministério da Saúde · INCA",
+    sub: "O que rastrear em cada faixa etária, com que exame, e o que fazer com cada resultado.",
+    rodape: "Conteúdo de estudo baseado nas Diretrizes Brasileiras para o Rastreamento do Câncer de Colo do Útero (Portaria Conjunta SAES/SECTICS nº 13, de 29 de julho de 2025), nas Diretrizes para a Detecção Precoce do Câncer de Mama no Brasil (INCA, 2017) e na Nota Técnica nº 9/2023 da SAPS/MS sobre câncer de próstata. Sempre confira antes de indicar.",
+    regua: false,
+    abas: [
+      { id: "ra-idade", rot: "Por idade", icon: ICON.idade },
+      { id: "ra-colo", rot: "Colo", icon: ICON.colo },
+      { id: "ra-mama", rot: "Mama", icon: ICON.mama },
+      { id: "ra-prostata", rot: "Próstata", icon: ICON.prostata },
     ],
   },
   dm: {
@@ -3687,6 +3873,171 @@ function viewRisco() {
 }
 
 
+/* ---------- rastreamento ---------- */
+function viewRaIdade() {
+  return `
+  <p class="tab-intro">O que começa em cada idade, e de quanto em quanto tempo repetir quando o resultado é normal. O detalhe de cada rastreio está nas abas ao lado; o do diabetes fica no assunto Diabetes.</p>
+
+  <div class="group-label">Quando começa</div>
+  <div class="stack">
+    ${RAST_IDADE.map((f) => `<article class="combo acc" style="${acento(f.cor)}">
+      <div class="result-top" style="align-items:baseline">
+        <div>
+          <div class="result-label">A partir de</div>
+          <div class="result-value" style="font-size:30px">${esc(f.idade)}</div>
+        </div>
+        <span class="result-band">${esc(f.intervalo)}</span>
+      </div>
+      <dl class="result-secondary" style="border-top-color:var(--c-edge)">
+        <div><dt>Quem</dt><dd style="font-size:14px">${esc(f.quem)}</dd></div>
+        <div><dt>Exame</dt><dd style="font-size:14px">${esc(f.oque)}</dd></div>
+      </dl>
+      <p class="combo-txt">${esc(f.nota)}</p>
+    </article>`).join("")}
+  </div>
+
+  <div class="group-label">Quando parar</div>
+  <div class="card rows">
+    ${RAST_ENCERRAR.map((e) => `<div class="row acc" style="${acento(e.cor)};border-left:3px solid var(--c)">
+      <div class="result-top" style="align-items:baseline">
+        <div class="row-title" style="flex:1 1 auto">${esc(e.o)}</div>
+        <span class="stage-range">${esc(e.quando)}</span>
+      </div>
+      <div class="row-note" style="margin-top:5px">${esc(e.d)}</div>
+    </div>`).join("")}
+  </div>`;
+}
+
+function viewRaColo() {
+  const c = RAST_COLO;
+  return `
+  <div class="notice">
+    <div class="eyebrow">O que mudou em 2025</div>
+    <p>${esc(c.virada)}</p>
+  </div>
+
+  <div class="group-label">Quem rastrear</div>
+  <div class="card rows">
+    ${c.quem.map((q) => `<div class="row acc" style="${acento(q.cor)};border-left:3px solid var(--c)">
+      <div class="row-title">${esc(q.t)}</div>
+      <div class="row-note" style="margin-top:4px">${esc(q.d)}</div>
+    </div>`).join("")}
+  </div>
+
+  <div class="group-label">Conduta pelo resultado</div>
+  <div class="stack">
+    ${c.conduta.map((x) => `<article class="combo acc" style="${acento(x.cor)}">
+      <div class="result-top" style="align-items:center">
+        <h3 class="combo-title" style="flex:1 1 auto">${esc(x.res)}</h3>
+        <span class="result-band">${esc(x.acao)}</span>
+      </div>
+      <p class="combo-txt">${esc(x.d)}</p>
+    </article>`).join("")}
+  </div>
+
+  <div class="group-label">Depois da triagem</div>
+  <div class="card rows">
+    ${c.apos.map((a) => `<div class="row">
+      <div class="row-title">${esc(a.t)}</div>
+      <div class="row-note" style="margin-top:4px">${esc(a.d)}</div>
+    </div>`).join("")}
+  </div>
+
+  <div class="group-label">Situações particulares</div>
+  <div class="card rows">
+    ${c.especiais.map((e) => `<div class="row acc" style="${acento(e.cor)};border-left:3px solid var(--c)">
+      <div class="row-title">${esc(e.t)}</div>
+      <div class="row-note" style="margin-top:4px">${esc(e.d)}</div>
+    </div>`).join("")}
+  </div>
+
+  <div class="group-label">Coleta</div>
+  <section class="card card-pad">
+    <div class="blk" style="margin:0"><ul>${c.coleta.map((x) => `<li>${esc(x)}</li>`).join("")}</ul></div>
+  </section>
+
+  <p class="footnote">${esc(c.fonte)}</p>`;
+}
+
+function viewRaMama() {
+  const m = RAST_MAMA;
+  return `
+  <p class="tab-intro">A mamografia é o único método que o Ministério recomenda para rastrear, e só em duas faixas de idade. Todo o resto da lista é recomendação contrária.</p>
+
+  <div class="group-label">Mamografia, por faixa etária</div>
+  <div class="card rows">
+    ${m.faixas.map((f) => `<div class="row acc" style="${acento(f.cor)};border-left:3px solid var(--c)">
+      <div class="result-top" style="align-items:baseline">
+        <div class="row-title" style="flex:1 1 auto">${esc(f.idade)}</div>
+        <span class="result-band">${f.dir === "favor" ? "Rastrear" : "Não rastrear"}</span>
+      </div>
+      <div class="row-note" style="margin-top:5px">Recomendação ${f.dir === "favor" ? "favorável" : "contrária"} ${esc(f.forca)} — ${esc(f.d)}</div>
+    </div>`).join("")}
+  </div>
+  <div class="result-action" style="margin-top:10px">${esc(m.periodicidade)}</div>
+
+  <div class="group-label">Recomendação contrária</div>
+  <div class="card rows">
+    ${m.contra.map((x) => `<div class="row">
+      <div class="result-top" style="align-items:baseline">
+        <div class="row-title" style="flex:1 1 auto">${esc(x.o)}</div>
+        <span class="selo-contra">${esc(x.forca)}</span>
+      </div>
+      <div class="row-note" style="margin-top:4px">${esc(x.d)}</div>
+    </div>`).join("")}
+  </div>
+
+  <section class="card card-pad" style="margin-top:10px">
+    <div class="eyebrow">${esc(m.semRec.o)}</div>
+    <p style="font-size:13.5px;line-height:1.58;color:var(--ink);margin-top:8px">${esc(m.semRec.d)}</p>
+  </section>
+
+  <div class="group-label">Referência urgente</div>
+  <section class="card card-pad">
+    <p class="helper-note" style="margin:0 0 12px">Sinais e sintomas que o Ministério recomenda encaminhar com urgência para serviço de diagnóstico mamário.</p>
+    <div class="blk is-danger" style="margin:0"><ul>${m.sinais.map((x) => `<li>${esc(x)}</li>`).join("")}</ul></div>
+  </section>
+
+  <div class="group-label">Diagnóstico precoce</div>
+  <div class="card rows">
+    ${m.precoce.map((x) => `<div class="row">
+      <div class="row-title">${esc(x.t)}</div>
+      <div class="row-note" style="margin-top:4px">${esc(x.d)}</div>
+    </div>`).join("")}
+  </div>
+
+  <p class="footnote">${esc(m.fonte)}</p>`;
+}
+
+function viewRaProstata() {
+  const p = RAST_PROSTATA;
+  return `
+  <div class="notice">
+    <div class="eyebrow">Posição do Ministério da Saúde</div>
+    <p style="font-size:15px;font-weight:600;color:var(--ink)">${esc(p.posicao)}</p>
+  </div>
+
+  <div class="group-label">Por quê</div>
+  <section class="card card-pad">
+    <div class="blk" style="margin:0"><ul>${p.porque.map((x) => `<li>${esc(x)}</li>`).join("")}</ul></div>
+  </section>
+
+  <div class="group-label">O que fazer então</div>
+  <div class="card rows">
+    ${p.conduta.map((c) => `<div class="row">
+      <div class="row-title">${esc(c.t)}</div>
+      <div class="row-note" style="margin-top:4px">${esc(c.d)}</div>
+    </div>`).join("")}
+  </div>
+
+  <div class="group-label">Fatores de risco</div>
+  <section class="card card-pad">
+    <p style="font-size:13.5px;line-height:1.58;color:var(--ink)">${esc(p.risco)}</p>
+  </section>
+
+  <p class="footnote">${esc(p.fonte)}</p>`;
+}
+
 /* ---------- diabetes ---------- */
 function tabelaDm(t, colunas, corDe) {
   const cabeca = colunas.map((c, i) =>
@@ -3847,6 +4198,10 @@ function viewEmBreve() {
 
 /* ---------- render ---------- */
 const VIEWS = {
+  "ra-idade": viewRaIdade,
+  "ra-colo": viewRaColo,
+  "ra-mama": viewRaMama,
+  "ra-prostata": viewRaProstata,
   "dm-inicio": viewDmInicio,
   "dm-rastreio": viewDmRastreio,
   "dm-fluxo": viewDmFluxo,

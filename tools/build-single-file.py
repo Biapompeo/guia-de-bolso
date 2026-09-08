@@ -35,7 +35,8 @@ def data_uri(rel, mime):
 css = ler("assets/styles.css")
 dados = "\n".join(
     ler(f) for f in ("assets/prevent-betas.js", "assets/prevent.js", "assets/data.js",
-    "assets/data-diabetes.js")
+    "assets/data-diabetes.js",
+    "assets/data-rastreio.js")
 )
 app = ler("assets/app.js")
 html = ler("index.html")

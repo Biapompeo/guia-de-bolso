@@ -274,25 +274,34 @@ h1 {
   flex: none;
   font-family: var(--font-assinatura);
   font-style: italic;
-  font-size: 16px;   /* a Cormorant tem altura-x baixa e pede mais corpo */
+  font-size: 15px;   /* a Cormorant tem altura-x baixa e pede mais corpo */
   font-weight: 600;
   line-height: 1.1;
   letter-spacing: .004em;
   color: var(--ink-2);
   white-space: nowrap;
 }
+/* Com três assuntos os rótulos deixaram de caber em colunas de largura igual
+   numa tela de 320 px — "Hipertensão" pedia 83 px e recebia 58. As colunas
+   passam a ter no mínimo a largura do próprio texto, e a barra rola de lado
+   quando não couber. Assim nenhum rótulo é cortado, por mais assuntos que
+   venham depois. */
 .seg-assunto {
   flex: 1 1 auto;
   min-width: 0;
-  max-width: 264px;
+  max-width: 340px;
   font-size: 12px;
+  grid-auto-columns: minmax(max-content, 1fr);
+  overflow-x: auto;
+  scrollbar-width: none;
+  scroll-snap-type: x proximity;
 }
+.seg-assunto::-webkit-scrollbar { display: none; }
 .seg-assunto button {
-  overflow: hidden;
-  text-overflow: ellipsis;
+  padding: 8px 10px;
   white-space: nowrap;
+  scroll-snap-align: center;
 }
-.seg-assunto button { padding: 8px 6px; }
 
 /* faixa cromática dos estágios, sob o cabeçalho */
 .ruler-strip {
@@ -910,6 +919,19 @@ h1 {
   margin-top: 11px;
   padding-top: 10px;
   border-top: 1px dashed var(--line);
+}
+
+/* selo de força da recomendação. Sem fundo tingido: a tinta de fundo clareia
+   o contraste no tema escuro e derrubava o selo abaixo do alvo. */
+.selo-contra {
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: .02em;
+  white-space: nowrap;
+  color: var(--danger);
+  border: 1px solid color-mix(in srgb, var(--danger) 40%, transparent);
+  border-radius: 999px;
+  padding: 3px 9px;
 }
 
 .group-label {

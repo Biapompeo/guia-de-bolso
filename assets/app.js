@@ -32,6 +32,10 @@ const ICON = {
   perfis: '<svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.4"/><path d="M4.5 20a7.5 7.5 0 0 1 15 0"/></svg>',
   emerg: '<svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 4.5 13.5H11L10 22l8.5-11.5H12L13 2z"/></svg>',
   risco: '<svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 0-9 9"/><path d="M12 12l5-4"/><circle cx="12" cy="12" r="1.4" fill="currentColor"/><path d="M19 16.5v3M19 22h.01"/></svg>',
+  idade: '<svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 19h18M6 19V9M12 19V5M18 19v-6"/></svg>',
+  colo: '<svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21c-4-3.5-6-6.5-6-10a6 6 0 0 1 12 0c0 3.5-2 6.5-6 10z"/><circle cx="12" cy="11" r="2.2"/></svg>',
+  mama: '<svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="2.4"/></svg>',
+  prostata: '<svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.6-3.6M8.2 8.2l5.6 5.6M13.8 8.2l-5.6 5.6"/></svg>',
   rastreio: '<svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m20 20-4.7-4.7M8 10.5h5M10.5 8v5"/></svg>',
   fluxo: '<svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="2.5" width="8" height="5" rx="1.4"/><rect x="2.5" y="16.5" width="8" height="5" rx="1.4"/><rect x="13.5" y="16.5" width="8" height="5" rx="1.4"/><path d="M12 7.5v4M6.5 16.5v-2.5h11v2.5"/></svg>',
   rim: '<svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3.5c-3 0-5 2.4-5 6 0 4.6 2.6 8.4 5.4 10.6 1 .8 2.3.1 2.3-1.2V9.6c0-3.4-1.3-6.1-2.7-6.1z"/><path d="M15 3.5c3 0 5 2.4 5 6 0 4.6-2.6 8.4-5.4 10.6-1 .8-2.3.1-2.3-1.2"/></svg>',
@@ -67,6 +71,20 @@ const ASSUNTOS = {
       { id: "combos", rot: "Combinar", icon: ICON.combos },
       { id: "perfis", rot: "Paciente", icon: ICON.perfis },
       { id: "emerg", rot: "EV", icon: ICON.emerg },
+    ],
+  },
+  rast: {
+    rot: "Rastreio",
+    titulo: "Rastreamento",
+    fonte: "Ministério da Saúde · INCA",
+    sub: "O que rastrear em cada faixa etária, com que exame, e o que fazer com cada resultado.",
+    rodape: "Conteúdo de estudo baseado nas Diretrizes Brasileiras para o Rastreamento do Câncer de Colo do Útero (Portaria Conjunta SAES/SECTICS nº 13, de 29 de julho de 2025), nas Diretrizes para a Detecção Precoce do Câncer de Mama no Brasil (INCA, 2017) e na Nota Técnica nº 9/2023 da SAPS/MS sobre câncer de próstata. Sempre confira antes de indicar.",
+    regua: false,
+    abas: [
+      { id: "ra-idade", rot: "Por idade", icon: ICON.idade },
+      { id: "ra-colo", rot: "Colo", icon: ICON.colo },
+      { id: "ra-mama", rot: "Mama", icon: ICON.mama },
+      { id: "ra-prostata", rot: "Próstata", icon: ICON.prostata },
     ],
   },
   dm: {
@@ -536,6 +554,171 @@ function viewRisco() {
 }
 
 
+/* ---------- rastreamento ---------- */
+function viewRaIdade() {
+  return `
+  <p class="tab-intro">O que começa em cada idade, e de quanto em quanto tempo repetir quando o resultado é normal. O detalhe de cada rastreio está nas abas ao lado; o do diabetes fica no assunto Diabetes.</p>
+
+  <div class="group-label">Quando começa</div>
+  <div class="stack">
+    ${RAST_IDADE.map((f) => `<article class="combo acc" style="${acento(f.cor)}">
+      <div class="result-top" style="align-items:baseline">
+        <div>
+          <div class="result-label">A partir de</div>
+          <div class="result-value" style="font-size:30px">${esc(f.idade)}</div>
+        </div>
+        <span class="result-band">${esc(f.intervalo)}</span>
+      </div>
+      <dl class="result-secondary" style="border-top-color:var(--c-edge)">
+        <div><dt>Quem</dt><dd style="font-size:14px">${esc(f.quem)}</dd></div>
+        <div><dt>Exame</dt><dd style="font-size:14px">${esc(f.oque)}</dd></div>
+      </dl>
+      <p class="combo-txt">${esc(f.nota)}</p>
+    </article>`).join("")}
+  </div>
+
+  <div class="group-label">Quando parar</div>
+  <div class="card rows">
+    ${RAST_ENCERRAR.map((e) => `<div class="row acc" style="${acento(e.cor)};border-left:3px solid var(--c)">
+      <div class="result-top" style="align-items:baseline">
+        <div class="row-title" style="flex:1 1 auto">${esc(e.o)}</div>
+        <span class="stage-range">${esc(e.quando)}</span>
+      </div>
+      <div class="row-note" style="margin-top:5px">${esc(e.d)}</div>
+    </div>`).join("")}
+  </div>`;
+}
+
+function viewRaColo() {
+  const c = RAST_COLO;
+  return `
+  <div class="notice">
+    <div class="eyebrow">O que mudou em 2025</div>
+    <p>${esc(c.virada)}</p>
+  </div>
+
+  <div class="group-label">Quem rastrear</div>
+  <div class="card rows">
+    ${c.quem.map((q) => `<div class="row acc" style="${acento(q.cor)};border-left:3px solid var(--c)">
+      <div class="row-title">${esc(q.t)}</div>
+      <div class="row-note" style="margin-top:4px">${esc(q.d)}</div>
+    </div>`).join("")}
+  </div>
+
+  <div class="group-label">Conduta pelo resultado</div>
+  <div class="stack">
+    ${c.conduta.map((x) => `<article class="combo acc" style="${acento(x.cor)}">
+      <div class="result-top" style="align-items:center">
+        <h3 class="combo-title" style="flex:1 1 auto">${esc(x.res)}</h3>
+        <span class="result-band">${esc(x.acao)}</span>
+      </div>
+      <p class="combo-txt">${esc(x.d)}</p>
+    </article>`).join("")}
+  </div>
+
+  <div class="group-label">Depois da triagem</div>
+  <div class="card rows">
+    ${c.apos.map((a) => `<div class="row">
+      <div class="row-title">${esc(a.t)}</div>
+      <div class="row-note" style="margin-top:4px">${esc(a.d)}</div>
+    </div>`).join("")}
+  </div>
+
+  <div class="group-label">Situações particulares</div>
+  <div class="card rows">
+    ${c.especiais.map((e) => `<div class="row acc" style="${acento(e.cor)};border-left:3px solid var(--c)">
+      <div class="row-title">${esc(e.t)}</div>
+      <div class="row-note" style="margin-top:4px">${esc(e.d)}</div>
+    </div>`).join("")}
+  </div>
+
+  <div class="group-label">Coleta</div>
+  <section class="card card-pad">
+    <div class="blk" style="margin:0"><ul>${c.coleta.map((x) => `<li>${esc(x)}</li>`).join("")}</ul></div>
+  </section>
+
+  <p class="footnote">${esc(c.fonte)}</p>`;
+}
+
+function viewRaMama() {
+  const m = RAST_MAMA;
+  return `
+  <p class="tab-intro">A mamografia é o único método que o Ministério recomenda para rastrear, e só em duas faixas de idade. Todo o resto da lista é recomendação contrária.</p>
+
+  <div class="group-label">Mamografia, por faixa etária</div>
+  <div class="card rows">
+    ${m.faixas.map((f) => `<div class="row acc" style="${acento(f.cor)};border-left:3px solid var(--c)">
+      <div class="result-top" style="align-items:baseline">
+        <div class="row-title" style="flex:1 1 auto">${esc(f.idade)}</div>
+        <span class="result-band">${f.dir === "favor" ? "Rastrear" : "Não rastrear"}</span>
+      </div>
+      <div class="row-note" style="margin-top:5px">Recomendação ${f.dir === "favor" ? "favorável" : "contrária"} ${esc(f.forca)} — ${esc(f.d)}</div>
+    </div>`).join("")}
+  </div>
+  <div class="result-action" style="margin-top:10px">${esc(m.periodicidade)}</div>
+
+  <div class="group-label">Recomendação contrária</div>
+  <div class="card rows">
+    ${m.contra.map((x) => `<div class="row">
+      <div class="result-top" style="align-items:baseline">
+        <div class="row-title" style="flex:1 1 auto">${esc(x.o)}</div>
+        <span class="selo-contra">${esc(x.forca)}</span>
+      </div>
+      <div class="row-note" style="margin-top:4px">${esc(x.d)}</div>
+    </div>`).join("")}
+  </div>
+
+  <section class="card card-pad" style="margin-top:10px">
+    <div class="eyebrow">${esc(m.semRec.o)}</div>
+    <p style="font-size:13.5px;line-height:1.58;color:var(--ink);margin-top:8px">${esc(m.semRec.d)}</p>
+  </section>
+
+  <div class="group-label">Referência urgente</div>
+  <section class="card card-pad">
+    <p class="helper-note" style="margin:0 0 12px">Sinais e sintomas que o Ministério recomenda encaminhar com urgência para serviço de diagnóstico mamário.</p>
+    <div class="blk is-danger" style="margin:0"><ul>${m.sinais.map((x) => `<li>${esc(x)}</li>`).join("")}</ul></div>
+  </section>
+
+  <div class="group-label">Diagnóstico precoce</div>
+  <div class="card rows">
+    ${m.precoce.map((x) => `<div class="row">
+      <div class="row-title">${esc(x.t)}</div>
+      <div class="row-note" style="margin-top:4px">${esc(x.d)}</div>
+    </div>`).join("")}
+  </div>
+
+  <p class="footnote">${esc(m.fonte)}</p>`;
+}
+
+function viewRaProstata() {
+  const p = RAST_PROSTATA;
+  return `
+  <div class="notice">
+    <div class="eyebrow">Posição do Ministério da Saúde</div>
+    <p style="font-size:15px;font-weight:600;color:var(--ink)">${esc(p.posicao)}</p>
+  </div>
+
+  <div class="group-label">Por quê</div>
+  <section class="card card-pad">
+    <div class="blk" style="margin:0"><ul>${p.porque.map((x) => `<li>${esc(x)}</li>`).join("")}</ul></div>
+  </section>
+
+  <div class="group-label">O que fazer então</div>
+  <div class="card rows">
+    ${p.conduta.map((c) => `<div class="row">
+      <div class="row-title">${esc(c.t)}</div>
+      <div class="row-note" style="margin-top:4px">${esc(c.d)}</div>
+    </div>`).join("")}
+  </div>
+
+  <div class="group-label">Fatores de risco</div>
+  <section class="card card-pad">
+    <p style="font-size:13.5px;line-height:1.58;color:var(--ink)">${esc(p.risco)}</p>
+  </section>
+
+  <p class="footnote">${esc(p.fonte)}</p>`;
+}
+
 /* ---------- diabetes ---------- */
 function tabelaDm(t, colunas, corDe) {
   const cabeca = colunas.map((c, i) =>
@@ -696,6 +879,10 @@ function viewEmBreve() {
 
 /* ---------- render ---------- */
 const VIEWS = {
+  "ra-idade": viewRaIdade,
+  "ra-colo": viewRaColo,
+  "ra-mama": viewRaMama,
+  "ra-prostata": viewRaProstata,
   "dm-inicio": viewDmInicio,
   "dm-rastreio": viewDmRastreio,
   "dm-fluxo": viewDmFluxo,

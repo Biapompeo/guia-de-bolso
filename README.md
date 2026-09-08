@@ -8,6 +8,8 @@ assunto.
   Arterial 2025** (SBC, SBH e SBN).
 - **Diabete melito tipo 2** — pelo **PCDT do Ministério da Saúde**
   (Portaria SCTIE/MS nº 13, de 21 de fevereiro de 2026).
+- **Rastreamento** — colo do útero, mama e próstata, pelas diretrizes e notas
+  técnicas do Ministério da Saúde e do INCA.
 
 Feito para o celular: instala na tela de início, abre em tela cheia e
 **funciona sem internet** depois da primeira visita.
@@ -54,6 +56,33 @@ aparecem — o PCDT é explícito quanto a isso.
 > **homens a partir de 55 anos**; a nota (g) do fluxograma da Figura 2 diz
 > **65**. O app segue o texto normativo, que traz 55 duas vezes, e registra
 > a divergência na própria classe.
+
+### Rastreamento
+
+| Aba | Conteúdo |
+| --- | --- |
+| **Por idade** | O que começa em cada idade, com que exame e em que intervalo, atravessando as condições — e quando parar de rastrear cada uma |
+| **Colo** | A virada de 2025 para o teste de DNA-HPV, quem rastrear, a conduta por resultado, o que fazer depois da triagem, e sete situações particulares |
+| **Mama** | Mamografia faixa a faixa com a direção e a força de cada recomendação, o que o Ministério recomenda contra, os dez sinais de referência urgente |
+| **Próstata** | A posição contra o rastreamento populacional, por quê, e o que fazer no lugar |
+
+Fontes, todas do Ministério da Saúde:
+
+- **Colo do útero** — Diretrizes Brasileiras para o Rastreamento do Câncer de
+  Colo do Útero, Parte I. Portaria Conjunta SAES/SECTICS nº 13, de 29 de
+  julho de 2025. É a virada para teste molecular: o exame primário deixa de
+  ser a citologia.
+- **Mama** — Sumário Executivo das Diretrizes para a Detecção Precoce do
+  Câncer de Mama no Brasil, INCA, 2017.
+- **Próstata** — Nota Técnica nº 9/2023-COSAH/CGACI/DGCI/SAPS/MS.
+
+O rastreamento do DM2 fica no assunto Diabetes, aba Rastrear, porque vem do
+PCDT do DM2. A aba Por idade o inclui e aponta para lá.
+
+> Uma sutileza que vale preservar: para o **exame clínico das mamas** a
+> diretriz registra **ausência de recomendação**, não uma recomendação
+> contrária. São coisas diferentes — a primeira diz que o equilíbrio é
+> incerto. O app mostra os dois casos separados.
 
 ## Acrescentar um assunto
 
