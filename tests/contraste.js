@@ -107,7 +107,7 @@ const AUDIT = (exigencia) => `(() => {
     const todas = [];
     const ROTEIRO = [
       ['has', ['inicio','risco','classes','combos','perfis','emerg']],
-      ['dm',  ['dm-inicio','dm-fluxo','dm-classes','dm-rim','dm-hipo']],
+      ['dm',  ['dm-inicio','dm-rastreio','dm-fluxo','dm-classes','dm-rim','dm-hipo']],
     ];
     for (const [assunto, abas] of ROTEIRO) for (const aba of abas) {
       await p.goto(`${BASE}/?assunto=${assunto}&aba=${aba}`, { waitUntil:'networkidle' });

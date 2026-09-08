@@ -34,6 +34,7 @@ lembrado entre sessões e versão para impressão.
 | Aba | Conteúdo |
 | --- | --- |
 | **Início** | Critérios diagnósticos e metas glicêmicas por população, com a definição de idoso saudável, comprometido e muito comprometido |
+| **Rastrear** | Quem rastrear e a partir de que idade, os 15 fatores de risco, o exame preconizado e de quanto em quanto tempo repetir conforme o resultado |
 | **Fluxo** | O fluxograma do PCDT: onde começa, o atalho para insulina, o escalonamento em quatro degraus e o ritmo de reavaliação |
 | **Classes** | Metformina, sulfonilureias, dapagliflozina e as insulinas basal e bolus — mesma estrutura e mesma busca das classes de hipertensão |
 | **Rim** | Estratégia conforme a faixa de TFG, do Quadro 11 |
@@ -43,6 +44,11 @@ O recorte é o do SUS. Acarbose, inibidores de DPP-4, agonistas de GLP-1,
 meglitinidas e tiazolidinedionas não estão incorporados e por isso não
 aparecem — o PCDT é explícito quanto a isso.
 
+> **Duas divergências dentro do próprio PCDT.** A faixa de pré-diabetes
+> aparece como glicemia de jejum entre 101 e 125 mg/dL na seção de
+> rastreamento (4) e entre 100 e 125 no quadro diagnóstico (Quadro 4). O app
+> mostra as duas leituras na aba Rastrear em vez de escolher em silêncio.
+>
 > **Divergência dentro do próprio PCDT.** Para a elegibilidade à
 > dapagliflozina, os Critérios de Inclusão (seção 6) e a seção 8.3.3 dizem
 > **homens a partir de 55 anos**; a nota (g) do fluxograma da Figura 2 diz

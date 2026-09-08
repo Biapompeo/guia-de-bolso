@@ -32,6 +32,7 @@ const ICON = {
   perfis: '<svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.4"/><path d="M4.5 20a7.5 7.5 0 0 1 15 0"/></svg>',
   emerg: '<svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 4.5 13.5H11L10 22l8.5-11.5H12L13 2z"/></svg>',
   risco: '<svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 0-9 9"/><path d="M12 12l5-4"/><circle cx="12" cy="12" r="1.4" fill="currentColor"/><path d="M19 16.5v3M19 22h.01"/></svg>',
+  rastreio: '<svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m20 20-4.7-4.7M8 10.5h5M10.5 8v5"/></svg>',
   fluxo: '<svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="2.5" width="8" height="5" rx="1.4"/><rect x="2.5" y="16.5" width="8" height="5" rx="1.4"/><rect x="13.5" y="16.5" width="8" height="5" rx="1.4"/><path d="M12 7.5v4M6.5 16.5v-2.5h11v2.5"/></svg>',
   rim: '<svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3.5c-3 0-5 2.4-5 6 0 4.6 2.6 8.4 5.4 10.6 1 .8 2.3.1 2.3-1.2V9.6c0-3.4-1.3-6.1-2.7-6.1z"/><path d="M15 3.5c3 0 5 2.4 5 6 0 4.6-2.6 8.4-5.4 10.6-1 .8-2.3.1-2.3-1.2"/></svg>',
   hipo: '<svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18M4.5 7.5l15 9M19.5 7.5l-15 9"/></svg>',
@@ -77,6 +78,7 @@ const ASSUNTOS = {
     regua: false,
     abas: [
       { id: "dm-inicio", rot: "Início", icon: ICON.inicio },
+      { id: "dm-rastreio", rot: "Rastrear", icon: ICON.rastreio },
       { id: "dm-fluxo", rot: "Fluxo", icon: ICON.fluxo },
       { id: "dm-classes", rot: "Classes", icon: ICON.classes },
       { id: "dm-rim", rot: "Rim", icon: ICON.rim },
@@ -574,6 +576,65 @@ function viewDmInicio() {
   </section>`;
 }
 
+function viewDmRastreio() {
+  const r = DM_RASTREIO;
+  return `
+  <p class="tab-intro">${esc(r.intro)}</p>
+
+  <div class="group-label">Quem rastrear</div>
+  <div class="card rows">
+    ${r.quem.map((q) => `<div class="row acc" style="${acento(q.cor)};border-left:3px solid var(--c)">
+      <div class="row-title">${esc(q.t)}</div>
+      <div class="row-note" style="margin-top:4px">${esc(q.d)}</div>
+    </div>`).join("")}
+  </div>
+
+  <div class="group-label">Fatores de risco</div>
+  <section class="card card-pad">
+    <p class="helper-note" style="margin:0 0 12px">Um só destes, com sobrepeso ou obesidade, já indica rastrear em qualquer idade.</p>
+    <div class="blk" style="margin:0">
+      <ul>${r.fatores.map((f) => `<li>${esc(f)}</li>`).join("")}</ul>
+    </div>
+  </section>
+
+  <div class="group-label">Com que exame</div>
+  <section class="card card-pad">
+    <p style="font-size:13.5px;line-height:1.58;color:var(--ink)">${esc(r.como.preconizado)}</p>
+    <p style="font-size:13.5px;line-height:1.58;color:var(--ink);margin-top:10px">${esc(r.como.confirmacao)}</p>
+    ${r.como.ressalvas.map((x) => `<div class="thr" style="grid-template-columns:auto minmax(0,1fr)">
+      <span class="thr-pa" style="min-width:60px">${esc(x.t)}</span>
+      <span class="thr-txt">${esc(x.d)}</span>
+    </div>`).join("")}
+  </section>
+
+  <div class="group-label">Quando repetir</div>
+  <div class="stack">
+    ${r.seguimento.map((x) => `<article class="combo acc" style="${acento(x.cor)}">
+      <div class="result-top" style="align-items:center">
+        <h3 class="combo-title" style="flex:1 1 auto">${esc(x.res)}</h3>
+        <span class="result-band">${esc(x.quando)}</span>
+      </div>
+      <p class="combo-txt">${esc(x.d)}</p>
+    </article>`).join("")}
+  </div>
+
+  <div class="group-label">Estratificação de risco</div>
+  <section class="card card-pad">
+    <div class="eyebrow">${esc(r.findrisc.t)}</div>
+    <p style="font-size:13.5px;line-height:1.58;color:var(--ink);margin-top:8px">${esc(r.findrisc.d)}</p>
+    <div style="margin-top:14px">
+      ${r.findrisc.faixas.map((f) => `<div class="stage acc" style="${acento(f.cor)}">
+        <span class="stage-dot"></span>
+        <div class="stage-head">
+          <span class="stage-name">${esc(f.rot)}</span>
+          <span class="stage-range">${esc(f.v)}</span>
+        </div>
+      </div>`).join("")}
+    </div>
+    <p class="footnote">${esc(r.findrisc.nota)}</p>
+  </section>`;
+}
+
 function viewDmFluxo() {
   return `<p class="tab-intro">Fluxograma de tratamento do PCDT para adultos com DM2. O que decide o ponto de partida é o tempo desde o diagnóstico e a presença de fator de risco.</p>
   ${DM_FLUXO.map((b) => `<div class="group-label acc" style="${acento(b.cor)}">${esc(b.passo)}</div>
@@ -636,6 +697,7 @@ function viewEmBreve() {
 /* ---------- render ---------- */
 const VIEWS = {
   "dm-inicio": viewDmInicio,
+  "dm-rastreio": viewDmRastreio,
   "dm-fluxo": viewDmFluxo,
   "dm-classes": viewDmClasses,
   "dm-rim": viewDmRim,

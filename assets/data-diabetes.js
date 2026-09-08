@@ -267,3 +267,62 @@ const DM_HIPO = {
   ],
   nota: "Alimentos com gordura retardam a resposta glicêmica. Controlar a quantidade de carboidrato evita o pico de hiperglicemia depois. Para prevenir hipoglicemia noturna, um lanche antes de dormir com carboidrato, proteína e gordura — um copo de leite, por exemplo.",
 };
+
+/* Rastreamento — PCDT, seção 4. Quem rastrear, com que exame, e de quanto
+   em quanto tempo repetir conforme o resultado. */
+const DM_RASTREIO = {
+  intro: "Rastrear é procurar o DM2 ainda assintomático, quando a intervenção precoce ainda muda o desfecho. Quem conduz é a equipe multiprofissional responsável pelo acompanhamento longitudinal — porque o rastreio só vale se o resultado positivo virar confirmação, tratamento e seguimento.",
+
+  quem: [
+    { t: "A partir dos 35 anos", d: "Todo indivíduo, independentemente de fator de risco.", cor: "#2E7D9A" },
+    { t: "Qualquer idade, com sobrepeso ou obesidade", d: "Desde que haja um ou mais dos fatores de risco ao lado.", cor: "#B8871B" },
+    { t: "Gestantes, a partir da 24ª semana", d: "Todas.", cor: "#9E3A68" },
+    { t: "Independentemente de idade", d: "Pessoas vivendo com HIV/aids, com fibrose cística ou submetidas a transplante de órgãos.", cor: "#7A56A6" },
+  ],
+
+  fatores: [
+    "Parente de primeiro grau com diabetes",
+    "Histórico de doença cardiovascular",
+    "Estilo de vida sedentário",
+    "Dislipidemia: HDL < 35 mg/dL ou triglicerídeos > 250 mg/dL",
+    "Síndrome do ovário policístico",
+    "Acantose nigricans",
+    "Doença hepática esteatótica",
+    "Hipertensão arterial sistêmica",
+    "Pré-diabetes em exame prévio",
+    "Diabete melito gestacional prévio ou parto de bebê com mais de 4 kg",
+    "Terapia antipsicótica",
+    "Apneia obstrutiva do sono",
+    "Privação crônica do sono",
+    "Trabalho em turno noturno",
+    "FINDRISC alto ou muito alto",
+  ],
+
+  como: {
+    preconizado: "Glicemia de jejum é o método preconizado, podendo incluir a HbA1c conforme a disponibilidade local. Jejum de 8 a 12 horas; abaixo de 100 mg/dL é normal.",
+    confirmacao: "Para confirmar, glicemia de jejum, HbA1c ou TTGO.",
+    ressalvas: [
+      { t: "TTGO", d: "75 g de glicose, com medidas em 0 e 120 minutos. Não é o método preferencial pelo tempo e pelo desconforto — fica reservado a situações específicas, como fibrose cística." },
+      { t: "HbA1c", d: "Recomendada como preferencial na maioria das situações, mas é onerosa e não considera a variabilidade individual de glicação proteica." },
+    ],
+  },
+
+  seguimento: [
+    { res: "Glicemia de jejum normal", cor: "#2E8B6F", quando: "A cada 3 anos", d: "Repetir o rastreamento." },
+    { res: "Pré-diabetes", cor: "#C9A227", quando: "Anual", d: "Orientar mudanças nos modos de vida e reavaliar. O PCDT descreve esta faixa como jejum entre 101 e 125 mg/dL na seção de rastreamento, e entre 100 e 125 no quadro diagnóstico." },
+    { res: "Três ou mais fatores de risco, com exames normais", cor: "#D97A1F", quando: "Anual", d: "Reavaliar mesmo sem alteração laboratorial." },
+  ],
+
+  findrisc: {
+    t: "FINDRISC",
+    d: "O PCDT sugere o Finnish Diabetes Risk Score para estratificar quem tem mais chance de desenvolver DM2. Vai até 26 pontos e considera idade, IMC, circunferência abdominal, hábitos alimentares, atividade física, história familiar e pressão arterial.",
+    faixas: [
+      { rot: "Baixo", v: "< 7 pontos", cor: "#2E8B6F" },
+      { rot: "Levemente elevado", v: "7–11", cor: "#C9A227" },
+      { rot: "Moderado", v: "12–14", cor: "#D97A1F" },
+      { rot: "Alto", v: "15–20", cor: "#C1462F" },
+      { rot: "Muito alto", v: "> 20", cor: "#8E1F2F" },
+    ],
+    nota: "O questionário em si não está no PCDT — ele remete à Linha de Cuidado do Diabetes Mellitus tipo 2 no adulto. Por isso o app mostra as faixas, mas não calcula a pontuação: os pesos de cada item não estão na fonte que temos.",
+  },
+};
