@@ -87,8 +87,14 @@ PCDT do DM2. A aba Por idade o inclui e aponta para lá.
 ## Rodízio de Saúde Coletiva
 
 Em `rodizio/index.html` mora um segundo aplicativo, independente do guia: o
-plano do rodízio de **Saúde Coletiva e Medicina de Família** do Internato I,
-de 11 de setembro a 21 de outubro de 2026, com a prova no último dia.
+plano do rodízio de **Saúde Coletiva e Medicina de Família** do Internato I.
+
+O calendário vem do plano de ensino: oito semanas, de **31 de agosto a 23 de
+outubro de 2026**, com feriado em 7 de setembro e 12 de outubro, **prova em
+21 de outubro**, vista de prova no dia 22 e encerramento no dia 23. Feriado
+não tem UBS nem aula e rende cinco blocos de estudo, como a sexta; a tarde de
+quinta aparece como descanso semanal, que é o que o plano reserva. A aba
+Semana traz o quadro da semana padrão para consulta.
 
 | Aba | Conteúdo |
 | --- | --- |
@@ -112,6 +118,9 @@ compromissos que não são nem plantão nem estudo, como um exame em jejum.
 escala["2026-09-14"]       = {turno:"tarde", com:"…", outras:"…"}
 compromissos["2026-09-15"] = [{h:"manhã", txt:"…", curto:"…"}]
 ```
+
+O turno é `manha`, `tarde`, `aula` — aula teórica na UNIVAG, que o plano
+prevê nas manhãs de terça e quarta — ou `folga`, dia sem UBS.
 
 Nos dias que a escala define, o turno já vem decidido e a agenda do dia sai em
 ordem — manhã livre, academia, UBS. Nos outros, o seletor de manhã ou tarde

@@ -301,6 +301,19 @@ table.ex td.s{ text-align: right; color: var(--apagado); white-space: nowrap; fo
 .tirar{ flex: 0 0 auto; border: none; background: none; color: var(--apagado);
         font-size: 20px; line-height: 1; padding: 0 2px }
 
+/* ---------- semana padrão ---------- */
+table.padrao{ width: 100%; border-collapse: collapse; font-size: 13px }
+table.padrao th, table.padrao td{
+  padding: 8px 10px; border-bottom: 1px solid var(--linha-fina); text-align: left;
+  vertical-align: top; color: var(--tinta-2);
+}
+table.padrao tr:first-child th{
+  font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: var(--apagado);
+  font-weight: 600;
+}
+table.padrao th.d{ width: 5.5em; font-weight: 600; color: var(--tinta) }
+table.padrao tr:last-child th, table.padrao tr:last-child td{ border-bottom: none }
+
 /* ---------- ajustar o dia ---------- */
 .btn-ajustar{
   margin: -6px 0 16px; padding: 8px 14px; border-radius: 999px; font-size: 12.5px;
@@ -387,7 +400,24 @@ table.ex td.s{ text-align: right; color: var(--apagado); white-space: nowrap; fo
 
 <script>
 /* ------------------------------------------------------------- constantes */
-const START="2026-09-11", LAST="2026-10-20", PROVA="2026-10-21", KEY="rodizio-sc-v1";
+/* Calendário do plano de ensino: 8 semanas, de 31 de agosto a 23 de outubro.
+   LAST é o último dia que recebe tarefa de estudo; depois dele vêm a prova,
+   a vista de prova e o último dia do rodízio. */
+const START="2026-08-31", LAST="2026-10-20", PROVA="2026-10-21",
+      VISTA="2026-10-22", FIM="2026-10-23", KEY="rodizio-sc-v1";
+
+/* Feriados do cronograma: sem UBS e sem aula, mas o dia continua seu. */
+const FERIADOS={"2026-09-07":"Independência","2026-10-12":"Nossa Senhora Aparecida"};
+
+/* A semana padrão do plano, para consulta — o que vale mesmo é a escala do
+   grupo, que ela ajusta dia a dia. */
+const SEMANA_PADRAO=[
+  ["segunda","UBS","UBS"],
+  ["terça","aula teórica ou UBS","UBS"],
+  ["quarta","aula teórica ou UBS","UBS"],
+  ["quinta","UBS","descanso semanal"],
+  ["sexta","UBS","UBS"]
+];
 
 const EIXOS={
   vig1:{n:"Vigilância I",c:"#14615A"}, vig2:{n:"Vigilância II",c:"#2C5F86"},
@@ -527,12 +557,13 @@ function range(a,b){const o=[];let c=a;while(c<=b){o.push(c);c=addDays(c,1)}retu
 const label=s=>{const d=toDate(s);return `${DIAS[d.getDay()]}, ${d.getDate()} de ${MES[d.getMonth()]}`};
 const curto=s=>{const d=toDate(s);return `${p2(d.getDate())}/${p2(d.getMonth()+1)}`};
 const extenso=s=>{const d=toDate(s);return `${d.getDate()} de ${MES_EXT[d.getMonth()]}`};
-function hoje(){const t=toStr(new Date());return t<START?START:(t>PROVA?PROVA:t)}
+function hoje(){const t=toStr(new Date());return t<START?START:(t>FIM?FIM:t)}
 function tipoDia(d){const w=toDate(d).getDay();return w===0?"domingo":w===6?"sabado":w===5?"sexta":"ubs"}
 function slotsDe(d,m){
   const e=ESCALA[d];
   /* a escala pode dizer só com quem é o dia, sem mexer no turno */
-  if(e&&e.turno) return e.turno==="folga"?SLOTS.sexta:SLOTS[e.turno];
+  if(e&&e.turno) return e.turno==="folga"?SLOTS.sexta:SLOTS[e.turno==="aula"?"manha":e.turno];
+  if(FERIADOS[d]) return SLOTS.sexta;          /* feriado rende como a sexta */
   const t=tipoDia(d);
   return t==="ubs"?SLOTS[m==="tarde"?"tarde":"manha"]:SLOTS[t];
 }
@@ -569,7 +600,9 @@ let tempoFalhou=false;
 
 /* --------------------------------------------------------------- plano */
 function montarPlano(){
-  const dias=range(START,LAST), T=[]; let id=1;
+  /* plano novo começa hoje: reconstruir no meio do rodízio não deve encher
+     de tarefa vencida os dias que já passaram */
+  const dias=range(hoje()>START?hoje():START,LAST), T=[]; let id=1;
   dias.forEach(d=>{
     const t=tipoDia(d);
     if(t==="ubs"||t==="sexta"){
@@ -581,7 +614,8 @@ function montarPlano(){
   const cap={ubs:2,sexta:3,sabado:1,domingo:0}; let i=0;
   for(const d of dias){
     if(i>=CONTEUDO.length) break;
-    const vagas=ESCALA[d]&&ESCALA[d].turno==="folga"?cap.sexta:cap[tipoDia(d)];
+    const livre=(ESCALA[d]&&ESCALA[d].turno==="folga")||FERIADOS[d];
+    const vagas=livre?cap.sexta:cap[tipoDia(d)];
     for(let k=0;k<vagas&&i<CONTEUDO.length;k++){
       const[e,t]=CONTEUDO[i++];
       T.push({id:id++,tipo:"eixo",rank:1,data:d,eixo:e,titulo:t,status:"pendente"});
@@ -660,9 +694,11 @@ function render(){
   arco.style.strokeDashoffset=C*(1-pc/100);
   arco.style.strokeLinecap=pc>0?"round":"butt";
   document.getElementById("rosca").setAttribute("aria-label",pc+" por cento do plano concluído");
-  const faltam=range(hoje(),PROVA).length-1;
-  document.getElementById("contagem").textContent=faltam>0
-    ? faltam+(faltam>1?" dias até a prova":" dia até a prova") : "Dia da prova";
+  const hj=hoje(), faltam=range(hj,PROVA).length-1;
+  document.getElementById("contagem").textContent=
+    hj>PROVA ? (hj===VISTA?"Vista de prova":"Último dia do rodízio")
+    : faltam>0 ? faltam+(faltam>1?" dias até a prova":" dia até a prova")
+    : "Dia da prova";
   document.getElementById("capa-sub").textContent=
     `Prova em ${extenso(PROVA)} · ${ok} de ${tot} tarefas feitas`;
   document.getElementById("recado").innerHTML=recado
@@ -707,7 +743,7 @@ function viewDia(){
       <p class="dia-rot">${label(d)}</p>
       ${d===hoje()?'<p class="dia-hoje">hoje</p>':""}
     </div>
-    <button class="seta" onclick="mover(1)" aria-label="Próximo dia" ${d>=PROVA?"disabled":""}>
+    <button class="seta" onclick="mover(1)" aria-label="Próximo dia" ${d>=FIM?"disabled":""}>
       <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8"
            stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 5.5L16 12l-6.5 6.5"/></svg>
     </button></div>${faixaTempo(d)}`;
@@ -715,19 +751,29 @@ function viewDia(){
   if(d===PROVA){
     return h+`<div class="tarefa" style="--c:var(--perigo)">
       <div class="t-topo"><span class="t-hora">Prova de Saúde Coletiva</span></div>
-      <p class="t-tit">Antes: 30 minutos só na folha de última hora. Depois, vista de prova —
-      anote os temas que caíram.</p></div>`;
+      <p class="t-tit">Vale 60% da média. Antes: 30 minutos só na folha de última hora.</p></div>`;
+  }
+  if(d===VISTA){
+    return h+`<div class="tarefa" style="--c:var(--alerta)">
+      <div class="t-topo"><span class="t-hora">Vista de prova</span></div>
+      <p class="t-tit">Anote o que caiu e onde errou — e confira a nota questão a questão.</p></div>`;
+  }
+  if(d===FIM){
+    return h+`<div class="tarefa" style="--c:var(--verde)">
+      <div class="t-topo"><span class="t-hora">Último dia do rodízio</span></div>
+      <p class="t-tit">Fecha a ficha de desempenho com a preceptora — são os outros 40% da
+      média.</p></div>`;
   }
 
   /* com escala o turno já está decidido; sem escala, ela escolhe no alternador */
-  const escalaDia=ESCALA[d];
-  if(t==="ubs"&&!(escalaDia&&escalaDia.turno)){
+  const escalaDia=ESCALA[d], feriado=FERIADOS[d];
+  if(t==="ubs"&&!feriado&&!(escalaDia&&escalaDia.turno)){
     h+=`<div class="turno" role="group" aria-label="Turno na UBS">
       <button aria-pressed="${modo==="manha"}" onclick="setModo('manha')">UBS de manhã</button>
       <button aria-pressed="${modo==="tarde"}" onclick="setModo('tarde')">UBS de tarde</button></div>`;
   }
 
-  const turno=(escalaDia&&escalaDia.turno)||(t==="ubs"?modo:null);
+  const turno=(escalaDia&&escalaDia.turno)||(feriado?"feriado":t==="ubs"?modo:null);
   const treino=`Academia — ${TREINOS[S.treinoAtual].n}: ${esc(TREINOS[S.treinoAtual].f)}`;
   const naUbs=esc(UBS)+(escalaDia&&escalaDia.com?" — com "+esc(escalaDia.com):"");
   const outras=escalaDia&&escalaDia.outras?esc(escalaDia.outras):"";
@@ -742,15 +788,20 @@ function viewDia(){
     if(outras) h+=linha("07h30–11h30", outras+" na UBS — sua manhã está livre");
     h+=linha("11h30–12h45", treino);
     h+=linha("13h00–17h00", naUbs);
-  }else if(turno==="manha"){
-    h+=linha("07h30–11h30", naUbs);
+  }else if(turno==="manha"||turno==="aula"){
+    h+=linha("07h30–11h30", turno==="aula"?"Aula teórica na UNIVAG":naUbs);
     h+=linha("12h30–13h45", treino);
   }else if(turno==="folga"){
     h+=linha("sem UBS", (outras?outras+" na escala — ":"")+"o dia todo é de estudo");
     h+=linha("12h00–13h30", treino);
+  }else if(turno==="feriado"){
+    h+=linha("feriado", esc(feriado)+" — sem UBS e sem aula");
+    h+=linha("12h00–13h30", treino);
   }else{
     h+=linha(t==="sexta"?"12h00–13h30":"11h30–13h00", treino);
   }
+  /* o plano de ensino reserva a tarde de quinta para descanso */
+  if(toDate(d).getDay()===4&&turno!=="tarde") h+=linha("tarde", "descanso semanal, pelo plano de ensino");
   h+=`</div>`;
   h+=painelAjuste(d,escalaDia);
 
@@ -780,8 +831,10 @@ function viewDia(){
 }
 
 function marcaEscala(d){
+  if(FERIADOS[d]) return `<span class="chip" style="--c:var(--alerta)">feriado</span>`;
   const e=ESCALA[d]; if(!e||!e.turno) return "";
-  const r=e.turno==="folga"?"sem UBS":e.turno==="tarde"?"UBS à tarde":"UBS de manhã";
+  const r=e.turno==="folga"?"sem UBS":e.turno==="tarde"?"UBS à tarde"
+         :e.turno==="aula"?"aula na UNIVAG":"UBS de manhã";
   return `<span class="chip neutro">${r}</span>`;
 }
 
@@ -797,7 +850,7 @@ function painelAjuste(d,e){
     return `<button class="btn-ajustar" onclick="abrirAjuste('${d}')">ajustar este dia</button>`;
   const c=COMPROMISSOS[d]||[];
   const opc=[["","padrão do dia"],["manha","UBS de manhã"],["tarde","UBS à tarde"],
-             ["folga","sem UBS neste dia"]];
+             ["aula","aula teórica na UNIVAG"],["folga","sem UBS neste dia"]];
   return `<div class="ajuste">
     <label class="campo"><span>Turno na UBS</span>
       <select id="aj-turno">${opc.map(([v,r])=>
@@ -835,14 +888,15 @@ function painelAjuste(d,e){
 
 function viewSemana(){
   let h=`<h2 class="sec">Próximos sete dias</h2><div class="pilha">`;
-  range(diaAtivo,addDays(diaAtivo,6)).filter(d=>d<=PROVA).forEach(d=>{
+  range(diaAtivo,addDays(diaAtivo,6)).filter(d=>d<=FIM).forEach(d=>{
     const l=S.tarefas.filter(x=>x.data===d).sort((a,b)=>a.rank-b.rank||a.id-b.id);
     const pend=l.filter(x=>x.status==="pendente").length;
-    const cont=d===PROVA?"prova":pend?pend+" pendente"+(pend>1?"s":""):l.length?"tudo feito":"dia livre";
+    const cont=d===PROVA?"prova":d===VISTA?"vista de prova":d===FIM?"último dia"
+      :pend?pend+" pendente"+(pend>1?"s":""):l.length?"tudo feito":"dia livre";
     h+=`<button class="dia" onclick="abrirDia('${d}')">
       <div class="dia-topo"><span class="dia-nome">${label(d)}</span>
       ${marcaEscala(d)}${selosCompromisso(d)}
-      <span class="dia-cont ${pend||d===PROVA?"":"limpo"}">${cont}</span></div>
+      <span class="dia-cont ${pend||d>=PROVA?"":"limpo"}">${cont}</span></div>
       ${selinhoTempo(d)?`<div class="linha-item" style="padding-bottom:5px">${selinhoTempo(d)}</div>`:""}`;
     l.slice(0,4).forEach(x=>{
       h+=`<div class="linha-item ${x.status==="feita"?"risco":""}"
@@ -852,7 +906,16 @@ function viewSemana(){
     if(l.length>4) h+=`<div class="linha-item mais">+ ${l.length-4} no dia</div>`;
     h+=`</button>`;
   });
-  return h+`</div>`;
+  h+=`</div>
+  <h2 class="sec" style="margin-top:24px">A semana padrão do plano de ensino</h2>
+  <table class="padrao"><tr><td></td><th>manhã</th><th>tarde</th></tr>`;
+  SEMANA_PADRAO.forEach(([dia,m,t])=>{
+    h+=`<tr><th class="d">${dia}</th><td>${m}</td><td>${t}</td></tr>`;
+  });
+  h+=`</table>
+  <p class="nota" style="margin-top:10px">É o quadro geral do rodízio. O que vale no seu dia é a
+  escala do seu grupo — ajuste dia a dia na aba Hoje.</p>`;
+  return h;
 }
 
 function viewTreino(){
@@ -959,7 +1022,7 @@ function viewEixos(){
 }
 
 /* ------------------------------------------------------------------ ações */
-function mover(n){const d=addDays(diaAtivo,n); if(d>=START&&d<=PROVA){diaAtivo=d;render()}}
+function mover(n){const d=addDays(diaAtivo,n); if(d>=START&&d<=FIM){diaAtivo=d;render()}}
 function abrirDia(d){diaAtivo=d;aba="dia";render()}
 function setModo(m){S.modos[diaAtivo]=m;salvar();render()}
 function concluir(id){
