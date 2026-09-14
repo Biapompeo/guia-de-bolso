@@ -102,7 +102,14 @@ Semana traz o quadro da semana padrão para consulta.
 | **Semana** | Os próximos sete dias de relance, com quantas tarefas faltam em cada um |
 | **Treino** | O rodízio dos cinco treinos, com séries e repetições, e qual é o da vez |
 | **Lembretes** | O que não pode esquecer, em três prateleiras: esta semana, importantes do mês e sempre à vista |
-| **Eixos** | Quanto já saiu de cada um dos dez eixos da prova |
+| **Aulas** | As oito aulas teóricas do plano de ensino: tema, quem dá, conteúdo programático e quanto já saiu de cada eixo — com um campo para anotar o horário de cada aula quando ele sair |
+
+As aulas vêm do plano de ensino, em `AULAS`: oito temas, os professores e
+preceptores responsáveis e o conteúdo programático de cada um, com as barras
+de progresso dos eixos que aquela aula cobre. O plano não fixa data nem hora
+— diz só que as teóricas são pela manhã, nas terças e quartas que o
+cronograma marcar —, então o "quando" de cada aula é anotado dentro do app e
+fica no aparelho.
 
 Os lembretes ficam junto do resto do estado, e por isso sobrevivem a
 "recomeçar o plano". A aba acende um pontinho na barra quando há algo em

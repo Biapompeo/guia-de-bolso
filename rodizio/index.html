@@ -301,6 +301,25 @@ table.ex td.s{ text-align: right; color: var(--apagado); white-space: nowrap; fo
 .tirar{ flex: 0 0 auto; border: none; background: none; color: var(--apagado);
         font-size: 20px; line-height: 1; padding: 0 2px }
 
+/* ---------- aulas ---------- */
+.aula{
+  padding: 14px 16px; background: var(--carta); border: 1px solid var(--linha-fina);
+  border-radius: var(--r-m); box-shadow: var(--sombra-1);
+}
+.aula-tema{ margin: 0; font-family: var(--serif); font-size: 17px; font-weight: 600; line-height: 1.25 }
+.aula-quem{ margin: 4px 0 12px; font-size: 13px; color: var(--tinta-2) }
+.aula-quem .papel{ color: var(--apagado); font-size: 11.5px; letter-spacing: .04em }
+.aula-quando{
+  margin: -6px 0 12px; font-size: 12.5px; font-weight: 600; color: var(--verde);
+}
+.aula .eixo{ margin-bottom: 10px }
+.conteudo-aula{
+  margin: 12px 0 0; padding: 12px 0 0 18px; border-top: 1px solid var(--linha-fina);
+  font-size: 13.5px; line-height: 1.5; color: var(--tinta-2);
+}
+.conteudo-aula li{ margin-bottom: 6px }
+.conteudo-aula li::marker{ color: var(--apagado) }
+
 /* ---------- semana padrão ---------- */
 table.padrao{ width: 100%; border-collapse: collapse; font-size: 13px }
 table.padrao th, table.padrao td{
@@ -392,9 +411,9 @@ table.padrao tr:last-child th, table.padrao tr:last-child td{ border-bottom: non
     </span>
     Lembretes
   </button>
-  <button data-aba="eixos">
-    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h14M4 12h9M4 17h16"></path></svg>
-    Eixos
+  <button data-aba="aulas">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.5h6a2.5 2.5 0 0 1 2 2.5 2.5 2.5 0 0 1 2-2.5h6v12h-6a2.5 2.5 0 0 0-2 2 2.5 2.5 0 0 0-2-2H4z"></path><path d="M12 8v10"></path></svg>
+    Aulas
   </button>
 </nav>
 
@@ -426,6 +445,101 @@ const EIXOS={
   ido:{n:"Idoso",c:"#57499B"},         han:{n:"Hanseníase",c:"#4C7327"},
   tb:{n:"Tuberculose",c:"#0F6070"},    ind:{n:"Saúde indígena",c:"#7A5526"}
 };
+
+/* As aulas teóricas, como estão no plano de ensino: tema, quem dá e o
+   conteúdo programático de cada uma. O plano não fixa data nem hora — diz
+   só que são pela manhã, nas terças e quartas que o cronograma marcar —,
+   então o "quando" de cada aula é anotado dentro do app. */
+const AULAS=[
+ {id:"epi", tema:"Epidemiologia em Saúde", eixos:["epi"],
+  quem:[["Hugo Dias Hoffmann Santos","professor"]], conteudo:[
+  "Testes diagnósticos",
+  "Sensibilidade e especificidade",
+  "Valor preditivo positivo e negativo",
+  "Razão de verossimilhança"]},
+
+ {id:"vig", tema:"Vigilância em Saúde e Vigilância Epidemiológica", eixos:["vig1","vig2"],
+  quem:[["Lauren Cristiane Leite Ocampos","professor"]], conteudo:[
+  "Relembrando o SUS: NOBs 91, 92, 93 e 96; NOAS 2001 e 2002",
+  "Pacto pela Saúde, Portaria 399/2006 — fortalecimento das ações de vigilância em saúde",
+  "Portarias 3.252/2009, 1.378/2013 e 204/2016",
+  "Resolução 588/2017 e Portaria de Consolidação 04 de 2017",
+  "Procedimentos técnicos e avaliação de sistemas de vigilância epidemiológica",
+  "Sistema Nacional de Vigilância Epidemiológica do Brasil: origem e conceitos",
+  "Notificação compulsória e instruções para o preenchimento da ficha",
+  "Estudos, inquéritos e levantamentos epidemiológicos",
+  "Sistemas sentinela, investigação de surtos e epidemias"]},
+
+ {id:"cri", tema:"Atenção à criança e ao adolescente", eixos:["cri","ado"],
+  quem:[], nota:"Tema discutido com os preceptores na UBS", conteudo:[
+  "A primeira consulta do recém-nascido: anamnese e exame físico",
+  "Cuidados com o recém-nascido e prevenção de acidentes",
+  "Calendário de imunizações e importância do aleitamento materno exclusivo",
+  "Monitorização do crescimento e acompanhamento do desenvolvimento",
+  "Alimentação de 6 meses a 2 anos, de 2 a 6 e de 7 a 10 anos; prevenção da obesidade",
+  "Proteção e cuidados a crianças e famílias em situação de violência",
+  "Atenção ao adolescente na atenção primária: a relação com a equipe e o roteiro de avaliação na UBS",
+  "Consulta clínica: maturação sexual, avaliação nutricional, encaminhamento e caderneta",
+  "Imunizações e avaliação do cartão de vacina",
+  "Saúde sexual e reprodutiva: prevenção da gravidez e IST/Aids"]},
+
+ {id:"mul", tema:"Atenção à Mulher", eixos:["mul"],
+  quem:[["Zuleide Aparecida Felix Cabral","professor"],
+        ["Ronald Benedito dos Anjos","preceptor"]], conteudo:[
+  "Planejamento da vida sexual e reprodutiva: assistência à anticoncepção e métodos contraceptivos",
+  "Doenças benignas da mama e rastreamento do câncer de mama: detecção precoce, exame clínico e condutas pela mamografia",
+  "Doenças do colo uterino, lesões precursoras e rastreamento: detecção precoce e recomendações prévias para a coleta do colpocitológico",
+  "Pré-natal de baixo risco: primeira consulta, com anamnese, exame físico e suplementação de ácido fólico",
+  "Exames preconizados no pré-natal: interpretação e condutas",
+  "Consultas subsequentes: condutas e orientações"]},
+
+ {id:"ido", tema:"Atenção ao Idoso", eixos:["ido"],
+  quem:[["Glória Maria de Campos Gomes","professor"]], conteudo:[
+  "Atribuições dos profissionais da atenção básica no atendimento à pessoa idosa",
+  "Avaliação global: alimentação e nutrição, acuidade visual e auditiva, incontinência urinária, sexualidade e vacinação",
+  "Avaliação cognitiva e funcional, e mobilidade",
+  "Suporte familiar e social e avaliação da funcionalidade familiar",
+  "Violência intrafamiliar e maus-tratos à pessoa idosa",
+  "Assistência domiciliar à pessoa idosa na atenção básica"]},
+
+ {id:"han", tema:"Hanseníase", eixos:["han"],
+  quem:[["Tiago Rodrigues Viana","professor"]], conteudo:[
+  "Definição de caso",
+  "Aspectos epidemiológicos: agente etiológico e modo de transmissão",
+  "Aspectos clínicos: sinais e sintomas dermatológicos e neurológicos",
+  "Diagnóstico clínico e laboratorial",
+  "Tratamento quimioterápico, duração e critério de alta",
+  "Efeitos colaterais dos medicamentos e prevenção de incapacidades físicas",
+  "Vigilância epidemiológica: descoberta de casos e sistema de informação",
+  "Atribuições dos profissionais: planejamento, execução e acompanhamento do cuidado",
+  "Atividades desenvolvidas na unidade de saúde"]},
+
+ {id:"tb", tema:"Tuberculose", eixos:["tb"],
+  quem:[["Tiago Rodrigues Viana","professor"]], conteudo:[
+  "Atribuições das unidades básicas de saúde no controle da tuberculose",
+  "Etiologia, transmissão e patogênese",
+  "Diagnóstico da TB pulmonar: história clínica, exame bacteriológico e prova tuberculínica",
+  "Notificação do caso",
+  "Tratamento: princípios básicos, adesão e o papel da estratégia DOTS/TDO",
+  "Esquemas de tratamento e posologia; os casos que devem ser tratados na UBS",
+  "Acompanhamento do tratamento e reações adversas às drogas antituberculose",
+  "Prevenção: investigação e acompanhamento dos contatos, vacinação BCG e quimioprofilaxia",
+  "Sistema de informação"]},
+
+ {id:"ind", tema:"Saúde Indígena", eixos:["ind"],
+  quem:[["Daniel Ignacchiti Lacerda","professor"]], conteudo:[
+  "Histórico e institucionalização da Secretaria Especial de Saúde Indígena",
+  "O SUS e o Subsistema de Atenção à Saúde Indígena",
+  "Caracterização dos povos indígenas, distribuição geográfica e regiões de fronteira",
+  "Distritos Sanitários Especiais Indígenas e o modelo de organização do subsistema",
+  "Logística de atendimento, fluxo e sistemas de informação",
+  "Plano de contingência para contato com povos isolados e intervenção em surtos",
+  "Assistência farmacêutica e uso adequado e racional de medicamentos",
+  "Integração com a medicina tradicional e controle social",
+  "Gestão de pessoas, saneamento e edificações",
+  "Política Nacional de Atenção à Saúde dos Povos Indígenas: responsabilidades, financiamento e legislação",
+  "Avanços, situação atual e principais desafios"]}
+];
 
 const CONTEUDO=[
  ["vig1","Linha do tempo do SUS e as NOBs 91/92/93/96"],
@@ -660,12 +774,13 @@ function carregar(){
 }
 
 let S=carregar(), diaAtivo=hoje(), aba="dia", recado="";
-let rascunho="", escopoNovo="semana", ajustando=null, colando=false;
+let rascunho="", escopoNovo="semana", ajustando=null, colando=false, aulaAberta=null;
 
 /* o estado manda; onde ele ainda não tem, entra a primeira carga, se houver */
 if(!S.escala) S.escala=ESCALA; else ESCALA=S.escala;
 if(!S.compromissos) S.compromissos=COMPROMISSOS; else COMPROMISSOS=S.compromissos;
 if(!S.ubs) S.ubs=UBS; else UBS=S.ubs;
+if(!S.aulas) S.aulas={};        /* o horário de cada aula, anotado por ela */
 if(!Array.isArray(S.lembretes)) S.lembretes=(SEMENTE.lembretes||[]).slice();
 salvar();
 
@@ -710,7 +825,7 @@ function render(){
   document.getElementById("pip").hidden=
     !S.lembretes.some(x=>!x.feito&&x.escopo!=="sempre");
   painel.innerHTML={dia:viewDia,semana:viewSemana,treino:viewTreino,
-                    lembretes:viewLembretes,eixos:viewEixos}[aba]();
+                    lembretes:viewLembretes,aulas:viewAulas}[aba]();
   scrollTo({top:0});
 }
 
@@ -797,8 +912,11 @@ function viewDia(){
   }else if(turno==="feriado"){
     h+=linha("feriado", esc(feriado)+" — sem UBS e sem aula");
     h+=linha("12h00–13h30", treino);
+  }else if(t==="sexta"){
+    h+=linha("sem UBS", "sexta é dia de estudo");
+    h+=linha("12h00–13h30", treino);
   }else{
-    h+=linha(t==="sexta"?"12h00–13h30":"11h30–13h00", treino);
+    h+=linha("11h30–13h00", treino);
   }
   /* o plano de ensino reserva a tarde de quinta para descanso */
   if(toDate(d).getDay()===4&&turno!=="tarde") h+=linha("tarde", "descanso semanal, pelo plano de ensino");
@@ -978,19 +1096,52 @@ function viewLembretes(){
   return h;
 }
 
-function viewEixos(){
-  let h=`<h2 class="sec">Quanto já saiu de cada eixo</h2>`;
-  Object.entries(EIXOS).forEach(([k,e])=>{
-    const l=S.tarefas.filter(t=>t.eixo===k&&t.tipo==="eixo");
-    const ok=l.filter(t=>t.status==="feita").length;
-    const p=l.length?Math.round(ok/l.length*100):0;
-    h+=`<div class="eixo" style="--c:${e.c}">
-        <div class="eixo-topo"><span class="eixo-nome">${e.n}</span>
-        <span class="eixo-num">${ok}/${l.length}</span></div>
-        <div class="eixo-trilha"><div class="eixo-arco" style="width:${p}%"></div></div></div>`;
+function barraEixo(k){
+  const e=EIXOS[k];
+  const l=S.tarefas.filter(t=>t.eixo===k&&t.tipo==="eixo");
+  const ok=l.filter(t=>t.status==="feita").length;
+  const p=l.length?Math.round(ok/l.length*100):0;
+  return `<div class="eixo" style="--c:${e.c}">
+    <div class="eixo-topo"><span class="eixo-nome">${e.n}</span>
+    <span class="eixo-num">${ok}/${l.length}</span></div>
+    <div class="eixo-trilha"><div class="eixo-arco" style="width:${p}%"></div></div></div>`;
+}
+
+function viewAulas(){
+  let h=`<h2 class="sec">As aulas do plano de ensino</h2>
+  <p class="nota">São pela manhã, na UNIVAG, nas terças e quartas que o cronograma marcar. O plano
+  não fixa a hora de cada uma — anote a sua quando souber, no próprio cartão.</p>
+  <div class="pilha">`;
+
+  AULAS.forEach(a=>{
+    const aberta=aulaAberta===a.id;
+    const quando=(S.aulas&&S.aulas[a.id])||"";
+    h+=`<div class="aula">
+      <h3 class="aula-tema">${a.tema}</h3>
+      <p class="aula-quem">${a.quem.length
+        ? a.quem.map(([nome,papel])=>`${esc(nome)} <span class="papel">${papel}</span>`).join(" · ")
+        : `<span class="papel">${esc(a.nota||"")}</span>`}</p>
+      ${quando?`<p class="aula-quando">${esc(quando)}</p>`:""}
+      ${a.eixos.map(barraEixo).join("")}
+      <button class="btn-ajustar" style="margin:6px 0 0"
+        onclick="verAula('${a.id}')">${aberta?"fechar":"ver o conteúdo e anotar o horário"}</button>`;
+    if(aberta){
+      h+=`<ul class="conteudo-aula">${a.conteudo.map(c=>`<li>${esc(c)}</li>`).join("")}</ul>
+        <label class="campo" style="margin:14px 0 10px"><span>Quando é esta aula</span>
+          <input id="aula-quando" type="text" maxlength="60" autocomplete="off"
+                 value="${esc(quando)}" placeholder="terça, 22/09, pela manhã"></label>
+        <button class="btn-larga" onclick="salvarQuando('${a.id}')">salvar o horário</button>`;
+    }
+    h+=`</div>`;
   });
-  h+=`<section class="rodape">
-    <h2 class="sec">No celular</h2>
+  h+=`</div>
+
+  <section class="rodape">
+    <h2 class="sec">Avaliação</h2>
+    <p class="nota">Prova teórica objetiva, peso 60% da média, e ficha de desempenho individual,
+    preenchida pela preceptora toda semana, peso 40%.</p>
+
+    <h2 class="sec" style="margin-top:22px">No celular</h2>
     <p class="nota">Na tela de início, o rodízio abre com um toque. Instalado a partir do endereço
     próprio dele, abre também em tela cheia e sem precisar de internet.</p>
     ${convite?'<button class="btn-larga" onclick="instalar()">Instalar na tela de início</button>':
@@ -1056,6 +1207,12 @@ function tirarLembrete(id){
   S.lembretes=S.lembretes.filter(l=>l.id!==id); salvar(); render();
 }
 function abrirAjuste(d){ ajustando=ajustando===d?null:d; render(); }
+function verAula(id){ aulaAberta=aulaAberta===id?null:id; render(); }
+function salvarQuando(id){
+  const v=document.getElementById("aula-quando").value.trim();
+  if(v) S.aulas[id]=v; else delete S.aulas[id];
+  aulaAberta=null; recado="Horário da aula anotado."; salvar(); render();
+}
 function lerCampos(){
   const d=diaAtivo;
   const nome=document.getElementById("aj-ubs").value.trim();
@@ -1139,13 +1296,14 @@ function reiniciar(){
 
 /* -------------------------------------------------- instalar no celular */
 let convite=null;
-addEventListener("beforeinstallprompt",e=>{e.preventDefault();convite=e;if(aba==="eixos")render()});
+addEventListener("beforeinstallprompt",e=>{e.preventDefault();convite=e;if(aba==="aulas")render()});
 function instalar(){ if(!convite) return; const c=convite; convite=null; c.prompt(); render(); }
 addEventListener("appinstalled",()=>{convite=null;recado="Rodízio instalado na tela de início.";render()});
 
 /* atalho por URL, que é o que os shortcuts do manifesto usam: ?aba=treino */
 const pedida=new URLSearchParams(location.search).get("aba");
-if(["dia","semana","treino","lembretes","eixos"].includes(pedida)) aba=pedida;
+if(["dia","semana","treino","lembretes","aulas"].includes(pedida)) aba=pedida;
+if(pedida==="eixos") aba="aulas";     /* o atalho antigo continua valendo */
 
 document.querySelectorAll(".barra button").forEach(b=>{
   b.addEventListener("click",()=>{aba=b.dataset.aba;render()});
