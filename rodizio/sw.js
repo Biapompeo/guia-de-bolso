@@ -1,23 +1,16 @@
 /* =================================================================
-   Service worker — deixa o guia disponível sem internet
+   Service worker do rodízio — escopo ./rodizio/, separado do guia.
+   Guarda a página e os ícones para abrir sem internet.
    ================================================================= */
 
-const VERSAO = "v12";
-const CACHE = "anti-hipertensivos-" + VERSAO;
+const VERSAO = "v4";
+const CACHE = "rodizio-" + VERSAO;
 
 const SHELL = [
   "./",
   "./index.html",
-  "./assets/styles.css",
-  "./assets/prevent-betas.js",
-  "./assets/prevent.js",
-  "./assets/data.js",
-  "./assets/data-diabetes.js",
-  "./assets/data-rastreio.js",
-  "./assets/app.js",
   "./manifest.webmanifest",
   "./icons/favicon.svg",
-  "./icons/icon-192.png",
   "./icons/icon-512.png",
   "./icons/icon-maskable-512.png",
   "./icons/apple-touch-icon.png",
@@ -35,7 +28,7 @@ self.addEventListener("activate", (ev) => {
   ev.waitUntil(
     caches.keys()
       .then((chaves) => Promise.all(
-        chaves.filter((k) => k !== CACHE).map((k) => caches.delete(k))
+        chaves.filter((k) => k.startsWith("rodizio-") && k !== CACHE).map((k) => caches.delete(k))
       ))
       .then(() => self.clients.claim())
   );
@@ -45,24 +38,16 @@ self.addEventListener("fetch", (ev) => {
   const req = ev.request;
   if (req.method !== "GET" || new URL(req.url).origin !== location.origin) return;
 
-  /* navegação: tenta a rede, cai para o cache quando offline.
-     Só o guia se guarda como casca: as outras páginas do site
-     (./rodizio/, por exemplo) se guardam cada uma em si mesma, senão
-     uma visita a elas viraria a casca do guia e, sem internet, abriria
-     no lugar dele. */
+  /* navegação: tenta a rede, cai para a página guardada quando offline */
   if (req.mode === "navigate") {
-    const raiz = new URL("./", self.registration.scope).pathname;
-    const alvo = new URL(req.url).pathname;
-    const eGuia = alvo === raiz || alvo === raiz + "index.html";
-    const chave = eGuia ? "./index.html" : req.url;
     ev.respondWith(
       fetch(req)
         .then((res) => {
           const copia = res.clone();
-          caches.open(CACHE).then((c) => c.put(chave, copia));
+          caches.open(CACHE).then((c) => c.put("./index.html", copia));
           return res;
         })
-        .catch(() => caches.match(chave).then((r) => r || caches.match("./index.html")))
+        .catch(() => caches.match("./index.html").then((r) => r || caches.match("./")))
     );
     return;
   }

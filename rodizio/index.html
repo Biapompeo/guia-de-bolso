@@ -1,0 +1,1098 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Rodízio · Saúde Coletiva</title>
+<meta name="description" content="Plano do rodízio de Saúde Coletiva e Medicina de Família do Internato I: o dia, a semana, os treinos e o quanto já saiu de cada eixo da prova.">
+<meta name="theme-color" content="#EDE8E0">
+<meta name="color-scheme" content="light">
+<meta name="author" content="Beatriz Pompeo">
+
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="icon" href="./icons/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="./icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Rodízio">
+
+<style>
+/* =================================================================
+   Rodízio de Saúde Coletiva — folha de estilo
+   Mesmo papel quente e mesma serifada editorial do guia de bolso;
+   o acento aqui é verde-sálvia, e cada eixo tem a sua cor.
+   ================================================================= */
+
+:root{
+  color-scheme: light;
+
+  --papel:      #EDE8E0;
+  --papel-2:    #E4DED2;
+  --carta:      #FBF9F5;
+  --carta-2:    #F4F1E9;
+  --tinta:      #27221C;
+  --tinta-2:    #453F37;
+  --apagado:    #5D5852;
+  --linha:      #DFD8CB;
+  --linha-fina: #EBE5DA;
+
+  --verde:      #14615A;
+  --verde-fundo:#0E524C;
+  --verde-lavado:#E0EBE6;
+  --ok:         #2A6E57;
+  --alerta:     #8A6512;
+  --perigo:     #A32029;
+
+  --sombra-1: 0 1px 2px rgba(58,48,34,.06);
+  --sombra-2: 0 1px 2px rgba(58,48,34,.05), 0 10px 24px -16px rgba(58,48,34,.30);
+
+  --r-p: 10px;
+  --r-m: 16px;
+  --r-g: 22px;
+
+  --larg: 680px;
+  --pad: clamp(16px, 4.5vw, 24px);
+  --barra-h: calc(64px + env(safe-area-inset-bottom));
+
+  --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --serif: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, "Times New Roman", serif;
+
+  --c: var(--verde);
+}
+
+*{ box-sizing: border-box; -webkit-tap-highlight-color: transparent }
+
+body{
+  margin: 0;
+  background: var(--papel);
+  color: var(--tinta);
+  font-family: var(--sans);
+  font-size: 15px;
+  line-height: 1.5;
+  padding-bottom: calc(var(--barra-h) + 12px);
+  -webkit-font-smoothing: antialiased;
+}
+button{ font-family: inherit; font-size: inherit; color: inherit; cursor: pointer }
+:focus-visible{ outline: 2px solid var(--verde); outline-offset: 2px; border-radius: 6px }
+
+.folha{ width: 100%; max-width: var(--larg); margin: 0 auto; padding-inline: var(--pad) }
+
+/* ---------- capa ---------- */
+.capa{ padding-block: calc(18px + env(safe-area-inset-top)) 6px; display: flex; gap: 16px; align-items: center }
+.capa-txt{ flex: 1; min-width: 0 }
+.sobrescrito{
+  margin: 0; font-size: 11.5px; letter-spacing: .07em; text-transform: uppercase;
+  color: var(--apagado);
+}
+.capa h1{
+  margin: 4px 0 3px; font-family: var(--serif); font-weight: 600;
+  font-size: clamp(25px, 7vw, 31px); line-height: 1.1; text-wrap: balance;
+}
+.capa-sub{ margin: 0; font-size: 13px; color: var(--apagado) }
+
+.rosca{ position: relative; width: 74px; height: 74px; flex: 0 0 auto }
+.rosca svg{ width: 100%; height: 100%; transform: rotate(-90deg) }
+.rosca circle{ fill: none; stroke-width: 7; stroke-linecap: round }
+.rosca .trilha{ stroke: var(--papel-2) }
+.rosca .arco{ stroke: var(--verde); transition: stroke-dashoffset .5s ease }
+.rosca b{
+  position: absolute; inset: 0; display: grid; place-items: center;
+  font-family: var(--serif); font-size: 19px; font-weight: 600; font-variant-numeric: tabular-nums;
+}
+
+/* ---------- aviso ---------- */
+.aviso{
+  margin: 10px 0 0; padding: 11px 14px; display: flex; gap: 10px; align-items: flex-start;
+  background: var(--verde-lavado); border: 1px solid #C8DCD4; border-radius: var(--r-m);
+  font-size: 13px; color: #13423C; text-align: left; width: 100%;
+}
+.aviso span{ flex: 1 }
+.aviso b{ font-weight: 600; opacity: .7; font-size: 12px }
+
+/* ---------- navegação do dia ---------- */
+#painel{ padding-top: 10px }
+.dianav{ display: flex; align-items: center; gap: 10px; margin: 8px 0 14px }
+.seta{
+  width: 42px; height: 42px; flex: 0 0 auto; display: grid; place-items: center;
+  border: 1px solid var(--linha); border-radius: 50%; background: var(--carta);
+  box-shadow: var(--sombra-1); color: var(--tinta-2);
+}
+.seta:disabled{ opacity: .3; box-shadow: none; cursor: default }
+.dianav-mid{ flex: 1; text-align: center; min-width: 0 }
+.dia-rot{ margin: 0; font-family: var(--serif); font-size: 19px; line-height: 1.2 }
+.dia-hoje{
+  margin: 3px 0 0; font-size: 10.5px; letter-spacing: .08em; text-transform: uppercase;
+  color: var(--verde); font-weight: 600;
+}
+
+/* ---------- alternador manhã/tarde ---------- */
+.turno{
+  display: flex; gap: 4px; padding: 4px; margin-bottom: 16px;
+  background: var(--papel-2); border-radius: 999px;
+}
+.turno button{
+  flex: 1; padding: 9px 6px; border: none; border-radius: 999px; background: none;
+  font-size: 13.5px; color: var(--tinta-2);
+}
+.turno button[aria-pressed="true"]{
+  background: var(--carta); color: var(--verde); font-weight: 600; box-shadow: var(--sombra-1);
+}
+
+/* ---------- compromissos fixos ---------- */
+.agenda{ margin-bottom: 18px; border-left: 2px solid var(--linha); padding-left: 14px }
+.agenda div{ display: flex; gap: 12px; padding: 3px 0; font-size: 13px; color: var(--apagado) }
+.agenda .h{ min-width: 92px; font-variant-numeric: tabular-nums; color: var(--tinta-2) }
+
+/* ---------- tarefas ---------- */
+.lista{ list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 12px }
+.tarefa{
+  position: relative; padding: 14px 16px 14px 18px;
+  background: var(--carta); border: 1px solid var(--linha-fina); border-radius: var(--r-m);
+  box-shadow: var(--sombra-2); overflow: hidden;
+}
+.tarefa::before{
+  content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: var(--c);
+}
+.tarefa.feita{ background: var(--carta-2); box-shadow: none }
+.tarefa.feita::before{ opacity: .35 }
+.t-topo{ display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 5px }
+.t-hora{
+  font-size: 12.5px; font-weight: 600; font-variant-numeric: tabular-nums; color: var(--tinta-2);
+}
+.chip{
+  font-size: 10.5px; letter-spacing: .04em; padding: 2px 9px; border-radius: 999px;
+  color: var(--c); background: color-mix(in srgb, var(--c) 10%, transparent);
+}
+.chip.neutro{ color: var(--apagado); background: none; border: 1px solid var(--linha) }
+.chip.adiada{ color: var(--perigo); background: color-mix(in srgb, var(--perigo) 8%, transparent) }
+.t-tit{ margin: 0; font-size: 15.5px; line-height: 1.4; color: var(--tinta) }
+.tarefa.feita .t-tit{ color: var(--apagado); text-decoration: line-through }
+.t-acoes{ display: flex; gap: 8px; margin-top: 13px }
+.t-acoes button{
+  flex: 1; padding: 11px 8px; border-radius: var(--r-p); border: 1px solid var(--linha);
+  background: var(--carta-2); font-size: 13.5px;
+}
+.t-acoes .fazer{ background: var(--verde-fundo); border-color: var(--verde-fundo); color: #FBF9F5; font-weight: 600 }
+.t-acoes .desfazer{ background: var(--verde-lavado); border-color: #C8DCD4; color: var(--ok); font-weight: 600 }
+.t-acoes .adiar{ color: var(--apagado) }
+
+.vazio{
+  padding: 22px 18px; background: var(--carta-2); border: 1px dashed var(--linha);
+  border-radius: var(--r-m); color: var(--apagado); font-size: 13.5px;
+}
+.vazio p{ margin: 0 }
+
+/* ---------- semana ---------- */
+.sec{
+  margin: 2px 0 12px; font-size: 11.5px; letter-spacing: .07em; text-transform: uppercase;
+  color: var(--apagado); font-weight: 600;
+}
+.pilha{ display: flex; flex-direction: column; gap: 10px }
+.dia{
+  width: 100%; text-align: left; padding: 13px 15px; background: var(--carta);
+  border: 1px solid var(--linha-fina); border-radius: var(--r-m); box-shadow: var(--sombra-1);
+}
+.dia-topo{ display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline;
+           gap: 4px 10px; margin-bottom: 8px }
+.dia-nome{ font-family: var(--serif); font-size: 16px; flex: 1 0 auto }
+.dia-cont{ font-size: 11.5px; color: var(--apagado); white-space: nowrap }
+.dia-cont.limpo{ color: var(--ok) }
+.linha-item{ display: flex; align-items: center; gap: 9px; padding: 2px 0; font-size: 13px; color: var(--tinta-2) }
+.ponto{ width: 7px; height: 7px; border-radius: 50%; background: var(--c); flex: 0 0 auto }
+.linha-item.risco{ color: var(--apagado); text-decoration: line-through }
+.linha-item.mais{ color: var(--apagado); font-size: 12px; padding-left: 16px }
+
+/* ---------- treino ---------- */
+.treino{
+  padding: 15px 17px; background: var(--carta); border: 1px solid var(--linha-fina);
+  border-radius: var(--r-g); box-shadow: var(--sombra-2);
+}
+.treino h2{ margin: 0; font-family: var(--serif); font-size: 20px; font-weight: 600 }
+.treino .foco{ margin: 2px 0 0; font-size: 13px; color: var(--apagado) }
+table.ex{ width: 100%; border-collapse: collapse; margin: 14px 0 4px }
+table.ex td{ padding: 9px 0; border-top: 1px solid var(--linha-fina); font-size: 14px; vertical-align: baseline }
+table.ex tr:first-child td{ border-top: none }
+table.ex td.s{ text-align: right; color: var(--apagado); white-space: nowrap; font-variant-numeric: tabular-nums }
+
+/* ---------- eixos ---------- */
+.eixo{ margin-bottom: 16px }
+.eixo-topo{ display: flex; justify-content: space-between; align-items: baseline; gap: 10px; margin-bottom: 6px }
+.eixo-nome{ font-size: 14.5px }
+.eixo-num{ font-size: 12.5px; color: var(--apagado); font-variant-numeric: tabular-nums }
+.eixo-trilha{ height: 7px; background: var(--papel-2); border-radius: 999px; overflow: hidden }
+.eixo-arco{ height: 100%; border-radius: 999px; background: var(--c); transition: width .4s ease }
+
+.rodape{ margin-top: 26px; padding-top: 20px; border-top: 1px solid var(--linha) }
+.nota{ margin: 0 0 12px; font-size: 13px; color: var(--apagado) }
+.btn-larga{
+  width: 100%; padding: 13px; border-radius: var(--r-p); border: 1px solid var(--verde-fundo);
+  background: var(--verde-fundo); color: #FBF9F5; font-weight: 600;
+}
+.btn-fantasma{
+  width: 100%; margin-top: 10px; padding: 13px; border-radius: var(--r-p);
+  border: 1px solid var(--linha); background: none; color: var(--apagado); font-size: 13.5px;
+}
+
+/* ---------- barra de seções ---------- */
+.barra{
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 20; display: flex;
+  padding: 6px 6px env(safe-area-inset-bottom);
+  background: rgba(251,249,245,.93); border-top: 1px solid var(--linha);
+  backdrop-filter: saturate(1.4) blur(10px);
+}
+.barra button{
+  flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px;
+  padding: 7px 2px 8px; border: none; border-radius: 14px; background: none;
+  color: var(--apagado); font-size: 11px;
+}
+.barra button[aria-current="true"]{ background: var(--verde-lavado); color: var(--verde); font-weight: 600 }
+.barra svg{ width: 21px; height: 21px; fill: none; stroke: currentColor; stroke-width: 1.7;
+            stroke-linecap: round; stroke-linejoin: round }
+
+/* ---------- previsão do tempo ---------- */
+.tempo{
+  display: flex; align-items: center; gap: 9px; margin: 0 0 16px; padding: 9px 13px;
+  background: var(--carta-2); border: 1px solid var(--linha-fina); border-radius: var(--r-p);
+  font-size: 12.5px; color: var(--tinta-2);
+}
+.tempo svg{ width: 20px; height: 20px; flex: 0 0 auto; fill: none; stroke: var(--verde);
+            stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round }
+.tempo-txt{ flex: 1 }
+.tempo-num, .tempo-chuva{ font-variant-numeric: tabular-nums }
+.tempo-chuva{ color: var(--apagado) }
+.tempo-chuva.alta{ color: #2C5F86; font-weight: 600 }
+.dia-tempo{ display: inline-flex; align-items: center; gap: 5px; font-size: 11.5px;
+            color: var(--apagado); font-variant-numeric: tabular-nums }
+.dia-tempo svg{ width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 1.7;
+                stroke-linecap: round; stroke-linejoin: round }
+
+/* ---------- compromisso do dia ---------- */
+.agenda .compromisso{ color: var(--tinta); font-weight: 600 }
+.agenda .compromisso .h{ color: var(--alerta) }
+
+/* ---------- lembretes ---------- */
+.novo{ display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 24px }
+.novo input, .novo select{
+  padding: 11px 12px; border: 1px solid var(--linha); border-radius: var(--r-p);
+  background: var(--carta); color: var(--tinta); font-family: inherit; font-size: 14px;
+}
+.novo input{ flex: 1 1 100% }
+.novo select{ flex: 1 1 auto }
+.novo button{
+  flex: 0 0 auto; padding: 11px 18px; border-radius: var(--r-p); font-size: 14px; font-weight: 600;
+  border: 1px solid var(--verde-fundo); background: var(--verde-fundo); color: #FBF9F5;
+}
+.lembretes{ list-style: none; margin: 0 0 22px; padding: 0; display: flex; flex-direction: column; gap: 8px }
+.lembrete{
+  display: flex; align-items: center; gap: 11px; padding: 11px 13px; font-size: 14.5px;
+  background: var(--carta); border: 1px solid var(--linha-fina); border-radius: var(--r-m);
+  box-shadow: var(--sombra-1);
+}
+.lembrete span{ flex: 1 }
+.lembrete.feito{ background: var(--carta-2); box-shadow: none }
+.lembrete.feito span{ color: var(--apagado); text-decoration: line-through }
+.marcar{
+  width: 25px; height: 25px; flex: 0 0 auto; display: grid; place-items: center; line-height: 1;
+  border: 1.5px solid var(--linha); border-radius: 8px; background: var(--carta-2);
+  color: var(--ok); font-weight: 700;
+}
+.lembrete.feito .marcar{ background: var(--verde-lavado); border-color: #BEDDCB }
+.tirar{ flex: 0 0 auto; border: none; background: none; color: var(--apagado);
+        font-size: 20px; line-height: 1; padding: 0 2px }
+
+/* ---------- ajustar o dia ---------- */
+.btn-ajustar{
+  margin: -6px 0 16px; padding: 8px 14px; border-radius: 999px; font-size: 12.5px;
+  border: 1px dashed var(--linha); background: none; color: var(--apagado);
+}
+.ajuste{
+  margin: 0 0 18px; padding: 15px; background: var(--carta); border: 1px solid var(--linha);
+  border-radius: var(--r-m); box-shadow: var(--sombra-1);
+}
+.campo{ display: block; margin-bottom: 12px }
+.campo span{ display: block; font-size: 12px; color: var(--apagado); margin-bottom: 5px }
+.campo input, .campo select{
+  width: 100%; padding: 10px 12px; font-family: inherit; font-size: 14px;
+  border: 1px solid var(--linha); border-radius: var(--r-p);
+  background: var(--carta-2); color: var(--tinta);
+}
+.ajuste-tit{ margin: 18px 0 8px; font-size: 13px; font-weight: 600 }
+.ajuste .novo{ margin-bottom: 4px }
+.ajuste .novo button{ padding: 11px 16px }
+.caixa{
+  width: 100%; margin-top: 10px; padding: 10px 12px; font-family: var(--sans); font-size: 12.5px;
+  border: 1px solid var(--linha); border-radius: var(--r-p); background: var(--carta);
+  color: var(--tinta-2); resize: vertical;
+}
+
+.barra .ic{ position: relative; display: block }
+.barra .pip{ position: absolute; top: -1px; right: -4px; width: 7px; height: 7px;
+             border-radius: 50%; background: var(--perigo) }
+
+@media (prefers-reduced-motion: reduce){ *{ transition: none !important } }
+</style>
+</head>
+<body>
+
+<!-- Primeira carga, opcional e pessoal: só existe onde o app é privado.
+     Onde o arquivo não estiver, o app abre em branco e nada se quebra. -->
+<script src="./meus-dados.js"></script>
+
+<div class="folha">
+  <header class="capa">
+    <div class="capa-txt">
+      <p class="sobrescrito">Internato I · Saúde Coletiva e MFC</p>
+      <h1 id="contagem">—</h1>
+      <p class="capa-sub" id="capa-sub">—</p>
+    </div>
+    <div class="rosca" id="rosca" role="img">
+      <svg viewBox="0 0 74 74" aria-hidden="true">
+        <circle class="trilha" cx="37" cy="37" r="31"></circle>
+        <circle class="arco" id="arco" cx="37" cy="37" r="31" stroke-dasharray="194.8" stroke-dashoffset="194.8"></circle>
+      </svg>
+      <b id="pct">0%</b>
+    </div>
+  </header>
+  <div id="recado"></div>
+</div>
+
+<main class="folha" id="painel"></main>
+
+<nav class="barra" aria-label="Seções">
+  <button data-aba="dia" aria-current="true">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M8.2 12.3l2.6 2.6 5-5.4"></path></svg>
+    Hoje
+  </button>
+  <button data-aba="semana">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"></rect><path d="M3.5 9.8h17M8 3.5v3M16 3.5v3"></path></svg>
+    Semana
+  </button>
+  <button data-aba="treino">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9.5v5M7 7.5v9M17 7.5v9M20 9.5v5M7 12h10"></path></svg>
+    Treino
+  </button>
+  <button data-aba="lembretes">
+    <span class="ic">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 8.6a6 6 0 1 0-12 0c0 5.2-2 6.6-2 6.6h16s-2-1.4-2-6.6M13.7 19a2 2 0 0 1-3.4 0"></path></svg>
+      <i class="pip" id="pip" hidden></i>
+    </span>
+    Lembretes
+  </button>
+  <button data-aba="eixos">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h14M4 12h9M4 17h16"></path></svg>
+    Eixos
+  </button>
+</nav>
+
+<script>
+/* ------------------------------------------------------------- constantes */
+const START="2026-09-11", LAST="2026-10-20", PROVA="2026-10-21", KEY="rodizio-sc-v1";
+
+const EIXOS={
+  vig1:{n:"Vigilância I",c:"#14615A"}, vig2:{n:"Vigilância II",c:"#2C5F86"},
+  epi:{n:"Epidemiologia",c:"#8A6512"}, cri:{n:"Criança",c:"#A2561A"},
+  ado:{n:"Adolescente",c:"#A83C2A"},   mul:{n:"Mulher",c:"#8B3A6F"},
+  ido:{n:"Idoso",c:"#57499B"},         han:{n:"Hanseníase",c:"#4C7327"},
+  tb:{n:"Tuberculose",c:"#0F6070"},    ind:{n:"Saúde indígena",c:"#7A5526"}
+};
+
+const CONTEUDO=[
+ ["vig1","Linha do tempo do SUS e as NOBs 91/92/93/96"],
+ ["vig1","NOAS 2001 e 2002"],
+ ["vig1","Pacto pela Saúde — Portaria 399/2006"],
+ ["vig1","Portarias 3.252/2009, 1.378/2013 e 204/2016 · Resolução 588/2017"],
+ ["vig2","Sistema Nacional de Vigilância Epidemiológica: origem e conceitos"],
+ ["vig2","Notificação compulsória e preenchimento da ficha"],
+ ["vig2","Estudos, inquéritos e levantamentos epidemiológicos"],
+ ["vig2","Sistemas sentinela e investigação de surtos e epidemias"],
+ ["epi","Tabela 2×2 · sensibilidade e especificidade"],
+ ["epi","Valor preditivo positivo e negativo · efeito da prevalência"],
+ ["epi","Razão de verossimilhança positiva e negativa"],
+ ["epi","Curva ROC, ponto de corte e vieses + 20 questões"],
+ ["cri","Primeira consulta do RN: anamnese e exame físico"],
+ ["cri","Cuidados com o recém-nascido e prevenção de acidentes"],
+ ["cri","Calendário vacinal de 0 a 10 anos"],
+ ["cri","Crescimento: curvas da OMS e escore-z"],
+ ["cri","Desenvolvimento: marcos por faixa etária"],
+ ["cri","Alimentação por faixa, obesidade e violência contra a criança"],
+ ["ado","Relação equipe–adolescente e roteiro de avaliação na UBS"],
+ ["ado","Maturação sexual, avaliação nutricional e caderneta"],
+ ["ado","Imunização, prevenção de gravidez e IST/Aids"],
+ ["ido","Atribuições da atenção básica e avaliação global do idoso"],
+ ["ido","Cognição, funcionalidade (AVD e AIVD), quedas e mobilidade"],
+ ["ido","Suporte familiar, violência intrafamiliar e assistência domiciliar"],
+ ["mul","Planejamento reprodutivo e métodos contraceptivos"],
+ ["mul","Critérios de elegibilidade e contracepção de emergência"],
+ ["mul","Doenças benignas da mama e exame clínico"],
+ ["mul","Rastreamento de mama e condutas pela mamografia"],
+ ["mul","Colo do útero: lesões precursoras e rastreamento"],
+ ["mul","Coleta do colpocitológico e recomendações prévias"],
+ ["mul","Pré-natal: primeira consulta e ácido fólico"],
+ ["mul","Exames do pré-natal por trimestre: interpretação e conduta"],
+ ["mul","Consultas subsequentes, vacinas e encaminhamento ao alto risco"],
+ ["han","Definição de caso, epidemiologia e transmissão"],
+ ["han","Clínica dermatológica e neurológica · diagnóstico"],
+ ["han","PQT-U, critério de alta, incapacidades e contatos"],
+ ["tb","Etiologia, transmissão, patogênese e história clínica"],
+ ["tb","Baciloscopia, TRM-TB, cultura e prova tuberculínica"],
+ ["tb","Esquema básico, DOTS/TDO e reações adversas"],
+ ["tb","Contatos, BCG, tratamento da ILTB e notificação"],
+ ["ind","SESAI, subsistema no SUS, DSEI e organização da rede"],
+ ["ind","PNASPI, legislação, financiamento e principais desafios"]
+];
+
+const MEDWAY=["Preventiva: SUS e atenção primária","Bioestatística e epidemiologia",
+ "Pediatria ambulatorial","Ginecologia e rastreamentos","Obstetrícia: pré-natal",
+ "Infectologia: TB e hanseníase","Revisão dirigida e questões"];
+
+const TREINOS=[
+ {n:"Treino 1",f:"Quadríceps e panturrilha",ex:[
+   ["Cadeira extensora (2s de contração)","4 × 15"],["Agachamento hack ou Smith","4 × 12"],
+   ["Leg press 45°","4 × 12"],["Panturrilha","4 × 15"]]},
+ {n:"Treino 2",f:"Costas, ombro e bíceps",ex:[
+   ["Puxada alta aberta (1s)","3 × 12"],["Remada baixa com triângulo (1s)","3 × 12"],
+   ["Pull face com corda (1s)","3 × 12"],["Elevação lateral + frontal","3 × 12"],
+   ["Rosca direta","3 × 12"],["Rosca martelo","3 × 12"]]},
+ {n:"Treino 3",f:"Posterior e glúteo",ex:[
+   ["Stiff","4 × 12"],["Cadeira abdutora","4 × 15"],["Elevação pélvica (2s)","4 × 10"],
+   ["Coice na polia","4 × 12"],["Cadeira flexora (2s)","4 × 15"]]},
+ {n:"Treino 4",f:"Peito, ombro e tríceps",ex:[
+   ["Supino reto na máquina ou halter","3 × 12"],["Crucifixo na máquina ou halter","3 × 12"],
+   ["Desenvolvimento com halter","3 × 12"],["Elevação lateral","3 × 12"],
+   ["Tríceps testa com halter","3 × 12"],["Tríceps corda","3 × 12"]]},
+ {n:"Treino 5",f:"Pernas completo",ex:[
+   ["Agachamento Smith","4 × 12"],["Leg press 45°","4 × 12"],["Cadeira adutora","4 × 15"],
+   ["Mesa flexora (2s)","4 × 12"],["Cadeira flexora (2s)","4 × 12"]]}
+];
+
+const SLOTS={
+ manha:["14h30–16h00","16h15–17h15","19h00–20h30","20h45–21h45"],
+ tarde:["08h00–09h30","09h45–11h15","19h00–20h30","20h45–21h45"],
+ sexta:["08h00–09h30","10h00–11h30","14h00–15h30","16h00–17h30","19h00–20h30"],
+ sabado:["08h00–11h00","15h00–16h30"],
+ domingo:["09h00–11h00","16h00–17h00"]
+};
+/* A escala das práticas na UBS e os compromissos avulsos são dados de quem
+   usa, não do programa: ficam no aparelho, editados pelo botão "ajustar o
+   dia", e nunca no código. Um arquivo meus-dados.js ao lado pode trazer uma
+   primeira carga — é opcional, e onde ele não existe o app começa em branco.
+
+   escala[data]      = {turno:"manha"|"tarde"|"folga", com, outras}
+   compromissos[data]= [{h, txt, curto}]
+   Dia "folga" é dia sem UBS: rende cinco blocos de estudo, como a sexta. */
+const SEMENTE=(typeof DADOS_INICIAIS!=="undefined"&&DADOS_INICIAIS)||{};
+let ESCALA=SEMENTE.escala||{};
+let COMPROMISSOS=SEMENTE.compromissos||{};
+let UBS=SEMENTE.ubs||"UBS";      /* o nome da unidade também é dado de quem usa */
+
+/* A previsão vem do Open-Meteo, que não pede cadastro nem chave. Cobre uns
+   dezesseis dias; os dias além disso simplesmente não mostram nada. É um
+   extra: sem internet, fica a última previsão guardada, e sem nenhuma, o app
+   segue igual. */
+const LOCAL={lat:-15.6014,lon:-56.0979,tz:"America/Cuiaba",nome:"Cuiabá",
+  link:"https://www.climatempo.com.br/previsao-do-tempo/15-dias/cidade/218/cuiaba-mt"};
+const TEMPO_KEY="rodizio-tempo-v1";
+
+/* códigos WMO agrupados no que dá para desenhar e dizer em uma palavra */
+const CEUS=[
+  {cods:[0],              g:"sol",      t:"céu limpo"},
+  {cods:[1,2],            g:"sol-nuvem",t:"sol entre nuvens"},
+  {cods:[3],              g:"nuvem",    t:"nublado"},
+  {cods:[45,48],          g:"nuvem",    t:"névoa"},
+  {cods:[51,53,55,56,57], g:"chuva",    t:"garoa"},
+  {cods:[61,63,65,66,67], g:"chuva",    t:"chuva"},
+  {cods:[80,81,82],       g:"chuva",    t:"pancadas de chuva"},
+  {cods:[95,96,99],       g:"trovoada", t:"trovoada"}
+];
+const DESENHO_CEU={
+  sol:'<circle cx="12" cy="12" r="4.2"></circle><path d="M12 2.8v2.2M12 19v2.2M4.6 12H2.4M21.6 12h-2.2M6.6 6.6L5 5M19 19l-1.6-1.6M17.4 6.6L19 5M5 19l1.6-1.6"></path>',
+  "sol-nuvem":'<circle cx="8.6" cy="8" r="2.9"></circle><path d="M8.6 2.6v1.5M3.2 8H1.7M4.8 4.2L3.7 3.1M12.4 4.2l1.1-1.1"></path><path d="M8.4 19.4h8.8a3.3 3.3 0 0 0 .3-6.6 4.6 4.6 0 0 0-8.8-.6 3.1 3.1 0 0 0-.3 7.2z"></path>',
+  nuvem:'<path d="M7.3 18.6h9.9a3.5 3.5 0 0 0 .3-7 4.9 4.9 0 0 0-9.4-.7 3.3 3.3 0 0 0-.8 7.7z"></path>',
+  chuva:'<path d="M7.3 15.4h9.9a3.4 3.4 0 0 0 .3-6.8 4.8 4.8 0 0 0-9.1-.6 3.2 3.2 0 0 0-1.1 7.4z"></path><path d="M9.2 18.2l-.8 2.6M13 18.2l-.8 2.6M16.8 18.2l-.8 2.6"></path>',
+  trovoada:'<path d="M7.3 15.4h9.9a3.4 3.4 0 0 0 .3-6.8 4.8 4.8 0 0 0-9.1-.6 3.2 3.2 0 0 0-1.1 7.4z"></path><path d="M13.2 17.6l-3.4 3.6h3l-1.1 2.4"></path>'
+};
+
+const DIAS=["domingo","segunda","terça","quarta","quinta","sexta","sábado"];
+const MES=["jan","fev","mar","abr","mai","jun","jul","ago","set","out","nov","dez"];
+const MES_EXT=["janeiro","fevereiro","março","abril","maio","junho","julho","agosto",
+               "setembro","outubro","novembro","dezembro"];
+
+/* ------------------------------------------------------------- utilidades */
+const p2=n=>String(n).padStart(2,"0");
+const toDate=s=>{const[a,b,c]=s.split("-").map(Number);return new Date(a,b-1,c)};
+const toStr=d=>`${d.getFullYear()}-${p2(d.getMonth()+1)}-${p2(d.getDate())}`;
+const addDays=(s,n)=>{const d=toDate(s);d.setDate(d.getDate()+n);return toStr(d)};
+function range(a,b){const o=[];let c=a;while(c<=b){o.push(c);c=addDays(c,1)}return o}
+const label=s=>{const d=toDate(s);return `${DIAS[d.getDay()]}, ${d.getDate()} de ${MES[d.getMonth()]}`};
+const curto=s=>{const d=toDate(s);return `${p2(d.getDate())}/${p2(d.getMonth()+1)}`};
+const extenso=s=>{const d=toDate(s);return `${d.getDate()} de ${MES_EXT[d.getMonth()]}`};
+function hoje(){const t=toStr(new Date());return t<START?START:(t>PROVA?PROVA:t)}
+function tipoDia(d){const w=toDate(d).getDay();return w===0?"domingo":w===6?"sabado":w===5?"sexta":"ubs"}
+function slotsDe(d,m){
+  const e=ESCALA[d];
+  /* a escala pode dizer só com quem é o dia, sem mexer no turno */
+  if(e&&e.turno) return e.turno==="folga"?SLOTS.sexta:SLOTS[e.turno];
+  const t=tipoDia(d);
+  return t==="ubs"?SLOTS[m==="tarde"?"tarde":"manha"]:SLOTS[t];
+}
+function temaMedway(d){return MEDWAY[Math.min(Math.floor(range(START,d).length/7),MEDWAY.length-1)]}
+function ceuDe(cod){return CEUS.find(c=>c.cods.includes(cod))||{g:"nuvem",t:"tempo fechado"}}
+
+/* --------------------------------------------------------------- previsão */
+let TEMPO=(function(){
+  try{const r=localStorage.getItem(TEMPO_KEY); const o=r&&JSON.parse(r); if(o&&o.dias) return o;}
+  catch(e){}
+  return null;
+})();
+
+function buscarTempo(){
+  if(TEMPO&&Date.now()-TEMPO.buscado<3*3600e3) return;   /* de três em três horas basta */
+  const u=`https://api.open-meteo.com/v1/forecast?latitude=${LOCAL.lat}&longitude=${LOCAL.lon}`
+    +`&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max`
+    +`&timezone=${encodeURIComponent(LOCAL.tz)}&forecast_days=16`;
+  fetch(u).then(r=>r.ok?r.json():Promise.reject(r.status)).then(j=>{
+    const d=j.daily, dias={};
+    (d.time||[]).forEach((dia,i)=>{dias[dia]={
+      cod:d.weather_code[i],
+      max:Math.round(d.temperature_2m_max[i]),
+      min:Math.round(d.temperature_2m_min[i]),
+      chuva:d.precipitation_probability_max[i]
+    };});
+    if(!Object.keys(dias).length) return;
+    TEMPO={buscado:Date.now(),dias};
+    try{localStorage.setItem(TEMPO_KEY,JSON.stringify(TEMPO))}catch(e){}
+    tempoFalhou=false; render();
+  }).catch(()=>{ tempoFalhou=true; render(); });   /* sem previsão o app segue igual */
+}
+let tempoFalhou=false;
+
+/* --------------------------------------------------------------- plano */
+function montarPlano(){
+  const dias=range(START,LAST), T=[]; let id=1;
+  dias.forEach(d=>{
+    const t=tipoDia(d);
+    if(t==="ubs"||t==="sexta"){
+      T.push({id:id++,tipo:"medway",rank:0,data:d,eixo:null,titulo:"Medway — aulas: "+temaMedway(d),status:"pendente"});
+      T.push({id:id++,tipo:"medway",rank:2,data:d,eixo:null,titulo:"Medway — questões do dia",status:"pendente"});
+    }
+    if(t==="sabado") T.push({id:id++,tipo:"medway",rank:0,data:d,eixo:null,titulo:"Medway — simulado da semana",status:"pendente"});
+  });
+  const cap={ubs:2,sexta:3,sabado:1,domingo:0}; let i=0;
+  for(const d of dias){
+    if(i>=CONTEUDO.length) break;
+    const vagas=ESCALA[d]&&ESCALA[d].turno==="folga"?cap.sexta:cap[tipoDia(d)];
+    for(let k=0;k<vagas&&i<CONTEUDO.length;k++){
+      const[e,t]=CONTEUDO[i++];
+      T.push({id:id++,tipo:"eixo",rank:1,data:d,eixo:e,titulo:t,status:"pendente"});
+    }
+  }
+  const rev=Object.keys(EIXOS).map(e=>({e,t:"Revisão espaçada: "+EIXOS[e].n}));
+  rev.push({e:null,t:"Simulado geral — 40 questões dos 10 eixos"});
+  rev.push({e:null,t:"Simulado geral — 40 questões + revisão dos erros"});
+  rev.push({e:null,t:"Folha de última hora: números que mais caem"});
+  const alvos=dias.filter(d=>tipoDia(d)==="domingo"||d>="2026-10-15"); let r=0;
+  for(const d of alvos){
+    if(r>=rev.length) break;
+    const livre=slotsDe(d,"manha").length-T.filter(x=>x.data===d).length;
+    for(let k=0;k<livre&&r<rev.length;k++){
+      const it=rev[r++];
+      T.push({id:id++,tipo:"revisao",rank:1,data:d,eixo:it.e,titulo:it.t,status:"pendente"});
+    }
+  }
+  while(r<rev.length){const it=rev[r++];
+    T.push({id:id++,tipo:"revisao",rank:1,data:LAST,eixo:it.e,titulo:it.t,status:"pendente"});}
+  return {v:1,tarefas:T,modos:{},treinoAtual:0,treinosFeitos:[],
+          lembretes:(SEMENTE.lembretes||[]).slice(),
+          escala:ESCALA,compromissos:COMPROMISSOS};
+}
+
+function proximoLivre(T,modos,depois){
+  let d=addDays(depois,1);
+  while(d<=LAST){
+    if(T.filter(x=>x.data===d).length<slotsDe(d,modos[d]||"manha").length) return d;
+    d=addDays(d,1);
+  }
+  return LAST;
+}
+
+/* ------------------------------------------------------------ persistência */
+let mem=null;
+function salvar(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){mem=S}}
+function carregar(){
+  try{const raw=localStorage.getItem(KEY); if(raw){const o=JSON.parse(raw); if(o&&o.v===1) return o;}}
+  catch(e){ if(mem) return mem; }
+  return montarPlano();
+}
+
+let S=carregar(), diaAtivo=hoje(), aba="dia", recado="";
+let rascunho="", escopoNovo="semana", ajustando=null, colando=false;
+
+/* o estado manda; onde ele ainda não tem, entra a primeira carga, se houver */
+if(!S.escala) S.escala=ESCALA; else ESCALA=S.escala;
+if(!S.compromissos) S.compromissos=COMPROMISSOS; else COMPROMISSOS=S.compromissos;
+if(!S.ubs) S.ubs=UBS; else UBS=S.ubs;
+if(!Array.isArray(S.lembretes)) S.lembretes=(SEMENTE.lembretes||[]).slice();
+salvar();
+
+/* remanejar atrasadas na abertura */
+(function(){
+  const hj=hoje();
+  const atr=S.tarefas.filter(t=>t.status==="pendente"&&t.data<hj).sort((a,b)=>a.data<b.data?-1:1);
+  atr.forEach(t=>{
+    const dest=proximoLivre(S.tarefas,S.modos,addDays(hj,-1));
+    t.data=dest; t.adiada=(t.adiada||0)+1;
+  });
+  if(atr.length){recado=atr.length+(atr.length>1?" tarefas atrasadas foram remarcadas":" tarefa atrasada foi remarcada")+" para os próximos dias livres."; salvar();}
+})();
+
+/* ------------------------------------------------------------------ render */
+const painel=document.getElementById("painel");
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const C=2*Math.PI*31;
+
+function render(){
+  const tot=S.tarefas.filter(t=>t.tipo!=="medway").length;
+  const ok=S.tarefas.filter(t=>t.tipo!=="medway"&&t.status==="feita").length;
+  const pc=tot?Math.round(ok/tot*100):0;
+  document.getElementById("pct").textContent=pc+"%";
+  const arco=document.getElementById("arco");
+  arco.style.strokeDashoffset=C*(1-pc/100);
+  arco.style.strokeLinecap=pc>0?"round":"butt";
+  document.getElementById("rosca").setAttribute("aria-label",pc+" por cento do plano concluído");
+  const faltam=range(hoje(),PROVA).length-1;
+  document.getElementById("contagem").textContent=faltam>0
+    ? faltam+(faltam>1?" dias até a prova":" dia até a prova") : "Dia da prova";
+  document.getElementById("capa-sub").textContent=
+    `Prova em ${extenso(PROVA)} · ${ok} de ${tot} tarefas feitas`;
+  document.getElementById("recado").innerHTML=recado
+    ? `<button class="aviso" onclick="fecharRecado()"><span>${esc(recado)}</span><b>fechar</b></button>` : "";
+  document.querySelectorAll(".barra button").forEach(b=>{
+    b.setAttribute("aria-current", b.dataset.aba===aba ? "true" : "false");
+  });
+  /* o pontinho na aba avisa que há lembrete de semana ou de mês em aberto */
+  document.getElementById("pip").hidden=
+    !S.lembretes.some(x=>!x.feito&&x.escopo!=="sempre");
+  painel.innerHTML={dia:viewDia,semana:viewSemana,treino:viewTreino,
+                    lembretes:viewLembretes,eixos:viewEixos}[aba]();
+  scrollTo({top:0});
+}
+
+/* a previsão é um extra: entra na tela quando chega, e some sem barulho */
+function faixaTempo(d){
+  const t=TEMPO&&TEMPO.dias[d]; if(!t) return "";
+  const c=ceuDe(t.cod);
+  return `<div class="tempo" aria-label="Previsão para ${LOCAL.nome}">
+    <svg viewBox="0 0 24 24" aria-hidden="true">${DESENHO_CEU[c.g]}</svg>
+    <span class="tempo-txt">${c.t}</span>
+    <span class="tempo-num">${t.max}° / ${t.min}°</span>
+    <span class="tempo-chuva ${t.chuva>=50?"alta":""}">chuva ${t.chuva}%</span>
+  </div>`;
+}
+function selinhoTempo(d){
+  const t=TEMPO&&TEMPO.dias[d]; if(!t) return "";
+  return `<span class="dia-tempo"><svg viewBox="0 0 24 24" aria-hidden="true">${DESENHO_CEU[ceuDe(t.cod).g]}</svg>
+    ${t.chuva}% · ${t.max}°</span>`;
+}
+function fecharRecado(){recado="";render()}
+
+function viewDia(){
+  const d=diaAtivo, t=tipoDia(d), modo=S.modos[d]||"manha";
+  let h=`<div class="dianav">
+    <button class="seta" onclick="mover(-1)" aria-label="Dia anterior" ${d<=START?"disabled":""}>
+      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8"
+           stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.5 5.5L8 12l6.5 6.5"/></svg>
+    </button>
+    <div class="dianav-mid">
+      <p class="dia-rot">${label(d)}</p>
+      ${d===hoje()?'<p class="dia-hoje">hoje</p>':""}
+    </div>
+    <button class="seta" onclick="mover(1)" aria-label="Próximo dia" ${d>=PROVA?"disabled":""}>
+      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8"
+           stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 5.5L16 12l-6.5 6.5"/></svg>
+    </button></div>${faixaTempo(d)}`;
+
+  if(d===PROVA){
+    return h+`<div class="tarefa" style="--c:var(--perigo)">
+      <div class="t-topo"><span class="t-hora">Prova de Saúde Coletiva</span></div>
+      <p class="t-tit">Antes: 30 minutos só na folha de última hora. Depois, vista de prova —
+      anote os temas que caíram.</p></div>`;
+  }
+
+  /* com escala o turno já está decidido; sem escala, ela escolhe no alternador */
+  const escalaDia=ESCALA[d];
+  if(t==="ubs"&&!(escalaDia&&escalaDia.turno)){
+    h+=`<div class="turno" role="group" aria-label="Turno na UBS">
+      <button aria-pressed="${modo==="manha"}" onclick="setModo('manha')">UBS de manhã</button>
+      <button aria-pressed="${modo==="tarde"}" onclick="setModo('tarde')">UBS de tarde</button></div>`;
+  }
+
+  const turno=(escalaDia&&escalaDia.turno)||(t==="ubs"?modo:null);
+  const treino=`Academia — ${TREINOS[S.treinoAtual].n}: ${esc(TREINOS[S.treinoAtual].f)}`;
+  const naUbs=esc(UBS)+(escalaDia&&escalaDia.com?" — com "+esc(escalaDia.com):"");
+  const outras=escalaDia&&escalaDia.outras?esc(escalaDia.outras):"";
+  const linha=(hora,txt)=>`<div><span class="h">${hora}</span><span>${txt}</span></div>`;
+
+  h+=`<div class="agenda">`;
+  /* compromisso abre o dia: é o que não pode passar batido */
+  (COMPROMISSOS[d]||[]).forEach(c=>{
+    h+=`<div class="compromisso"><span class="h">${esc(c.h)}</span><span>${esc(c.txt)}</span></div>`;
+  });
+  if(turno==="tarde"){
+    if(outras) h+=linha("07h30–11h30", outras+" na UBS — sua manhã está livre");
+    h+=linha("11h30–12h45", treino);
+    h+=linha("13h00–17h00", naUbs);
+  }else if(turno==="manha"){
+    h+=linha("07h30–11h30", naUbs);
+    h+=linha("12h30–13h45", treino);
+  }else if(turno==="folga"){
+    h+=linha("sem UBS", (outras?outras+" na escala — ":"")+"o dia todo é de estudo");
+    h+=linha("12h00–13h30", treino);
+  }else{
+    h+=linha(t==="sexta"?"12h00–13h30":"11h30–13h00", treino);
+  }
+  h+=`</div>`;
+  h+=painelAjuste(d,escalaDia);
+
+  const lista=S.tarefas.filter(x=>x.data===d).sort((a,b)=>a.rank-b.rank||a.id-b.id);
+  const slots=slotsDe(d,modo);
+  if(!lista.length){
+    return h+`<div class="vazio"><p>Nenhuma tarefa neste dia. Use as setas para ver os próximos —
+      ou remarque algo de um dia cheio para cá.</p></div>`;
+  }
+  h+=`<ol class="lista">`;
+  lista.forEach((x,i)=>{
+    const cor=x.eixo?EIXOS[x.eixo].c:"var(--apagado)", feita=x.status==="feita";
+    h+=`<li class="tarefa ${feita?"feita":""}" style="--c:${cor}">
+      <div class="t-topo">
+        <span class="t-hora">${slots[i]||"encaixar no dia"}</span>
+        ${x.eixo?`<span class="chip">${EIXOS[x.eixo].n}</span>`:""}
+        ${x.tipo==="medway"?'<span class="chip neutro">Medway</span>':""}
+        ${x.adiada?`<span class="chip adiada">remarcada ${x.adiada}×</span>`:""}
+      </div>
+      <p class="t-tit">${esc(x.titulo)}</p>
+      <div class="t-acoes">
+        <button class="${feita?"desfazer":"fazer"}" onclick="concluir(${x.id})">${feita?"✓ feita":"marcar feita"}</button>
+        ${feita?"":`<button class="adiar" onclick="adiar(${x.id})">não deu — remarcar</button>`}
+      </div></li>`;
+  });
+  return h+`</ol>`;
+}
+
+function marcaEscala(d){
+  const e=ESCALA[d]; if(!e||!e.turno) return "";
+  const r=e.turno==="folga"?"sem UBS":e.turno==="tarde"?"UBS à tarde":"UBS de manhã";
+  return `<span class="chip neutro">${r}</span>`;
+}
+
+function selosCompromisso(d){
+  return (COMPROMISSOS[d]||[])
+    .map(c=>`<span class="chip" style="--c:var(--alerta)">${esc(c.curto||c.txt)}</span>`).join("");
+}
+
+/* O painel onde ela mesma diz como é o dia: turno na UBS, com quem, e os
+   compromissos que não são nem plantão nem estudo. Fica fechado até pedirem. */
+function painelAjuste(d,e){
+  if(ajustando!==d)
+    return `<button class="btn-ajustar" onclick="abrirAjuste('${d}')">ajustar este dia</button>`;
+  const c=COMPROMISSOS[d]||[];
+  const opc=[["","padrão do dia"],["manha","UBS de manhã"],["tarde","UBS à tarde"],
+             ["folga","sem UBS neste dia"]];
+  return `<div class="ajuste">
+    <label class="campo"><span>Turno na UBS</span>
+      <select id="aj-turno">${opc.map(([v,r])=>
+        `<option value="${v}" ${e&&e.turno===v?"selected":""}>${r}</option>`).join("")}</select>
+    </label>
+    <label class="campo"><span>Com quem</span>
+      <input id="aj-com" type="text" maxlength="60" autocomplete="off"
+             value="${e&&e.com?esc(e.com):""}" placeholder="nome da dupla"></label>
+    <label class="campo"><span>Quem fica na UBS no seu turno livre</span>
+      <input id="aj-outras" type="text" maxlength="60" autocomplete="off"
+             value="${e&&e.outras?esc(e.outras):""}" placeholder="quem está na escala"></label>
+    <label class="campo"><span>Nome da unidade, para todos os dias</span>
+      <input id="aj-ubs" type="text" maxlength="40" autocomplete="off"
+             value="${esc(UBS)}" placeholder="UBS"></label>
+
+    <p class="ajuste-tit">Compromissos do dia</p>
+    ${c.length?`<ul class="lembretes" style="margin-bottom:12px">${c.map((x,i)=>
+      `<li class="lembrete"><span><b>${esc(x.h)}</b> · ${esc(x.txt)}</span>
+        <button class="tirar" onclick="tirarCompromisso(${i})" aria-label="Apagar">×</button></li>`
+      ).join("")}</ul>`:`<p class="nota">Nenhum.</p>`}
+    <div class="novo">
+      <input id="aj-hora" type="text" maxlength="18" placeholder="quando (07h00, manhã…)"
+             autocomplete="off" style="flex:1 1 40%">
+      <input id="aj-txt" type="text" maxlength="70" placeholder="o quê"
+             autocomplete="off" style="flex:1 1 40%">
+      <button type="button" onclick="addCompromisso()">+</button>
+    </div>
+
+    <div class="t-acoes">
+      <button class="fazer" onclick="salvarDia()">salvar o dia</button>
+      <button class="adiar" onclick="limparDia()">tirar o que pus aqui</button>
+    </div>
+  </div>`;
+}
+
+function viewSemana(){
+  let h=`<h2 class="sec">Próximos sete dias</h2><div class="pilha">`;
+  range(diaAtivo,addDays(diaAtivo,6)).filter(d=>d<=PROVA).forEach(d=>{
+    const l=S.tarefas.filter(x=>x.data===d).sort((a,b)=>a.rank-b.rank||a.id-b.id);
+    const pend=l.filter(x=>x.status==="pendente").length;
+    const cont=d===PROVA?"prova":pend?pend+" pendente"+(pend>1?"s":""):l.length?"tudo feito":"dia livre";
+    h+=`<button class="dia" onclick="abrirDia('${d}')">
+      <div class="dia-topo"><span class="dia-nome">${label(d)}</span>
+      ${marcaEscala(d)}${selosCompromisso(d)}
+      <span class="dia-cont ${pend||d===PROVA?"":"limpo"}">${cont}</span></div>
+      ${selinhoTempo(d)?`<div class="linha-item" style="padding-bottom:5px">${selinhoTempo(d)}</div>`:""}`;
+    l.slice(0,4).forEach(x=>{
+      h+=`<div class="linha-item ${x.status==="feita"?"risco":""}"
+           style="--c:${x.eixo?EIXOS[x.eixo].c:"#C0B8A8"}">
+          <span class="ponto"></span><span>${esc(x.titulo)}</span></div>`;
+    });
+    if(l.length>4) h+=`<div class="linha-item mais">+ ${l.length-4} no dia</div>`;
+    h+=`</button>`;
+  });
+  return h+`</div>`;
+}
+
+function viewTreino(){
+  const semana=S.treinosFeitos.filter(x=>x>=addDays(hoje(),-6)).length;
+  const t=TREINOS[S.treinoAtual];
+  let h=`<h2 class="sec">Treino da vez · ${semana} de 5 nesta semana</h2>
+  <div class="treino">
+    <h2>${t.n}</h2><p class="foco">${esc(t.f)}</p>
+    <table class="ex">`;
+  t.ex.forEach(([nome,s])=>{h+=`<tr><td>${esc(nome)}</td><td class="s">${s}</td></tr>`});
+  h+=`</table>
+    <div class="t-acoes">
+      <button class="fazer" onclick="treinoFeito()">treino concluído</button>
+      <button class="adiar" onclick="pularTreino()">pular para o próximo</button>
+    </div></div>
+  <h2 class="sec" style="margin-top:24px">Rodízio dos cinco treinos</h2><div class="pilha">`;
+  TREINOS.forEach((x,i)=>{
+    h+=`<button class="dia" onclick="irTreino(${i})"
+         style="${i===S.treinoAtual?"border-color:var(--verde);":""}">
+      <div class="dia-topo"><span class="dia-nome">${x.n}</span>
+      <span class="dia-cont">${x.ex.length} exercícios</span></div>
+      <div class="linha-item" style="--c:var(--verde)"><span class="ponto"></span><span>${esc(x.f)}</span></div>
+    </button>`;
+  });
+  return h+`</div>`;
+}
+
+const ESCOPOS=[["semana","Esta semana"],["mes","Importantes do mês"],["sempre","Sempre à vista"]];
+
+function viewLembretes(){
+  let h=`<h2 class="sec">Acrescentar</h2>
+  <form class="novo" onsubmit="addLembrete(event)">
+    <input id="novo-lembrete" type="text" value="${esc(rascunho)}" oninput="rascunho=this.value"
+           placeholder="O que não pode esquecer" autocomplete="off" maxlength="120">
+    <select id="novo-escopo" aria-label="Onde guardar" onchange="escopoNovo=this.value">
+      ${ESCOPOS.map(([k,r])=>`<option value="${k}" ${k===escopoNovo?"selected":""}>${r}</option>`).join("")}
+    </select>
+    <button type="submit">guardar</button>
+  </form>`;
+
+  ESCOPOS.forEach(([k,rot])=>{
+    const l=S.lembretes.filter(x=>x.escopo===k);
+    const abertos=l.filter(x=>!x.feito).length;
+    h+=`<h2 class="sec">${rot}${l.length?` · ${abertos} em aberto`:""}</h2>`;
+    if(!l.length){ h+=`<p class="nota" style="margin-bottom:22px">Nada aqui ainda.</p>`; return; }
+    h+=`<ul class="lembretes">`;
+    l.forEach(x=>{
+      h+=`<li class="lembrete ${x.feito?"feito":""}">
+        <button class="marcar" onclick="marcarLembrete(${x.id})" aria-pressed="${x.feito}"
+          aria-label="${x.feito?"Desmarcar":"Marcar"} ${esc(x.txt)}">${x.feito?"✓":""}</button>
+        <span>${esc(x.txt)}</span>
+        <button class="tirar" onclick="tirarLembrete(${x.id})" aria-label="Apagar ${esc(x.txt)}">×</button>
+      </li>`;
+    });
+    h+=`</ul>`;
+  });
+
+  if(S.lembretes.some(x=>x.feito))
+    h+=`<button class="btn-fantasma" onclick="limparFeitos()">Tirar da lista os já feitos</button>`;
+  return h;
+}
+
+function viewEixos(){
+  let h=`<h2 class="sec">Quanto já saiu de cada eixo</h2>`;
+  Object.entries(EIXOS).forEach(([k,e])=>{
+    const l=S.tarefas.filter(t=>t.eixo===k&&t.tipo==="eixo");
+    const ok=l.filter(t=>t.status==="feita").length;
+    const p=l.length?Math.round(ok/l.length*100):0;
+    h+=`<div class="eixo" style="--c:${e.c}">
+        <div class="eixo-topo"><span class="eixo-nome">${e.n}</span>
+        <span class="eixo-num">${ok}/${l.length}</span></div>
+        <div class="eixo-trilha"><div class="eixo-arco" style="width:${p}%"></div></div></div>`;
+  });
+  h+=`<section class="rodape">
+    <h2 class="sec">No celular</h2>
+    <p class="nota">Na tela de início, o rodízio abre com um toque. Instalado a partir do endereço
+    próprio dele, abre também em tela cheia e sem precisar de internet.</p>
+    ${convite?'<button class="btn-larga" onclick="instalar()">Instalar na tela de início</button>':
+      '<p class="nota">No iPhone: botão Compartilhar → <b>Adicionar à Tela de Início</b>. No Android, o menu do navegador traz <b>Instalar aplicativo</b>.</p>'}
+    <h2 class="sec" style="margin-top:22px">A previsão do tempo</h2>
+    <p class="nota">É de ${LOCAL.nome}, do Open-Meteo, e alcança uns dezesseis dias.
+    ${TEMPO?`Buscada ${curto(toStr(new Date(TEMPO.buscado)))} às
+      ${p2(new Date(TEMPO.buscado).getHours())}h${p2(new Date(TEMPO.buscado).getMinutes())}.`
+      :tempoFalhou
+      ?`Neste endereço a página não tem permissão para buscá-la, então ela não aparece. Ela funciona
+        quando o rodízio roda no endereço próprio dele.`
+      :"Ainda não veio — ela chega quando o aplicativo abrir com internet."}</p>
+    ${TEMPO?"":`<a class="btn-fantasma" style="display:block;text-align:center;text-decoration:none"
+      href="${LOCAL.link}" target="_blank" rel="noopener">Ver a previsão de ${LOCAL.nome} no navegador</a>`}
+
+    <h2 class="sec" style="margin-top:22px">Seus dados</h2>
+    <p class="nota">Tudo o que você marcou vive só neste aparelho, neste navegador. Copie para
+    guardar ou para levar o rodízio para outro lugar sem perder nada.</p>
+    <div class="t-acoes" style="margin-top:0">
+      <button class="fazer" onclick="copiarDados()">copiar meus dados</button>
+      <button class="adiar" onclick="abrirColar()">${colando?"fechar":"colar dados"}</button>
+    </div>
+    ${colando?`<textarea id="caixa-dados" class="caixa" rows="4" spellcheck="false"
+       placeholder="Cole aqui a cópia dos seus dados"></textarea>
+      <button class="btn-larga" onclick="colarDados()">trazer esses dados para cá</button>`:""}
+    <button class="btn-fantasma" onclick="reiniciar()">Recomeçar o plano do zero</button>
+  </section>`;
+  return h;
+}
+
+/* ------------------------------------------------------------------ ações */
+function mover(n){const d=addDays(diaAtivo,n); if(d>=START&&d<=PROVA){diaAtivo=d;render()}}
+function abrirDia(d){diaAtivo=d;aba="dia";render()}
+function setModo(m){S.modos[diaAtivo]=m;salvar();render()}
+function concluir(id){
+  const t=S.tarefas.find(x=>x.id===id);
+  t.status=t.status==="feita"?"pendente":"feita"; salvar(); render();
+}
+function adiar(id){
+  const t=S.tarefas.find(x=>x.id===id);
+  const dest=proximoLivre(S.tarefas,S.modos,t.data);
+  t.data=dest; t.adiada=(t.adiada||0)+1;
+  recado=`“${t.titulo}” foi para ${curto(dest)}.`; salvar(); render();
+}
+function treinoFeito(){
+  S.treinosFeitos.push(hoje());
+  S.treinosFeitos=S.treinosFeitos.filter(x=>x>=addDays(hoje(),-30));
+  S.treinoAtual=(S.treinoAtual+1)%TREINOS.length;
+  recado="Treino marcado. O próximo é o "+TREINOS[S.treinoAtual].n+".";
+  salvar(); render();
+}
+function pularTreino(){S.treinoAtual=(S.treinoAtual+1)%TREINOS.length;salvar();render()}
+function addLembrete(ev){
+  ev.preventDefault();
+  const txt=rascunho.trim(); if(!txt) return;
+  S.lembretes.push({id:Date.now(),txt,escopo:escopoNovo,feito:false});
+  rascunho=""; salvar(); render();
+}
+function marcarLembrete(id){
+  const x=S.lembretes.find(l=>l.id===id); x.feito=!x.feito; salvar(); render();
+}
+function tirarLembrete(id){
+  S.lembretes=S.lembretes.filter(l=>l.id!==id); salvar(); render();
+}
+function abrirAjuste(d){ ajustando=ajustando===d?null:d; render(); }
+function lerCampos(){
+  const d=diaAtivo;
+  const nome=document.getElementById("aj-ubs").value.trim();
+  UBS=S.ubs=nome||"UBS";
+  const turno=document.getElementById("aj-turno").value;
+  const com=document.getElementById("aj-com").value.trim();
+  const outras=document.getElementById("aj-outras").value.trim();
+  if(turno||com||outras){
+    const e=ESCALA[d]||(ESCALA[d]={});
+    if(turno) e.turno=turno; else delete e.turno;
+    if(com) e.com=com; else delete e.com;
+    if(outras) e.outras=outras; else delete e.outras;
+    if(!e.turno&&!e.com&&!e.outras) delete ESCALA[d];
+  }else delete ESCALA[d];
+}
+function salvarDia(){
+  lerCampos(); ajustando=null;
+  recado="Dia ajustado."; salvar(); render();
+}
+function addCompromisso(){
+  const d=diaAtivo;
+  const h=document.getElementById("aj-hora").value.trim();
+  const txt=document.getElementById("aj-txt").value.trim();
+  if(!txt) return;
+  lerCampos();                                   /* não perde o que já digitou acima */
+  (COMPROMISSOS[d]=COMPROMISSOS[d]||[]).push({h:h||"no dia",txt,curto:txt.slice(0,22)});
+  salvar(); render();
+}
+function tirarCompromisso(i){
+  const d=diaAtivo;
+  COMPROMISSOS[d].splice(i,1);
+  if(!COMPROMISSOS[d].length) delete COMPROMISSOS[d];
+  salvar(); render();
+}
+function limparDia(){
+  const d=diaAtivo;
+  delete ESCALA[d]; delete COMPROMISSOS[d];
+  ajustando=null; recado="Dia de volta ao padrão."; salvar(); render();
+}
+
+/* ------------------------------------------------- levar os dados embora */
+function copiarDados(){
+  const txt=JSON.stringify(S);
+  const feito=()=>{recado="Seus dados foram copiados. Cole no outro aparelho ou guarde num bloco de notas.";render()};
+  if(navigator.clipboard&&navigator.clipboard.writeText)
+    navigator.clipboard.writeText(txt).then(feito,()=>mostrarDados(txt));
+  else mostrarDados(txt);
+}
+function mostrarDados(txt){
+  colando=true; render();
+  const c=document.getElementById("caixa-dados");
+  if(c){ c.value=txt; c.select(); }
+}
+function abrirColar(){ colando=!colando; render(); }
+function colarDados(){
+  const c=document.getElementById("caixa-dados");
+  try{
+    const o=JSON.parse(c.value);
+    if(!o||o.v!==1||!Array.isArray(o.tarefas)) throw 0;
+    S=o;
+    if(!S.escala) S.escala={};
+    if(!S.compromissos) S.compromissos={};
+    if(!Array.isArray(S.lembretes)) S.lembretes=[];
+    ESCALA=S.escala; COMPROMISSOS=S.compromissos;
+    colando=false; diaAtivo=hoje(); recado="Pronto: seus dados entraram aqui."; salvar(); render();
+  }catch(e){
+    recado="Esse texto não é uma cópia dos dados do rodízio. Confira se veio inteiro.";
+    render();
+  }
+}
+function limparFeitos(){
+  S.lembretes=S.lembretes.filter(l=>!l.feito); recado="Lembretes feitos, fora da lista."; salvar(); render();
+}
+function irTreino(i){S.treinoAtual=i;salvar();render()}
+function reiniciar(){
+  if(!confirm("Isso apaga tudo o que você já marcou e monta o plano de novo. Continuar?")) return;
+  const guardados=S.lembretes;          /* recomeçar o plano não apaga lembrete */
+  S=montarPlano(); S.lembretes=guardados;
+  diaAtivo=hoje(); recado="Plano recomeçado. Os lembretes ficaram."; salvar(); render();
+}
+
+/* -------------------------------------------------- instalar no celular */
+let convite=null;
+addEventListener("beforeinstallprompt",e=>{e.preventDefault();convite=e;if(aba==="eixos")render()});
+function instalar(){ if(!convite) return; const c=convite; convite=null; c.prompt(); render(); }
+addEventListener("appinstalled",()=>{convite=null;recado="Rodízio instalado na tela de início.";render()});
+
+/* atalho por URL, que é o que os shortcuts do manifesto usam: ?aba=treino */
+const pedida=new URLSearchParams(location.search).get("aba");
+if(["dia","semana","treino","lembretes","eixos"].includes(pedida)) aba=pedida;
+
+document.querySelectorAll(".barra button").forEach(b=>{
+  b.addEventListener("click",()=>{aba=b.dataset.aba;render()});
+});
+render();
+buscarTempo();
+
+if("serviceWorker" in navigator){
+  addEventListener("load",()=>navigator.serviceWorker.register("./sw.js",{scope:"./"}).catch(()=>{}));
+}
+</script>
+</body>
+</html>
