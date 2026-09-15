@@ -320,6 +320,22 @@ table.ex td.s{ text-align: right; color: var(--apagado); white-space: nowrap; fo
 .resumo-pega b{ display: block; font-size: 11px; letter-spacing: .07em; text-transform: uppercase;
                 color: var(--alerta); margin-bottom: 3px }
 .resumo-fonte{ margin: 14px 0 0; font-size: 11.5px; color: var(--apagado); font-style: italic }
+/* tabela do resumo: rola de lado sozinha, em vez de espremer a coluna */
+.quadro-rol{ margin: 14px 0; overflow-x: auto; -webkit-overflow-scrolling: touch }
+table.quadro{ width: 100%; min-width: 260px; border-collapse: collapse; font-size: 12.5px; line-height: 1.4 }
+table.quadro caption{
+  text-align: left; font-size: 10.5px; letter-spacing: .07em; text-transform: uppercase;
+  color: var(--c); font-weight: 600; padding-bottom: 5px;
+}
+table.quadro th{
+  text-align: left; font-size: 10.5px; font-weight: 600; color: var(--apagado);
+  border-bottom: 1px solid var(--tinta-2); padding: 4px 8px 4px 0; vertical-align: bottom;
+}
+table.quadro td{ padding: 5px 8px 5px 0; border-bottom: 1px solid var(--linha-fina);
+                 vertical-align: top; color: var(--tinta-2) }
+table.quadro tr:last-child td{ border-bottom: none }
+.resumo-fig{ margin: 14px 0 }
+.resumo-fig svg{ width: 100%; height: auto }
 
 /* ---------- aulas ---------- */
 .aula{
@@ -1038,6 +1054,12 @@ function painelResumo(r){
   if(!r) return "";
   return `<div class="resumo">
     <ul class="resumo-pontos">${r.pontos.map(p=>`<li>${esc(p)}</li>`).join("")}</ul>
+    ${(r.tabelas||[]).map(t=>`<div class="quadro-rol"><table class="quadro">
+      ${t.t?`<caption>${esc(t.t)}</caption>`:""}
+      <thead><tr>${t.c.map(c=>`<th>${esc(c)}</th>`).join("")}</tr></thead>
+      <tbody>${t.l.map(l=>`<tr>${l.map(c=>`<td>${esc(c)}</td>`).join("")}</tr>`).join("")}</tbody>
+    </table></div>`).join("")}
+    ${r.figura?`<figure class="resumo-fig">${r.figura}</figure>`:""}
     ${r.numeros?`<div class="resumo-num"><b>De cabeça</b>
       <ul>${r.numeros.map(n=>`<li>${esc(n)}</li>`).join("")}</ul></div>`:""}
     ${r.pega?`<p class="resumo-pega"><b>Onde se erra</b> ${esc(r.pega)}</p>`:""}

@@ -113,9 +113,10 @@ fica no aparelho.
 
 Cada tarefa de conteúdo abre o seu resumo dentro do próprio cartão, no botão
 "estudar por aqui". Os 42 resumos ficam em `rodizio/resumos.js`, com a chave
-igual ao título da tarefa, e cada um traz os pontos do tema, um bloco de
+igual ao título da tarefa. Cada um tem os pontos do tema, as tabelas do
+assunto, uma figura onde o desenho explica melhor que a frase, um bloco de
 números quando há o que decorar, a pegadinha mais comum e a referência do
-plano de ensino de onde veio. Foram escritos a partir dessas referências —
+plano de ensino de onde veio. São 289 pontos, 46 tabelas e 4 figuras. Foram escritos a partir dessas referências —
 cadernos de atenção básica, guias e manuais do Ministério da Saúde, INCA e
 os livros-texto da bibliografia —, e não copiados dos documentos, que não
 estavam ao alcance da sessão: número, prazo e portaria valem ser conferidos
@@ -123,9 +124,10 @@ na fonte antes da prova.
 
 Os mesmos resumos viram uma apostila em PDF, `rodizio/resumos.pdf`, gerada
 por `tools/gerar-resumos-pdf.js` a partir dos mesmos dados — mudou o resumo,
-roda de novo e a apostila acompanha. São 45 páginas em A4, com margem direita
-de 34 mm para grifar e escrever à mão, sumário na frente e cada tema com a
-fonte ao pé. O link para ela fica na aba Aulas.
+roda de novo e a apostila acompanha. São 27 páginas em A4 **em duas colunas**:
+o título e a fonte atravessam a largura toda, e o corpo corre em duas colunas
+com filete no meio, com as tabelas, as figuras e as caixas presas inteiras
+numa coluna só, sem partir entre páginas. O link para ela fica na aba Aulas.
 
 ```
 node tools/gerar-resumos-pdf.js > /tmp/resumos.html

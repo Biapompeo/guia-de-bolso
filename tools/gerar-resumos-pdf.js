@@ -8,8 +8,8 @@
      chrome --headless=new --no-pdf-header-footer \
             --print-to-pdf=rodizio/resumos.pdf file:///tmp/resumos.html
 
-   Assim a apostila nunca sai do ar em relação ao app: mudou o resumo,
-   roda de novo.
+   O texto corre em duas colunas; tabelas, figuras e caixas não se
+   partem entre colunas nem entre páginas.
    ================================================================= */
 
 const fs = require("fs");
@@ -32,8 +32,6 @@ const RESUMOS = new Function(
 
 const esc = (s) => String(s).replace(/[&<>]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]));
 
-/* os temas na ordem em que o plano de estudo os apresenta, agrupados pela
-   aula a que pertencem */
 const porEixo = {};
 dados.CONTEUDO.forEach(([eixo, titulo]) => (porEixo[eixo] = porEixo[eixo] || []).push(titulo));
 
@@ -41,8 +39,14 @@ const secoes = dados.AULAS.map((a) => ({
   aula: a,
   temas: a.eixos.flatMap((e) => (porEixo[e] || []).map((t) => ({ eixo: e, titulo: t }))),
 }));
-
 const total = secoes.reduce((n, s) => n + s.temas.length, 0);
+
+const tabela = (t) => `
+  <table class="quadro">
+    ${t.t ? `<caption>${esc(t.t)}</caption>` : ""}
+    <thead><tr>${t.c.map((c) => `<th>${esc(c)}</th>`).join("")}</tr></thead>
+    <tbody>${t.l.map((linha) => `<tr>${linha.map((c) => `<td>${esc(c)}</td>`).join("")}</tr>`).join("")}</tbody>
+  </table>`;
 
 const bloco = ({ eixo, titulo }) => {
   const r = RESUMOS[titulo];
@@ -50,13 +54,18 @@ const bloco = ({ eixo, titulo }) => {
   const e = dados.EIXOS[eixo];
   return `
   <article class="tema" style="--c:${e.c}">
-    <h3>${esc(titulo)}</h3>
-    <p class="eixo">${esc(e.n)}</p>
-    <ul>${r.pontos.map((p) => `<li>${esc(p)}</li>`).join("")}</ul>
-    ${r.numeros ? `<div class="caixa numeros"><b>De cabeça</b>
-      <ul>${r.numeros.map((n) => `<li>${esc(n)}</li>`).join("")}</ul></div>` : ""}
-    ${r.pega ? `<div class="caixa pega"><b>Onde se erra</b><p>${esc(r.pega)}</p></div>` : ""}
-    <p class="fonte">${esc(r.fonte)}</p>
+    <header>
+      <h3>${esc(titulo)}</h3>
+      <p class="eixo">${esc(e.n)} · ${esc(r.fonte)}</p>
+    </header>
+    <div class="corpo">
+      <ul class="pontos">${r.pontos.map((p) => `<li>${esc(p)}</li>`).join("")}</ul>
+      ${(r.tabelas || []).map(tabela).join("")}
+      ${r.figura ? `<figure>${r.figura}</figure>` : ""}
+      ${r.numeros ? `<div class="caixa numeros"><b>De cabeça</b>
+        <ul>${r.numeros.map((n) => `<li>${esc(n)}</li>`).join("")}</ul></div>` : ""}
+      ${r.pega ? `<div class="caixa pega"><b>Onde se erra</b><p>${esc(r.pega)}</p></div>` : ""}
+    </div>
   </article>`;
 };
 
@@ -68,71 +77,87 @@ process.stdout.write(`<!doctype html>
 <html lang="pt-BR"><head><meta charset="utf-8">
 <title>Resumos — Saúde Coletiva e MFC</title>
 <style>
-@page { size: A4; margin: 18mm 34mm 18mm 20mm; }   /* margem direita larga, para anotar */
+@page { size: A4; margin: 15mm 14mm; }
 
 :root{
-  --tinta:#1A1713; --tinta-2:#3A352E; --apagado:#5E584F;
-  --linha:#D9D2C6; --verde:#14615A; --alerta:#8A6512;
+  --tinta:#1A1713; --tinta-2:#38332C; --apagado:#5E584F;
+  --linha:#D9D2C6; --linha-fina:#E8E2D7; --verde:#14615A; --alerta:#8A6512;
   --serif:"Iowan Old Style","Palatino Linotype",Palatino,"Book Antiqua",Georgia,serif;
   --sans:-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
 }
 *{ box-sizing:border-box }
-body{ margin:0; font-family:var(--serif); font-size:10.8pt; line-height:1.62; color:var(--tinta) }
+body{ margin:0; font-family:var(--serif); font-size:9.4pt; line-height:1.5; color:var(--tinta) }
 
 /* ---------- capa ---------- */
-.capa{ height:235mm; display:flex; flex-direction:column; justify-content:center;
+.capa{ height:250mm; display:flex; flex-direction:column; justify-content:center;
        page-break-after:always }
-.capa .kick{ font-family:var(--sans); font-size:9.5pt; letter-spacing:.18em;
+.capa .kick{ font-family:var(--sans); font-size:9pt; letter-spacing:.2em;
              text-transform:uppercase; color:var(--apagado) }
-.capa h1{ font-size:31pt; line-height:1.1; margin:10px 0 6px; font-weight:600 }
-.capa h2{ font-size:13pt; font-weight:400; color:var(--tinta-2); margin:0 0 30px; font-style:italic }
-.capa .barra{ height:3px; background:var(--verde); width:70px; margin-bottom:26px }
-.capa .nota{ font-family:var(--sans); font-size:9pt; line-height:1.6; color:var(--apagado);
-             border-left:2px solid var(--linha); padding-left:12px; max-width:105mm }
+.capa h1{ font-size:34pt; line-height:1.08; margin:12px 0 8px; font-weight:600 }
+.capa .barra{ height:3px; background:var(--verde); width:78px; margin:0 0 24px }
+.capa h2{ font-size:13pt; font-weight:400; font-style:italic; color:var(--tinta-2); margin:0 0 34px }
+.capa .nota{ font-family:var(--sans); font-size:8.6pt; line-height:1.65; color:var(--apagado);
+             border-left:2px solid var(--linha); padding-left:12px; max-width:112mm }
 
 /* ---------- sumário ---------- */
 .sumario{ page-break-after:always }
-h2.secao{ font-family:var(--sans); font-size:10pt; letter-spacing:.14em; text-transform:uppercase;
-          color:var(--apagado); font-weight:600; margin:0 0 18px }
-.sumario > ol{ margin:0; padding-left:20px }
-.sumario > ol > li{ margin-bottom:14px }
-.s-aula{ font-size:12.5pt; font-weight:600 }
-.sumario ul{ margin:4px 0 0; padding-left:14px; list-style:none }
-.sumario ul li{ font-size:10pt; color:var(--tinta-2); margin:2px 0 }
+h2.secao{ font-family:var(--sans); font-size:9.5pt; letter-spacing:.15em; text-transform:uppercase;
+          color:var(--apagado); font-weight:600; margin:0 0 16px }
+.sumario > ol{ margin:0; padding-left:18px; column-count:2; column-gap:12mm }
+.sumario > ol > li{ margin-bottom:12px; break-inside:avoid }
+.s-aula{ font-size:11.5pt; font-weight:600 }
+.sumario ul{ margin:3px 0 0; padding-left:12px; list-style:none }
+.sumario ul li{ font-size:8.8pt; color:var(--tinta-2); margin:1px 0; line-height:1.35 }
 .sumario ul li::before{ content:"— "; color:var(--apagado) }
 
-/* ---------- aula ---------- */
+/* ---------- abertura de aula ---------- */
 .aula{ page-break-before:always }
-.aula-topo{ border-bottom:2px solid var(--tinta); padding-bottom:8px; margin-bottom:22px }
-.aula-topo h2{ font-size:18pt; margin:0; font-weight:600; line-height:1.2 }
-.aula-topo p{ font-family:var(--sans); font-size:9pt; color:var(--apagado); margin:5px 0 0 }
+.aula-topo{ border-bottom:2px solid var(--tinta); padding-bottom:7px; margin-bottom:16px }
+.aula-topo h2{ font-size:17pt; margin:0; font-weight:600; line-height:1.15 }
+.aula-topo p{ font-family:var(--sans); font-size:8.4pt; color:var(--apagado); margin:4px 0 0 }
 
-/* ---------- tema ---------- */
-.tema{ page-break-inside:avoid; margin-bottom:26px; border-left:3px solid var(--c); padding-left:14px }
-.tema h3{ font-size:13pt; margin:0; font-weight:600; line-height:1.25 }
-.tema .eixo{ font-family:var(--sans); font-size:8.5pt; letter-spacing:.1em; text-transform:uppercase;
-             color:var(--c); margin:3px 0 10px }
-.tema ul{ margin:0; padding-left:17px }
-.tema li{ margin-bottom:7px }
-.tema li::marker{ color:var(--c) }
+/* ---------- tema: título inteiro, conteúdo em duas colunas ---------- */
+.tema{ margin-bottom:14px; border-top:1px solid var(--linha-fina); padding-top:10px }
+.tema:first-of-type{ border-top:none; padding-top:0 }
+.tema header{ break-after:avoid; border-left:3px solid var(--c); padding-left:9px; margin-bottom:9px }
+.tema h3{ font-size:12pt; margin:0; font-weight:600; line-height:1.2 }
+.tema .eixo{ font-family:var(--sans); font-size:7.6pt; color:var(--apagado); margin:2px 0 0;
+             text-transform:uppercase; letter-spacing:.07em }
 
-.caixa{ margin-top:12px; padding:9px 13px; border:1px solid var(--linha); border-radius:3px;
-        font-size:10pt; page-break-inside:avoid }
-.caixa b{ font-family:var(--sans); font-size:8pt; letter-spacing:.12em; text-transform:uppercase;
-          display:block; margin-bottom:4px }
+.corpo{ column-count:2; column-gap:9mm; column-rule:1px solid var(--linha-fina) }
+.pontos{ margin:0; padding-left:14px }
+.pontos li{ margin-bottom:6px; break-inside:avoid }
+.pontos li::marker{ color:var(--c) }
+
+/* ---------- quadros ---------- */
+.quadro{ width:100%; border-collapse:collapse; margin:10px 0; font-size:8.4pt;
+         break-inside:avoid; line-height:1.35 }
+.quadro caption{ font-family:var(--sans); font-size:7.6pt; letter-spacing:.09em;
+                 text-transform:uppercase; color:var(--c); text-align:left;
+                 padding-bottom:3px; font-weight:600 }
+.quadro th{ text-align:left; font-family:var(--sans); font-size:7.6pt; font-weight:600;
+            border-bottom:1px solid var(--tinta-2); padding:3px 5px 3px 0; vertical-align:bottom }
+.quadro td{ padding:3px 5px 3px 0; border-bottom:1px solid var(--linha-fina); vertical-align:top }
+.quadro tr:last-child td{ border-bottom:none }
+
+figure{ margin:10px 0; break-inside:avoid }
+figure svg{ width:100%; height:auto }
+
+.caixa{ margin:10px 0; padding:7px 10px; border:1px solid var(--linha); border-radius:3px;
+        font-size:8.6pt; line-height:1.45; break-inside:avoid }
+.caixa b{ font-family:var(--sans); font-size:7.4pt; letter-spacing:.11em; text-transform:uppercase;
+          display:block; margin-bottom:3px }
 .caixa p{ margin:0 }
-.caixa ul{ padding-left:15px; margin:0 }
+.caixa ul{ padding-left:13px; margin:0 }
 .numeros{ border-color:#BFD6CE; background:#F1F7F4 }
 .numeros b{ color:var(--verde) }
 .pega{ border-color:#E3D4AC; background:#FBF6E9 }
 .pega b{ color:var(--alerta) }
 
-.fonte{ font-family:var(--sans); font-size:8.5pt; color:var(--apagado); margin:10px 0 0 }
-
 /* ---------- fim ---------- */
 .fim{ page-break-before:always }
-.fim ol{ padding-left:20px; font-size:10.5pt }
-.fim li{ margin-bottom:7px }
+.fim ol{ padding-left:18px; font-size:10pt }
+.fim li{ margin-bottom:8px }
 </style></head><body>
 
 <section class="capa">
@@ -143,7 +168,7 @@ h2.secao{ font-family:var(--sans); font-size:10pt; letter-spacing:.14em; text-tr
   <p class="nota">Escritos a partir das referências do plano de ensino — cadernos de atenção
   básica, guias e manuais do Ministério da Saúde, documentos do INCA e os livros-texto da
   bibliografia. Não são cópia dos documentos: número, prazo e portaria valem ser conferidos na
-  fonte, indicada ao pé de cada tema, antes da prova.</p>
+  fonte, indicada no alto de cada tema, antes da prova.</p>
 </section>
 
 <section class="sumario">
@@ -156,7 +181,7 @@ ${secoes.map((s) => `
   <div class="aula-topo">
     <h2>${esc(s.aula.tema)}</h2>
     <p>${s.aula.quem.length
-      ? s.aula.quem.map(([nome, papel]) => esc(nome) + " · " + papel).join("   ")
+      ? s.aula.quem.map(([nome, papel]) => esc(nome) + " · " + papel).join("    ")
       : esc(s.aula.nota || "")}</p>
   </div>
   ${s.temas.map(bloco).join("")}
@@ -166,7 +191,7 @@ ${secoes.map((s) => `
   <h2 class="secao">Antes da prova</h2>
   <ol>
     <li>A prova teórica vale 60% da média; a ficha de desempenho preenchida pela preceptora, 40%.</li>
-    <li>Releia só os blocos <b>De cabeça</b> e <b>Onde se erra</b> na véspera: são os números e as
+    <li>Na véspera, releia só as caixas <b>De cabeça</b> e <b>Onde se erra</b>: são os números e as
     trocas que mais custam ponto.</li>
     <li>Confira na fonte o que for número, prazo ou portaria — é o que muda de edição para edição.</li>
   </ol>
