@@ -301,6 +301,26 @@ table.ex td.s{ text-align: right; color: var(--apagado); white-space: nowrap; fo
 .tirar{ flex: 0 0 auto; border: none; background: none; color: var(--apagado);
         font-size: 20px; line-height: 1; padding: 0 2px }
 
+/* ---------- resumo dentro da tarefa ---------- */
+.resumo{ margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--linha-fina) }
+.resumo-pontos{ margin: 0; padding-left: 18px; font-size: 14px; line-height: 1.55; color: var(--tinta-2) }
+.resumo-pontos li{ margin-bottom: 9px }
+.resumo-pontos li::marker{ color: var(--c) }
+.resumo-num{
+  margin-top: 14px; padding: 11px 13px; border-radius: var(--r-p);
+  background: var(--verde-lavado); font-size: 13.5px; color: #13423C;
+}
+.resumo-num b{ display: block; font-size: 11px; letter-spacing: .07em; text-transform: uppercase;
+               margin-bottom: 5px; opacity: .8 }
+.resumo-num ul{ margin: 0; padding-left: 16px }
+.resumo-pega{
+  margin: 14px 0 0; padding-left: 12px; border-left: 3px solid var(--alerta);
+  font-size: 13.5px; line-height: 1.5; color: var(--tinta-2);
+}
+.resumo-pega b{ display: block; font-size: 11px; letter-spacing: .07em; text-transform: uppercase;
+                color: var(--alerta); margin-bottom: 3px }
+.resumo-fonte{ margin: 14px 0 0; font-size: 11.5px; color: var(--apagado); font-style: italic }
+
 /* ---------- aulas ---------- */
 .aula{
   padding: 14px 16px; background: var(--carta); border: 1px solid var(--linha-fina);
@@ -370,6 +390,9 @@ table.padrao tr:last-child th, table.padrao tr:last-child td{ border-bottom: non
 <!-- Primeira carga, opcional e pessoal: só existe onde o app é privado.
      Onde o arquivo não estiver, o app abre em branco e nada se quebra. -->
 <script src="./meus-dados.js"></script>
+
+<!-- Os resumos de estudo, um por tema do plano de ensino. -->
+<script src="./resumos.js"></script>
 
 <div class="folha">
   <header class="capa">
@@ -775,6 +798,8 @@ function carregar(){
 
 let S=carregar(), diaAtivo=hoje(), aba="dia", recado="";
 let rascunho="", escopoNovo="semana", ajustando=null, colando=false, aulaAberta=null;
+let resumoAberto=null;
+const TEMRESUMO=(typeof RESUMOS!=="undefined"&&RESUMOS)||{};
 
 /* o estado manda; onde ele ainda não tem, entra a primeira carga, se houver */
 if(!S.escala) S.escala=ESCALA; else ESCALA=S.escala;
@@ -943,7 +968,11 @@ function viewDia(){
       <div class="t-acoes">
         <button class="${feita?"desfazer":"fazer"}" onclick="concluir(${x.id})">${feita?"✓ feita":"marcar feita"}</button>
         ${feita?"":`<button class="adiar" onclick="adiar(${x.id})">não deu — remarcar</button>`}
-      </div></li>`;
+      </div>
+      ${TEMRESUMO[x.titulo]?`<button class="btn-ajustar" style="margin:12px 0 0"
+        onclick="verResumo(${x.id})">${resumoAberto===x.id?"fechar o resumo":"estudar por aqui"}</button>`:""}
+      ${resumoAberto===x.id?painelResumo(TEMRESUMO[x.titulo]):""}
+      </li>`;
   });
   return h+`</ol>`;
 }
@@ -1001,6 +1030,18 @@ function painelAjuste(d,e){
       <button class="fazer" onclick="salvarDia()">salvar o dia</button>
       <button class="adiar" onclick="limparDia()">tirar o que pus aqui</button>
     </div>
+  </div>`;
+}
+
+/* O resumo do tema, para estudar sem sair do dia. */
+function painelResumo(r){
+  if(!r) return "";
+  return `<div class="resumo">
+    <ul class="resumo-pontos">${r.pontos.map(p=>`<li>${esc(p)}</li>`).join("")}</ul>
+    ${r.numeros?`<div class="resumo-num"><b>De cabeça</b>
+      <ul>${r.numeros.map(n=>`<li>${esc(n)}</li>`).join("")}</ul></div>`:""}
+    ${r.pega?`<p class="resumo-pega"><b>Onde se erra</b> ${esc(r.pega)}</p>`:""}
+    <p class="resumo-fonte">${esc(r.fonte)}</p>
   </div>`;
 }
 
@@ -1208,6 +1249,7 @@ function tirarLembrete(id){
 }
 function abrirAjuste(d){ ajustando=ajustando===d?null:d; render(); }
 function verAula(id){ aulaAberta=aulaAberta===id?null:id; render(); }
+function verResumo(id){ resumoAberto=resumoAberto===id?null:id; render(); }
 function salvarQuando(id){
   const v=document.getElementById("aula-quando").value.trim();
   if(v) S.aulas[id]=v; else delete S.aulas[id];

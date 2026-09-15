@@ -111,6 +111,16 @@ de progresso dos eixos que aquela aula cobre. O plano não fixa data nem hora
 cronograma marcar —, então o "quando" de cada aula é anotado dentro do app e
 fica no aparelho.
 
+Cada tarefa de conteúdo abre o seu resumo dentro do próprio cartão, no botão
+"estudar por aqui". Os 42 resumos ficam em `rodizio/resumos.js`, com a chave
+igual ao título da tarefa, e cada um traz os pontos do tema, um bloco de
+números quando há o que decorar, a pegadinha mais comum e a referência do
+plano de ensino de onde veio. Foram escritos a partir dessas referências —
+cadernos de atenção básica, guias e manuais do Ministério da Saúde, INCA e
+os livros-texto da bibliografia —, e não copiados dos documentos, que não
+estavam ao alcance da sessão: número, prazo e portaria valem ser conferidos
+na fonte antes da prova.
+
 Os lembretes ficam junto do resto do estado, e por isso sobrevivem a
 "recomeçar o plano". A aba acende um pontinho na barra quando há algo em
 aberto de semana ou de mês — os de "sempre à vista", como a dieta, não
