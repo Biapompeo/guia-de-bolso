@@ -124,10 +124,13 @@ na fonte antes da prova.
 
 Os mesmos resumos viram uma apostila em PDF, `rodizio/resumos.pdf`, gerada
 por `tools/gerar-resumos-pdf.js` a partir dos mesmos dados — mudou o resumo,
-roda de novo e a apostila acompanha. São 27 páginas em A4 **em duas colunas**:
-o título e a fonte atravessam a largura toda, e o corpo corre em duas colunas
-com filete no meio, com as tabelas, as figuras e as caixas presas inteiras
-numa coluna só, sem partir entre páginas. O link para ela fica na aba Aulas.
+roda de novo e a apostila acompanha. São 26 páginas em A4, em duas colunas e com
+projeto gráfico próprio: capa em campo de cor com a faixa dos dez eixos, cada
+aula abrindo numa tarja da cor do seu eixo, temas numerados (1.1, 1.2…) em
+selo colorido, tabelas com cabeçalho tingido e linhas alternadas, figuras
+sobre fundo tingido e caixas com trilha colorida. O papel é creme, não branco.
+As tabelas, figuras e caixas ficam inteiras numa coluna, sem partir entre
+páginas. O link fica na aba Aulas.
 
 ```
 node tools/gerar-resumos-pdf.js > /tmp/resumos.html
