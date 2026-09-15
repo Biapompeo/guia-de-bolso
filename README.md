@@ -121,6 +121,18 @@ os livros-texto da bibliografia —, e não copiados dos documentos, que não
 estavam ao alcance da sessão: número, prazo e portaria valem ser conferidos
 na fonte antes da prova.
 
+Os mesmos resumos viram uma apostila em PDF, `rodizio/resumos.pdf`, gerada
+por `tools/gerar-resumos-pdf.js` a partir dos mesmos dados — mudou o resumo,
+roda de novo e a apostila acompanha. São 45 páginas em A4, com margem direita
+de 34 mm para grifar e escrever à mão, sumário na frente e cada tema com a
+fonte ao pé. O link para ela fica na aba Aulas.
+
+```
+node tools/gerar-resumos-pdf.js > /tmp/resumos.html
+chrome --headless=new --no-pdf-header-footer \
+       --print-to-pdf=rodizio/resumos.pdf file:///tmp/resumos.html
+```
+
 Os lembretes ficam junto do resto do estado, e por isso sobrevivem a
 "recomeçar o plano". A aba acende um pontinho na barra quando há algo em
 aberto de semana ou de mês — os de "sempre à vista", como a dieta, não
