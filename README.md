@@ -84,6 +84,132 @@ PCDT do DM2. A aba Por idade o inclui e aponta para lá.
 > contrária. São coisas diferentes — a primeira diz que o equilíbrio é
 > incerto. O app mostra os dois casos separados.
 
+## Rodízio de Saúde Coletiva
+
+Em `rodizio/index.html` mora um segundo aplicativo, independente do guia: o
+plano do rodízio de **Saúde Coletiva e Medicina de Família** do Internato I.
+
+O calendário vem do plano de ensino: oito semanas, de **31 de agosto a 23 de
+outubro de 2026**, com feriado em 7 de setembro e 12 de outubro, **prova em
+21 de outubro**, vista de prova no dia 22 e encerramento no dia 23. Feriado
+não tem UBS nem aula e rende cinco blocos de estudo, como a sexta; a tarde de
+quinta aparece como descanso semanal, que é o que o plano reserva. A aba
+Semana traz o quadro da semana padrão para consulta.
+
+| Aba | Conteúdo |
+| --- | --- |
+| **Hoje** | Os compromissos fixos do dia — UBS e academia — e as tarefas de estudo encaixadas nos horários livres, uma por horário |
+| **Semana** | Os próximos sete dias de relance, com quantas tarefas faltam em cada um |
+| **Treino** | O rodízio dos cinco treinos, com séries e repetições, e qual é o da vez |
+| **Lembretes** | O que não pode esquecer, em três prateleiras: esta semana, importantes do mês e sempre à vista |
+| **Aulas** | As oito aulas teóricas do plano de ensino: tema, quem dá, conteúdo programático e quanto já saiu de cada eixo — com um campo para anotar o horário de cada aula quando ele sair |
+
+As aulas vêm do plano de ensino, em `AULAS`: oito temas, os professores e
+preceptores responsáveis e o conteúdo programático de cada um, com as barras
+de progresso dos eixos que aquela aula cobre. O plano não fixa data nem hora
+— diz só que as teóricas são pela manhã, nas terças e quartas que o
+cronograma marcar —, então o "quando" de cada aula é anotado dentro do app e
+fica no aparelho.
+
+Cada tarefa de conteúdo abre o seu resumo dentro do próprio cartão, no botão
+"estudar por aqui". Os 42 resumos ficam em `rodizio/resumos.js`, com a chave
+igual ao título da tarefa. Cada um tem os pontos do tema, as tabelas do
+assunto, uma figura onde o desenho explica melhor que a frase, um bloco de
+números quando há o que decorar, a pegadinha mais comum e a referência do
+plano de ensino de onde veio. São 289 pontos, 46 tabelas e 4 figuras. Foram escritos a partir dessas referências —
+cadernos de atenção básica, guias e manuais do Ministério da Saúde, INCA e
+os livros-texto da bibliografia —, e não copiados dos documentos, que não
+estavam ao alcance da sessão: número, prazo e portaria valem ser conferidos
+na fonte antes da prova.
+
+Os mesmos resumos viram uma apostila em PDF, `rodizio/resumos.pdf`, gerada
+por `tools/gerar-resumos-pdf.js` a partir dos mesmos dados — mudou o resumo,
+roda de novo e a apostila acompanha. São 26 páginas em A4, em duas colunas e com
+projeto gráfico próprio: capa em campo de cor com a faixa dos dez eixos, cada
+aula abrindo numa tarja da cor do seu eixo, temas numerados (1.1, 1.2…) em
+selo colorido, tabelas com cabeçalho tingido e linhas alternadas, figuras
+sobre fundo tingido e caixas com trilha colorida. O papel é creme, não branco.
+As tabelas, figuras e caixas ficam inteiras numa coluna, sem partir entre
+páginas. O link fica na aba Aulas.
+
+```
+node tools/gerar-resumos-pdf.js > /tmp/resumos.html
+chrome --headless=new --no-pdf-header-footer \
+       --print-to-pdf=rodizio/resumos.pdf file:///tmp/resumos.html
+```
+
+Os lembretes ficam junto do resto do estado, e por isso sobrevivem a
+"recomeçar o plano". A aba acende um pontinho na barra quando há algo em
+aberto de semana ou de mês — os de "sempre à vista", como a dieta, não
+acendem, porque nunca terminam.
+
+A escala das práticas e os compromissos são **dados de quem usa, não do
+programa**: ficam no aparelho e se editam dentro do app, no botão "ajustar
+este dia" — turno na UBS, com quem, quem fica no turno livre, e os
+compromissos que não são nem plantão nem estudo, como um exame em jejum.
+
+```js
+escala["2026-09-14"]       = {turno:"tarde", com:"…", outras:"…"}
+compromissos["2026-09-15"] = [{h:"manhã", txt:"…", curto:"…"}]
+```
+
+O turno é `manha`, `tarde`, `aula` — aula teórica na UNIVAG, que o plano
+prevê nas manhãs de terça e quarta — ou `folga`, dia sem UBS.
+
+Nos dias que a escala define, o turno já vem decidido e a agenda do dia sai em
+ordem — manhã livre, academia, UBS. Nos outros, o seletor de manhã ou tarde
+continua ali. Os horários de estudo se movem junto: quem está na UBS à tarde
+estuda de manhã e à noite, e um dia sem UBS rende cinco blocos, como a sexta.
+
+O app procura um `rodizio/meus-dados.js` ao lado, primeira carga opcional que
+semearia escala, compromissos e lembretes na primeira abertura. **Ele não
+existe aqui, e não deve existir**: este repositório é público, e é justamente
+esse arquivo que carregaria informação pessoal. Sem ele o app abre em branco,
+como deve, e tudo é preenchido dentro dele, ficando só no aparelho de quem
+usa.
+
+Na aba Eixos, "copiar meus dados" põe todo o estado na área de transferência
+e "colar dados" o traz de volta — é como levar o rodízio inteiro, com o que
+já foi marcado, de um aparelho ou endereço para outro.
+
+O que ficou pendente de um dia que já passou é remarcado sozinho para o
+próximo dia com horário vago, e o botão "não deu — remarcar" faz o mesmo à
+mão; o cartão passa a dizer quantas vezes aquela tarefa já foi adiada.
+
+Instala como aplicativo à parte do guia: ícone próprio, tela cheia e
+funcionamento sem internet, por manifesto e service worker próprios dentro de
+`rodizio/`. O botão de instalar fica na aba Eixos, junto com a instrução do
+iPhone (Compartilhar → Adicionar à Tela de Início), e os atalhos do manifesto
+abrem direto numa aba (`?aba=treino`). O progresso fica no `localStorage` do
+próprio navegador (chave `rodizio-sc-v1`) — não sai do aparelho e não se
+mistura com o estado do guia.
+
+A previsão do tempo é o único pedaço que fala com a rede: vem do
+[Open-Meteo](https://open-meteo.com), que não pede chave nem cadastro, para
+Cuiabá, e cobre uns dezesseis dias — os dias além disso não mostram nada.
+Ela é buscada de três em três horas, fica guardada em `rodizio-tempo-v1` e
+aparece em faixa no dia e em selo na semana. Se a rede falhar, vale a última
+previsão guardada; se não houver nenhuma, a faixa some e o resto do app segue
+igual. É um extra, e foi construído como extra: nada depende dela.
+
+Onde a página é servida sem poder falar com a rede — é o caso da cópia
+hospedada em claude.ai, que o app usa hoje como endereço privado —, a faixa
+não aparece e a aba Eixos diz por quê, com um link para a previsão no
+navegador. Previsão que se atualiza sozinha, portanto, só num endereço que
+alcance a internet.
+
+Aqui a rede é permitida, então a previsão funciona: o app busca de três em
+três horas e guarda a última. Foi para isso que os dados pessoais saíram do
+código e foram para o aparelho — a página pôde vir para um endereço público
+sem levar nada de ninguém.
+
+Visualmente é a mesma casa do guia — papel quente, cartão creme, a mesma
+serifada editorial — com acento verde-sálvia e uma cor por eixo. Todo texto
+foi medido contra o fundo que de fato o pinta: 7:1 no texto corrido, 4,5:1
+nos rótulos, os mesmos alvos do tema claro do guia. A página não tem
+dependência externa: o estilo vai embutido, e os únicos anexos são o
+manifesto e os ícones.
+
 ## Acrescentar um assunto
 
 Assuntos ficam em `ASSUNTOS`, no topo de `assets/app.js`. Cada um traz o
@@ -344,6 +470,7 @@ assets/app.js            renderização, abas, busca, tema e instalação
 assets/styles.css        sistema visual: tokens, tema claro/escuro, componentes
 manifest.webmanifest     nome, ícones e comportamento do app instalado
 sw.js                    cache offline
+rodizio/                 o segundo app: página, manifesto, ícones e sw próprios
 icons/                   ícones do app
 tools/                   empacotador do arquivo único e extrator dos coeficientes
 tests/                   validação do risco, da conduta e do contraste
