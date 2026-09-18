@@ -131,14 +131,17 @@ const gruposAtuais = () => ["Todos", ...new Set(classesAtuais().map((c) => c.gru
 /* Entradas da calculadora. De propósito não são gravadas em disco:
    são dados de paciente, e o app não deve guardá-los. */
 const risco = {
-  sexo: "F", idade: "", pas: "", colesterolTotal: "", hdl: "", tfg: "",
-  creatinina: "", hba1c: "", rac: "",
-  diabetes: false, fumante: false, usaAntiHipertensivo: false, usaEstatina: false,
+  sexo: "F", idade: "", pas: "", pad: "", colesterolTotal: "", hdl: "", tfg: "",
+  creatinina: "", hba1c: "", rac: "", potassio: "",
+  diabetes: false, fumante: false, usaEstatina: false,
+  nDrogas: 0,
+  cond: {},
 };
 
 const CAMPOS_RISCO = [
   { k: "idade", rot: "Idade", un: "anos", min: 30, max: 79 },
   { k: "pas", rot: "PA sistólica", un: "mmHg", min: 70, max: 250 },
+  { k: "pad", rot: "PA diastólica", un: "mmHg", min: 40, max: 160 },
   { k: "colesterolTotal", rot: "Colesterol total", un: "mg/dL", min: 80, max: 500 },
   { k: "hdl", rot: "HDL", un: "mg/dL", min: 10, max: 150 },
   { k: "tfg", rot: "TFG estimada", un: "mL/min", min: 5, max: 200 },
@@ -147,13 +150,30 @@ const CAMPOS_RISCO = [
 const CAMPOS_OPCIONAIS = [
   { k: "hba1c", rot: "HbA1c", un: "%", min: 3, max: 20 },
   { k: "rac", rot: "Albumina/creatinina", un: "mg/g", min: 0.1, max: 10000 },
+  { k: "potassio", rot: "Potássio", un: "mEq/L", min: 1.5, max: 9 },
 ];
 
 const MARCADORES_RISCO = [
   { k: "diabetes", rot: "Diabetes" },
   { k: "fumante", rot: "Fumante atual" },
-  { k: "usaAntiHipertensivo", rot: "Usa anti-hipertensivo" },
   { k: "usaEstatina", rot: "Usa estatina" },
+];
+
+/* Condições que, na DBHA 2025, mudam a escolha da classe. Só entram
+   aqui as que a tabela PERFIS resolve — nada que o app não saiba usar. */
+const CONDICOES = [
+  { k: "coronaria", rot: "Doença coronariana ou pós-infarto" },
+  { k: "icfer", rot: "IC com fração de ejeção reduzida" },
+  { k: "fa", rot: "Fibrilação atrial" },
+  { k: "avc", rot: "Pós-AVC" },
+  { k: "negra", rot: "Pessoa negra" },
+  { k: "gota", rot: "Gota ou hiperuricemia" },
+  { k: "asma", rot: "Asma ou DPOC" },
+  { k: "osteoporose", rot: "Osteoporose" },
+  { k: "enxaqueca", rot: "Enxaqueca" },
+  { k: "hpb", rot: "Hiperplasia prostática", so: "M" },
+  { k: "gestante", rot: "Gestação", so: "F" },
+  { k: "fragil", rot: "Idoso frágil ou hipotensão ortostática" },
 ];
 
 const COR_COMBO = { sim: "#2E7A61", nao: "#B3242F", atencao: "#B8871B" };
@@ -425,31 +445,128 @@ function entradasRisco() {
   const n = (k) => parseFloat(risco[k]);
   return {
     sexo: risco.sexo,
-    idade: n("idade"), pas: n("pas"),
+    idade: n("idade"), pas: n("pas"), pad: n("pad"),
     colesterolTotal: n("colesterolTotal"), hdl: n("hdl"), tfg: n("tfg"),
     diabetes: risco.diabetes, fumante: risco.fumante,
-    usaAntiHipertensivo: risco.usaAntiHipertensivo, usaEstatina: risco.usaEstatina,
+    // o PREVENT só quer saber se há tratamento; o número entra na conduta
+    usaAntiHipertensivo: risco.nDrogas >= 1, usaEstatina: risco.usaEstatina,
+    potassio: n("potassio"),
     // vazios viram NaN, que o cálculo trata como exame não informado
     hba1c: n("hba1c"), rac: n("rac"),
   };
 }
 
-/* O que o risco calculado significa para a decisão de tratar, cruzando com a PA. */
-function conduta(faixa, pas) {
-  if (pas >= 140) {
-    return "Com PA ≥ 140/90 o tratamento medicamentoso começa no diagnóstico, qualquer que seja o risco calculado.";
-  }
-  if (pas >= 130) {
-    return faixa === "Alto"
-      ? "Na faixa 130–139/80–89 com risco alto, entra medicação se a PA não controlar após três meses de medidas não farmacológicas."
-      : "Na faixa 130–139/80–89 sem risco alto, a conduta é de medidas não medicamentosas, com reavaliação periódica do risco.";
-  }
-  return "Abaixo de 130/80 a conduta é de medidas não medicamentosas e controle dos demais fatores de risco.";
+/* ---------- conduta para o paciente calculado ---------- */
+/* Cores da decisão, reaproveitadas dos limiares de início. */
+const COR_DECISAO = {
+  iniciar: INICIO_LIMIARES[2].cor,
+  escalar: INICIO_LIMIARES[2].cor,
+  condicional: INICIO_LIMIARES[1].cor,
+  mev: INICIO_LIMIARES[0].cor,
+  manter: INICIO_LIMIARES[0].cor,
+};
+
+/* Exemplos de droga e dose para o rótulo escolhido. Quando a conduta
+   já apontou um princípio ativo (losartana, metildopa), mostra só ele. */
+function exemplosDrogas(ids, rot) {
+  const alvo = norm(rot.split(/[ —(]/)[0]);
+  const todas = ids.reduce((a, id) => a.concat(classePorId(id).drogas), []);
+  const casam = todas.filter((d) => norm(d).startsWith(alvo));
+  if (casam.length) return casam;
+  if (ids.length > 1) return ids.map((id) => classePorId(id).drogas[0]);
+  return todas.slice(0, 3);
+}
+
+function linhaEsquema(e) {
+  const links = e.ids.map(
+    (id) => `<button class="rx-link" data-ir-classe="${id}">${esc(classePorId(id).nome)}</button>`
+  ).join("");
+  return `<article class="rx acc" style="${acento(e.cor)}">
+    <div class="rx-top">
+      <span class="rx-rot">${esc(e.rot)}</span>
+      <span class="rx-ord">${esc(e.ordem)}</span>
+    </div>
+    <ul class="rx-drogas">${exemplosDrogas(e.ids, e.rot).map((d) => `<li>${esc(d)}</li>`).join("")}</ul>
+    <div class="rx-why">${e.motivos.map((m) => esc(m)).join(" · ")}</div>
+    <div class="rx-links">${links}</div>
+  </article>`;
+}
+
+function condutaHTML(e, r) {
+  if (!Number.isFinite(e.pad)) return "";
+  const p = condutaPaciente({
+    pas: e.pas, pad: e.pad, idade: e.idade, tfg: e.tfg, rac: e.rac,
+    potassio: e.potassio, diabetes: e.diabetes, faixa: r.faixa.rot,
+    nDrogas: risco.nDrogas, cond: risco.cond,
+  });
+
+  const rotEsquema = p.decisao.chave === "manter"
+    ? "Esquema esperado para este perfil"
+    : p.decisao.chave === "mev"
+      ? "Se um dia precisar de medicação"
+      : "Esquema sugerido";
+
+  const evitar = p.evitar.length
+    ? `<div class="group-label">Não usar neste paciente</div>
+       <div class="plano-evitar">${p.evitar.map(
+         (x) => `<div class="ev"><span class="ev-rot">${esc(x.rot)}</span><span class="ev-txt">${esc(x.motivo)}</span></div>`
+       ).join("")}</div>`
+    : "";
+
+  const alertas = p.alertas.length
+    ? `<div class="group-label">Atenção</div>
+       <div class="stack">${p.alertas.map(
+         (a) => `<article class="combo acc" style="${acento(COR_COMBO[a.tipo])}">
+           <div class="rx-top">
+             <h3 class="combo-title">${esc(a.titulo)}</h3>
+             <span class="rx-ord">${esc(ROT_COMBO[a.tipo])}</span>
+           </div>
+           <p class="combo-txt">${esc(a.txt)}</p>
+         </article>`
+       ).join("")}</div>`
+    : "";
+
+  return `<section class="card card-pad plano" style="margin-top:10px">
+    <div class="eyebrow">Conduta para este paciente</div>
+
+    <div class="plano-pa acc" style="${acento(p.estagio.cor)}">
+      <span class="plano-pa-v">${e.pas}/${e.pad} <span class="unit">mmHg</span></span>
+      <span class="plano-pa-e">${esc(p.estagio.rot)}</span>
+    </div>
+    <p class="plano-nota">${esc(p.estagio.cond)}</p>
+    <div class="plano-meta">Meta pressórica <strong>${esc(p.meta)}</strong>${
+      p.naMeta ? '<span class="plano-ok">na meta</span>' : '<span class="plano-fora">fora da meta</span>'
+    }</div>
+
+    <div class="plano-dec acc" style="${acento(COR_DECISAO[p.decisao.chave])}">
+      <div class="plano-dec-rot">${esc(p.decisao.rot)}</div>
+      <p>${esc(p.decisao.txt)}</p>
+    </div>
+
+    <div class="group-label">Quantas drogas</div>
+    <div class="plano-passo">
+      <div class="plano-passo-rot">${esc(p.passo.nome)}</div>
+      <p>${esc(p.passo.txt)}</p>
+    </div>
+
+    <div class="group-label">${esc(rotEsquema)}</div>
+    <div class="stack">${p.esquema.map(linhaEsquema).join("")}</div>
+    ${p.referencia
+      ? `<div class="plano-ref"><span class="plano-ref-rot">${esc(p.referencia.titulo)}</span>
+         <p>${esc(p.referencia.txt)}</p>
+         ${p.referencia.ex ? `<div class="combo-ex">${esc(p.referencia.ex)}</div>` : ""}</div>`
+      : ""}
+
+    ${evitar}
+    ${alertas}
+
+    <p class="footnote">Sugestão montada a partir da DBHA 2025 com os dados digitados acima — não é prescrição. A escolha final depende de exame físico, exames complementares, disponibilidade, custo e do que o paciente já tolerou.</p>
+  </section>`;
 }
 
 function resultadoRiscoHTML() {
   if (!riscoCompleto()) {
-    return `<div class="result-empty">Preencha os cinco campos acima para ver o risco estimado.</div>`;
+    return `<div class="result-empty">Preencha os campos acima para ver o risco e a conduta.</div>`;
   }
   const e = entradasRisco();
   const r = calcularPrevent(e);
@@ -478,11 +595,11 @@ function resultadoRiscoHTML() {
       <div><dt>DCV total em 30 anos</dt><dd>${pct(r.dcv30)}</dd></div>
     </dl>
 
-    <div class="result-action">${esc(conduta(r.faixa.rot, e.pas))}</div>
     ${r.avisos.length
       ? `<div class="result-warn">Fora da faixa validada: ${esc(r.avisos.join("; "))}. O resultado deixa de ser confiável.</div>`
       : ""}
-  </div>`;
+  </div>
+  ${condutaHTML(e, r)}`;
 }
 
 function viewRisco() {
@@ -510,8 +627,18 @@ function viewRisco() {
     </button>`
   ).join("");
 
+  const condicoes = CONDICOES.filter((x) => !x.so || x.so === risco.sexo).map(
+    (x) => `<button class="toggle" data-cond="${x.k}" aria-pressed="${!!risco.cond[x.k]}">
+      <span class="box">${ICON.check}</span>${esc(x.rot)}
+    </button>`
+  ).join("");
+
+  const emUso = [0, 1, 2, 3, 4].map(
+    (n) => `<button data-ndrogas="${n}" aria-pressed="${risco.nDrogas === n}">${n === 0 ? "Nenhum" : n === 4 ? "4+" : n}</button>`
+  ).join("");
+
   return `
-  <p class="tab-intro">A DBHA 2025 adota o <strong>PREVENT</strong>, da American Heart Association, no lugar do escore de Framingham. Vale para 30 a 79 anos, em prevenção primária — quem já tem doença cardiovascular estabelecida é de alto risco por definição, sem precisar calcular.</p>
+  <p class="tab-intro">A DBHA 2025 adota o <strong>PREVENT</strong>, da American Heart Association, no lugar do escore de Framingham. Vale para 30 a 79 anos, em prevenção primária — quem já tem doença cardiovascular estabelecida é de alto risco por definição, sem precisar calcular. Com a PA e as condições preenchidas, o resultado vem com o esquema de medicação que a diretriz indica para este paciente.</p>
 
   <section class="card card-pad">
     <div class="eyebrow">Dados do paciente</div>
@@ -538,11 +665,23 @@ function viewRisco() {
     <p class="helper-note">Se o laboratório já informa a TFG, use aquele valor. A TFG é em mL/min/1,73m². O atalho aplica a CKD-EPI 2021, sem coeficiente de raça, e preenche o campo acima — precisa da idade e do sexo.</p>
 
     <div class="toggles">${marcadores}</div>
+
+    <div class="field" style="margin-top:16px">
+      <label>Anti-hipertensivos que já usa</label>
+      <div class="seg seg-num">${emUso}</div>
+    </div>
+    <p class="helper-note">É esse número que responde se falta combinar e se já é hora da terceira ou da quarta droga.</p>
+  </section>
+
+  <section class="card card-pad" style="margin-top:10px">
+    <div class="eyebrow">Condições associadas</div>
+    <p class="helper-note" style="margin:6px 0 0">A indicação específica vence a preferência genérica de primeira linha. Marque o que houver.</p>
+    <div class="toggles">${condicoes}</div>
   </section>
 
   <section class="card card-pad" style="margin-top:10px">
     <div class="eyebrow">Exames opcionais</div>
-    <p class="helper-note" style="margin:6px 0 0">Refinam a estimativa em diabetes e em doença renal. Sem eles o cálculo usa o modelo base, que é o padrão da diretriz.</p>
+    <p class="helper-note" style="margin:6px 0 0">HbA1c e albumina/creatinina refinam a estimativa de risco em diabetes e doença renal. A albuminúria e o potássio também mudam a escolha da classe.</p>
     <div class="form-grid">${opcionais}</div>
   </section>
 
@@ -943,6 +1082,22 @@ function irParaAssunto(id) {
   scrollTo({ top: 0 });
 }
 
+/* Abre o cartão de uma classe vindo da conduta sugerida. */
+function irParaClasse(id) {
+  state.assunto = "has";
+  store.set("assunto", "has");
+  state.grupo = "Todos";
+  store.set("grupo", "Todos");
+  state.busca = "";
+  state.aberto = id;
+  state.aba = "classes";
+  renderCabecalho();
+  renderBarra();
+  renderAba();
+  const el = document.querySelector(`.klass[data-id="${id}"]`);
+  scrollTo({ top: el ? el.getBoundingClientRect().top + scrollY - 76 : 0 });
+}
+
 function irPara(id) {
   if (state.aba === id) {
     scrollTo({ top: 0, behavior: "smooth" });
@@ -1004,12 +1159,33 @@ document.addEventListener("click", (ev) => {
   const btSexo = ev.target.closest("[data-sexo]");
   if (btSexo) {
     risco.sexo = btSexo.dataset.sexo;
-    document.querySelectorAll("[data-sexo]").forEach((b) =>
-      b.setAttribute("aria-pressed", String(b.dataset.sexo === risco.sexo))
+    // gestação e hiperplasia prostática entram e saem conforme o sexo
+    CONDICOES.forEach((x) => { if (x.so && x.so !== risco.sexo) delete risco.cond[x.k]; });
+    renderAba();
+    return;
+  }
+
+  const btN = ev.target.closest("[data-ndrogas]");
+  if (btN) {
+    risco.nDrogas = Number(btN.dataset.ndrogas);
+    document.querySelectorAll("[data-ndrogas]").forEach((b) =>
+      b.setAttribute("aria-pressed", String(Number(b.dataset.ndrogas) === risco.nDrogas))
     );
     redesenharResultadoRisco();
     return;
   }
+
+  const btCond = ev.target.closest("[data-cond]");
+  if (btCond) {
+    const k = btCond.dataset.cond;
+    risco.cond[k] = !risco.cond[k];
+    btCond.setAttribute("aria-pressed", String(!!risco.cond[k]));
+    redesenharResultadoRisco();
+    return;
+  }
+
+  const btClasse = ev.target.closest("[data-ir-classe]");
+  if (btClasse) return irParaClasse(btClasse.dataset.irClasse);
 
   const marca = ev.target.closest("[data-marca]");
   if (marca) {

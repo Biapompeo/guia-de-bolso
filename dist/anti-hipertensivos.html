@@ -910,6 +910,144 @@ h1 {
   border-radius: var(--r-md);
 }
 
+/* ---------- Conduta para este paciente ---------- */
+.plano { margin-top: 10px; }
+
+.plano-pa {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 12px;
+  padding: 14px 16px;
+  border-radius: var(--r-md);
+  background: var(--c-wash);
+  border: 1px solid var(--c-edge);
+}
+.plano-pa-v {
+  font-family: var(--font-display);
+  font-size: 30px;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -.02em;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+.plano-pa-v .unit { font-family: var(--font-sans); font-size: 12px; font-weight: 600; color: var(--muted); }
+.plano-pa-e {
+  font-size: 12.5px;
+  font-weight: 700;
+  padding: 5px 12px;
+  border-radius: 999px;
+  background: var(--c-txt);
+  color: var(--paper);
+  white-space: nowrap;
+}
+.plano-nota { font-size: 12px; line-height: 1.5; color: var(--muted); margin-top: 8px; }
+
+.plano-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 12px;
+  font-size: 13px;
+  color: var(--muted);
+}
+.plano-meta strong { color: var(--ink); font-weight: 650; font-variant-numeric: tabular-nums; }
+.plano-ok, .plano-fora {
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  border-radius: 999px;
+  padding: 3px 9px;
+}
+.plano-ok { color: var(--ok); border: 1px solid color-mix(in srgb, var(--ok) 40%, transparent); }
+.plano-fora { color: var(--danger); border: 1px solid color-mix(in srgb, var(--danger) 40%, transparent); }
+
+.plano-dec {
+  margin-top: 14px;
+  padding: 14px 16px;
+  border-radius: var(--r-sm);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--c);
+}
+.plano-dec-rot { font-size: 14.5px; font-weight: 660; line-height: 1.3; color: var(--ink); }
+.plano-dec p { font-size: 13.5px; line-height: 1.58; color: var(--muted); margin-top: 6px; }
+
+.plano-passo {
+  padding: 13px 15px;
+  border-radius: var(--r-sm);
+  background: var(--paper-2);
+  border: 1px solid var(--line);
+}
+.plano-passo-rot { font-size: 14px; font-weight: 650; color: var(--ink); }
+.plano-passo p { font-size: 13px; line-height: 1.55; color: var(--muted); margin-top: 5px; }
+
+.rx {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--c);
+  border-radius: var(--r-md);
+  box-shadow: var(--shadow-sm);
+  padding: 14px 15px;
+}
+.rx-top { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; }
+.rx-rot { font-size: 15px; font-weight: 640; line-height: 1.28; color: var(--ink); }
+.rx-ord {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--c-txt);
+  white-space: nowrap;
+}
+.rx-drogas { list-style: none; margin: 10px 0 0; padding: 0; }
+.rx-drogas li {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 1.75;
+  color: var(--ink-2);
+}
+.rx-why { font-size: 12.5px; line-height: 1.55; color: var(--muted); margin-top: 9px; }
+.rx-links { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 11px; }
+.rx-link {
+  font-size: 11.5px;
+  font-weight: 640;
+  color: var(--c-txt);
+  border: 1px solid var(--c-edge);
+  border-radius: 999px;
+  padding: 5px 11px;
+  background: var(--c-wash);
+}
+
+.plano-ref {
+  margin-top: 10px;
+  padding: 13px 15px;
+  border-radius: var(--r-sm);
+  border: 1px dashed var(--line);
+  background: var(--paper-2);
+}
+.plano-ref-rot { font-size: 13px; font-weight: 650; color: var(--ink); }
+.plano-ref p { font-size: 12.5px; line-height: 1.55; color: var(--muted); margin-top: 5px; }
+.plano-ref .combo-ex { color: var(--ink-2); }
+
+.plano-evitar { display: flex; flex-direction: column; gap: 8px; }
+.ev {
+  padding: 11px 14px;
+  border-radius: var(--r-sm);
+  border: 1px solid color-mix(in srgb, var(--danger) 32%, var(--line));
+  background: var(--surface);
+}
+.ev-rot { display: block; font-size: 13.5px; font-weight: 650; color: var(--danger); }
+.ev-txt { display: block; font-size: 12.5px; line-height: 1.5; color: var(--muted); margin-top: 3px; }
+
+/* o seletor de quantas drogas tem cinco casas: deixa cada uma caber */
+.seg-num { grid-auto-columns: minmax(max-content, 1fr); }
+
 /* ---------- Combinações ---------- */
 .combo {
   background: var(--surface);
@@ -3332,6 +3470,323 @@ const RAST_COLO = {
 };
 
 /* =================================================================
+   CONDUTA PARA ESTE PACIENTE
+
+   Cruza a PA medida, o risco calculado pelo PREVENT e as condições
+   associadas com o que já está descrito em data.js. Toda regra aqui
+   nasce de ESTAGIOS, INICIO_LIMIARES, ESCALONAMENTO, COMBOS, PERFIS
+   ou das contraindicações das próprias CLASSES — nada é inventado
+   fora da DBHA 2025.
+
+   A função devolve dados, não HTML: quem desenha é o app.js.
+   ================================================================= */
+
+const META_PA = "< 130/80 mmHg";
+
+/* Rótulo curto de cada classe dentro de um esquema. O nome completo
+   fica no cartão da classe; aqui o que serve é a etiqueta de receita. */
+const ROT_CLASSE = {
+  ieca: "IECA",
+  bra: "BRA",
+  bccdhp: "BCC di-hidropiridínico",
+  bccndhp: "BCC não di-hidropiridínico",
+  tiaz: "Diurético tiazídico",
+  alca: "Diurético de alça",
+  poupador: "Espironolactona",
+  bb: "Betabloqueador",
+  alfa: "Alfabloqueador",
+  central: "Metildopa",
+  vasodil: "Hidralazina",
+};
+
+const ORDINAL = ["1ª droga", "2ª droga", "3ª droga", "4ª droga"];
+
+function classePorId(id) {
+  return CLASSES.find((c) => c.id === id);
+}
+
+function comboPorTitulo(t) {
+  return COMBOS.find((c) => c.titulo === t);
+}
+
+/* Estágio pelo critério "e/ou": vale a faixa mais alta entre sistólica
+   e diastólica, exatamente como a tabela ESTAGIOS descreve. */
+function estagioDe(pas, pad) {
+  const fs = pas >= 180 ? 4 : pas >= 160 ? 3 : pas >= 140 ? 2 : pas >= 120 ? 1 : 0;
+  const fd = pad >= 110 ? 4 : pad >= 100 ? 3 : pad >= 90 ? 2 : pad >= 80 ? 1 : 0;
+  return Math.max(fs, fd);
+}
+
+function plural(n) {
+  if (n >= 4) return "quatro ou mais anti-hipertensivos";
+  return ["nenhum anti-hipertensivo", "um anti-hipertensivo",
+          "dois anti-hipertensivos", "três anti-hipertensivos"][n];
+}
+
+/* -----------------------------------------------------------------
+   p = { pas, pad, idade, tfg, rac, potassio, diabetes, faixa,
+         nDrogas, cond: { ... } }
+------------------------------------------------------------------*/
+function condutaPaciente(p) {
+  const estIdx = estagioDe(p.pas, p.pad);
+  const estagio = ESTAGIOS[estIdx];
+  const naMeta = p.pas < 130 && p.pad < 80;
+  const altoRisco = p.faixa === "Alto";
+  const faixa130 = !naMeta && p.pas < 140 && p.pad < 90;
+  const sistolicaIsolada = p.pas >= 140 && p.pad < 90;
+  const albuminuria = Number.isFinite(p.rac) && p.rac >= 30;
+  const tfgBaixa = Number.isFinite(p.tfg) && p.tfg < 30;
+  const kAlto = Number.isFinite(p.potassio) && p.potassio > 5.5;
+  const c = p.cond || {};
+  const nUso = p.nDrogas || 0;
+
+  /* ---------- tratar, manter ou escalar ---------- */
+  let decisao;
+  if (nUso > 0 && naMeta) {
+    decisao = {
+      chave: "manter",
+      rot: "Na meta — manter o esquema",
+      txt: `Com ${plural(nUso)} a PA está abaixo de 130/80. Mantenha o esquema e as medidas não medicamentosas. A diretriz não define limite inferior: se a sistólica cair abaixo de 120 e o paciente estiver assintomático, mantenha a medicação.`,
+    };
+  } else if (nUso > 0) {
+    decisao = {
+      chave: "escalar",
+      rot: "Fora da meta — escalar o tratamento",
+      txt: `Com ${plural(nUso)} a PA segue em ${p.pas}/${p.pad} mmHg, acima da meta de ${META_PA}. Antes de acrescentar mais uma droga, confirme adesão e técnica de medida e otimize a dose do que já está em uso.`,
+    };
+  } else if (p.pas >= 140 || p.pad >= 90) {
+    decisao = { chave: "iniciar", rot: "Iniciar medicação agora", txt: INICIO_LIMIARES[2].txt };
+  } else if (faixa130 && altoRisco) {
+    decisao = {
+      chave: "condicional",
+      rot: "Medicação se não controlar em três meses",
+      txt: INICIO_LIMIARES[1].txt,
+    };
+  } else if (faixa130) {
+    decisao = {
+      chave: "mev",
+      rot: "Só medidas não medicamentosas",
+      txt: `Na faixa 130–139/80–89 o remédio só entra quando o risco cardiovascular é alto. Aqui o PREVENT deu risco ${String(p.faixa).toLowerCase()}: conduta não medicamentosa, com reavaliação periódica do risco.`,
+    };
+  } else {
+    decisao = {
+      chave: "mev",
+      rot: "Só medidas não medicamentosas",
+      txt: "Abaixo de 130/80 a conduta é de medidas não medicamentosas e controle dos demais fatores de risco.",
+    };
+  }
+
+  /* ---------- quantas drogas ---------- */
+  /* Os critérios de monoterapia são os do primeiro degrau do
+     ESCALONAMENTO; fora deles a diretriz já começa com dois. */
+  const mono =
+    (faixa130 && altoRisco) ||
+    (estIdx === 2 && p.faixa === "Baixo") ||
+    p.idade >= 80 ||
+    !!c.fragil;
+
+  let nAlvo;
+  if (decisao.chave === "manter") nAlvo = Math.min(Math.max(nUso, 1), 4);
+  else if (decisao.chave === "escalar") nAlvo = Math.min(nUso + 1, 4);
+  else nAlvo = mono ? 1 : 2;
+
+  const passo = {
+    idx: nAlvo - 1,
+    nome: ESCALONAMENTO[nAlvo - 1][0],
+    txt: ESCALONAMENTO[nAlvo - 1][1],
+  };
+
+  /* ---------- quais classes ---------- */
+  const cand = [];
+  const evitar = [];
+  const alertas = [];
+  const blq = {};
+  const achar = (k) => cand.find((e) => e.chave === k);
+
+  function add(chave, ids, rot, motivo, obrig) {
+    if (blq[chave]) return;
+    let e = achar(chave);
+    if (!e) {
+      e = { chave, ids: ids.slice(), rot, cor: classePorId(ids[0]).cor, motivos: [], obrig: !!obrig };
+      cand.push(e);
+    } else if (ids.length < e.ids.length) {
+      // uma condição específica estreitou a escolha (ex.: gota → losartana)
+      e.ids = ids.slice();
+      e.rot = rot;
+      e.cor = classePorId(ids[0]).cor;
+    }
+    if (obrig) e.obrig = true;
+    if (motivo && !e.motivos.includes(motivo)) e.motivos.push(motivo);
+  }
+
+  function bloquear(chave, rot, motivo) {
+    blq[chave] = true;
+    const i = cand.findIndex((e) => e.chave === chave);
+    if (i >= 0) cand.splice(i, 1);
+    if (!evitar.some((x) => x.rot === rot)) evitar.push({ rot, motivo });
+  }
+
+  if (c.gestante) {
+    bloquear("sraa", "IECA, BRA e alisquireno", "Proibidos na gestação — risco de lesão fetal");
+    add("central", ["central"], "Metildopa", "Gestação — primeira escolha clássica", true);
+    add("bccdhp", ["bccdhp"], "Nifedipino retard", "Gestação — BCC liberado", true);
+    add("vasodil", ["vasodil"], "Hidralazina", "Gestação — completa o esquema (labetalol se disponível)", true);
+  } else {
+    if (c.icfer) {
+      bloquear("bccndhp", "Verapamil e diltiazem", "Inotrópicos negativos — evitar na IC com FE reduzida");
+      add("sraa", ["ieca", "bra"], "IECA ou BRA", "IC com FE reduzida — ou sacubitril-valsartana no lugar", true);
+      add("bb", ["bb"], ROT_CLASSE.bb, "IC com FE reduzida — reduz mortalidade", true);
+      add("poupador", ["poupador"], ROT_CLASSE.poupador, "IC com FE reduzida — antagonista mineralocorticoide no esquema", true);
+      alertas.push({
+        tipo: "atencao",
+        titulo: "O esquema da insuficiência cardíaca vem antes",
+        txt: "Na IC com FE reduzida o esquema é IECA/BRA ou sacubitril-valsartana + betabloqueador + espironolactona + iSGLT2. Ele já é o tratamento da hipertensão — não monte um esquema anti-hipertensivo separado.",
+      });
+    }
+    if (c.coronaria) {
+      add("bb", ["bb"], ROT_CLASSE.bb, "Pós-infarto e doença coronariana — reduz mortalidade e isquemia", true);
+      add("sraa", ["ieca"], ROT_CLASSE.ieca, "Pós-infarto e doença coronariana — a dupla da diretriz é BB + IECA", true);
+    }
+    if (c.avc) {
+      add("sraa", ["ieca"], ROT_CLASSE.ieca, "Pós-AVC — IECA + tiazídico, depois da fase aguda", true);
+      add("tiaz", ["tiaz"], ROT_CLASSE.tiaz, "Pós-AVC — IECA + tiazídico, depois da fase aguda", true);
+    }
+    if (albuminuria) {
+      add("sraa", ["ieca", "bra"], "IECA ou BRA",
+        p.diabetes
+          ? "Diabetes com albuminúria (RAC ≥ 30) — nefroproteção, obrigatório no esquema"
+          : "Albuminúria (RAC ≥ 30) — nefroproteção na doença renal proteinúrica",
+        true);
+    }
+    if (c.fa) {
+      add("bb", ["bb"], ROT_CLASSE.bb, "Fibrilação atrial — controle de frequência", true);
+    }
+    if (c.gota) {
+      bloquear("tiaz", ROT_CLASSE.tiaz, "Gota — o tiazídico eleva o ácido úrico");
+      add("sraa", ["bra"], "Losartana (BRA)", "Gota — a losartana é uricosúrica", true);
+      add("bccdhp", ["bccdhp"], ROT_CLASSE.bccdhp, "Gota — alternativa segura", true);
+    }
+    if (c.osteoporose) {
+      add("tiaz", ["tiaz"], ROT_CLASSE.tiaz, "Osteoporose — o tiazídico reduz a calciúria", true);
+    }
+    /* A preferência por BCC ou tiazídico só muda a escolha quando o
+       paciente vai ficar com uma droga só: é aí que o PERFIS aponta
+       menor resposta ao bloqueio do SRAA. */
+    if (nAlvo === 1 && c.negra) {
+      add("bccdhp", ["bccdhp"], ROT_CLASSE.bccdhp, "Pessoa negra — menor resposta a IECA/BRA em monoterapia");
+      add("tiaz", ["tiaz"], ROT_CLASSE.tiaz, "Pessoa negra — menor resposta a IECA/BRA em monoterapia");
+    }
+    if (nAlvo === 1 && sistolicaIsolada && p.idade >= 65) {
+      add("bccdhp", ["bccdhp"], ROT_CLASSE.bccdhp, "Idoso com hipertensão sistólica isolada");
+      add("tiaz", ["tiaz"], ROT_CLASSE.tiaz, "Idoso com hipertensão sistólica isolada");
+    }
+
+    // o trio padrão fecha a lista
+    add("sraa", ["ieca", "bra"], "IECA ou BRA", "Trio padrão da diretriz: IECA ou BRA + BCC + tiazídico");
+    add("bccdhp", ["bccdhp"], ROT_CLASSE.bccdhp, "Trio padrão da diretriz: IECA ou BRA + BCC + tiazídico");
+    add("tiaz", ["tiaz"], ROT_CLASSE.tiaz, "Trio padrão da diretriz: IECA ou BRA + BCC + tiazídico");
+
+    if (tfgBaixa) {
+      const i = cand.findIndex((e) => e.chave === "tiaz");
+      const obrig = i >= 0 ? cand[i].obrig : false;
+      bloquear("tiaz", ROT_CLASSE.tiaz, "TFG < 30 — o tiazídico perde eficácia");
+      const alca = {
+        chave: "alca", ids: ["alca"], rot: ROT_CLASSE.alca, cor: classePorId("alca").cor,
+        motivos: ["TFG < 30 — no lugar do tiazídico, diurético de alça"], obrig,
+      };
+      if (i >= 0) cand.splice(i, 0, alca);
+      else cand.push(alca);
+    }
+
+    if (nAlvo >= 4) {
+      if (kAlto || tfgBaixa) {
+        alertas.push({
+          tipo: "nao",
+          titulo: "Espironolactona contraindicada neste paciente",
+          txt: `${kAlto ? "Potássio acima de 5,5" : "TFG abaixo de 30"} — a quarta droga da diretriz é a espironolactona, mas a associação com IECA/BRA é contraindicada nessa situação. A quarta droga passa a ser individualizada: reveja as classes e considere encaminhamento ao especialista.`,
+        });
+      } else {
+        add("poupador", ["poupador"], ROT_CLASSE.poupador, "Quarta droga de escolha na hipertensão resistente (DBHA 2025)", true);
+      }
+    }
+  }
+
+  const obrigs = cand.filter((e) => e.obrig);
+  const resto = cand.filter((e) => !e.obrig);
+  const esquema = obrigs.concat(resto).slice(0, Math.max(nAlvo, obrigs.length));
+  esquema.forEach((e, i) => { e.ordem = ORDINAL[i] || `${i + 1}ª droga`; });
+
+  /* ---------- combinações a vigiar ---------- */
+  const tem = (k) => esquema.some((e) => e.chave === k);
+  const marcar = (tipo, titulo) => {
+    const x = comboPorTitulo(titulo);
+    if (x && !alertas.some((a) => a.titulo === titulo)) {
+      alertas.push({ tipo, titulo: x.titulo, txt: x.txt });
+    }
+  };
+
+  if (tem("sraa") && esquema.find((e) => e.chave === "sraa").ids.length > 1) {
+    marcar("nao", "IECA + BRA");
+  }
+  if (tem("bb") && tem("bccndhp")) marcar("nao", "Betabloqueador + verapamil ou diltiazem");
+  if (tem("bb") && tem("tiaz") && p.diabetes) marcar("atencao", "Betabloqueador + diurético tiazídico");
+  if (tem("sraa") && tem("poupador")) marcar("atencao", "IECA/BRA + espironolactona");
+
+  if (!c.gestante && c.asma && tem("bb")) {
+    alertas.push({
+      tipo: "atencao",
+      titulo: "Asma ou DPOC com betabloqueador",
+      txt: "Evitar betabloqueador não seletivo. Se a indicação cardiológica for forte, usar β1-seletivo com cautela.",
+    });
+  }
+  if (c.hpb) {
+    alertas.push({
+      tipo: "atencao",
+      titulo: "Hiperplasia prostática benigna",
+      txt: "O alfabloqueador (doxazosina) trata os dois, mas entra como droga adicional, nunca como primeira escolha.",
+    });
+  }
+  if (c.enxaqueca) {
+    alertas.push({
+      tipo: "atencao",
+      titulo: "Enxaqueca",
+      txt: "Betabloqueador e verapamil têm efeito profilático na enxaqueca — se houver outra indicação para eles, ganham preferência.",
+    });
+  }
+  if (estIdx === 4) {
+    alertas.push({
+      tipo: "nao",
+      titulo: "PA ≥ 180 e/ou ≥ 110",
+      txt: "Procure lesão aguda de órgão-alvo antes de mandar para casa. Com lesão, é emergência hipertensiva: UTI e anti-hipertensivo endovenoso. Sem lesão, ajuste a medicação por via oral e reavalie em até sete dias.",
+    });
+  }
+  if (nUso >= 3 && !naMeta) {
+    alertas.push({
+      tipo: "atencao",
+      titulo: "Hipertensão resistente",
+      txt: "PA fora da meta com três ou mais drogas, uma delas diurético, define hipertensão resistente. Confirme com MAPA ou MRPA, revise adesão, sal, álcool, anti-inflamatórios e investigue causa secundária.",
+    });
+  }
+
+  /* ---------- combinação de referência, com exemplos de comprimido ---------- */
+  const chaves = esquema.map((e) => e.chave).sort().join("+");
+  const REFERENCIA = {
+    "bccdhp+sraa": "IECA ou BRA + BCC di-hidropiridínico",
+    "sraa+tiaz": "IECA ou BRA + diurético tiazídico",
+    "bccdhp+tiaz": "BCC + diurético tiazídico",
+    "bccdhp+sraa+tiaz": "Tripla: IECA ou BRA + BCC + tiazídico",
+    "bccdhp+poupador+sraa+tiaz": "Quarta droga: espironolactona",
+  };
+  const referencia = REFERENCIA[chaves] ? comboPorTitulo(REFERENCIA[chaves]) : null;
+
+  return {
+    estagio, estIdx, naMeta, meta: META_PA,
+    decisao, passo, nAlvo, nUso, esquema, evitar, alertas, referencia,
+    monoJustificada: mono,
+  };
+}
+
+/* =================================================================
    Anti-hipertensivos — aplicação
    ================================================================= */
 
@@ -3464,14 +3919,17 @@ const gruposAtuais = () => ["Todos", ...new Set(classesAtuais().map((c) => c.gru
 /* Entradas da calculadora. De propósito não são gravadas em disco:
    são dados de paciente, e o app não deve guardá-los. */
 const risco = {
-  sexo: "F", idade: "", pas: "", colesterolTotal: "", hdl: "", tfg: "",
-  creatinina: "", hba1c: "", rac: "",
-  diabetes: false, fumante: false, usaAntiHipertensivo: false, usaEstatina: false,
+  sexo: "F", idade: "", pas: "", pad: "", colesterolTotal: "", hdl: "", tfg: "",
+  creatinina: "", hba1c: "", rac: "", potassio: "",
+  diabetes: false, fumante: false, usaEstatina: false,
+  nDrogas: 0,
+  cond: {},
 };
 
 const CAMPOS_RISCO = [
   { k: "idade", rot: "Idade", un: "anos", min: 30, max: 79 },
   { k: "pas", rot: "PA sistólica", un: "mmHg", min: 70, max: 250 },
+  { k: "pad", rot: "PA diastólica", un: "mmHg", min: 40, max: 160 },
   { k: "colesterolTotal", rot: "Colesterol total", un: "mg/dL", min: 80, max: 500 },
   { k: "hdl", rot: "HDL", un: "mg/dL", min: 10, max: 150 },
   { k: "tfg", rot: "TFG estimada", un: "mL/min", min: 5, max: 200 },
@@ -3480,13 +3938,30 @@ const CAMPOS_RISCO = [
 const CAMPOS_OPCIONAIS = [
   { k: "hba1c", rot: "HbA1c", un: "%", min: 3, max: 20 },
   { k: "rac", rot: "Albumina/creatinina", un: "mg/g", min: 0.1, max: 10000 },
+  { k: "potassio", rot: "Potássio", un: "mEq/L", min: 1.5, max: 9 },
 ];
 
 const MARCADORES_RISCO = [
   { k: "diabetes", rot: "Diabetes" },
   { k: "fumante", rot: "Fumante atual" },
-  { k: "usaAntiHipertensivo", rot: "Usa anti-hipertensivo" },
   { k: "usaEstatina", rot: "Usa estatina" },
+];
+
+/* Condições que, na DBHA 2025, mudam a escolha da classe. Só entram
+   aqui as que a tabela PERFIS resolve — nada que o app não saiba usar. */
+const CONDICOES = [
+  { k: "coronaria", rot: "Doença coronariana ou pós-infarto" },
+  { k: "icfer", rot: "IC com fração de ejeção reduzida" },
+  { k: "fa", rot: "Fibrilação atrial" },
+  { k: "avc", rot: "Pós-AVC" },
+  { k: "negra", rot: "Pessoa negra" },
+  { k: "gota", rot: "Gota ou hiperuricemia" },
+  { k: "asma", rot: "Asma ou DPOC" },
+  { k: "osteoporose", rot: "Osteoporose" },
+  { k: "enxaqueca", rot: "Enxaqueca" },
+  { k: "hpb", rot: "Hiperplasia prostática", so: "M" },
+  { k: "gestante", rot: "Gestação", so: "F" },
+  { k: "fragil", rot: "Idoso frágil ou hipotensão ortostática" },
 ];
 
 const COR_COMBO = { sim: "#2E7A61", nao: "#B3242F", atencao: "#B8871B" };
@@ -3758,31 +4233,128 @@ function entradasRisco() {
   const n = (k) => parseFloat(risco[k]);
   return {
     sexo: risco.sexo,
-    idade: n("idade"), pas: n("pas"),
+    idade: n("idade"), pas: n("pas"), pad: n("pad"),
     colesterolTotal: n("colesterolTotal"), hdl: n("hdl"), tfg: n("tfg"),
     diabetes: risco.diabetes, fumante: risco.fumante,
-    usaAntiHipertensivo: risco.usaAntiHipertensivo, usaEstatina: risco.usaEstatina,
+    // o PREVENT só quer saber se há tratamento; o número entra na conduta
+    usaAntiHipertensivo: risco.nDrogas >= 1, usaEstatina: risco.usaEstatina,
+    potassio: n("potassio"),
     // vazios viram NaN, que o cálculo trata como exame não informado
     hba1c: n("hba1c"), rac: n("rac"),
   };
 }
 
-/* O que o risco calculado significa para a decisão de tratar, cruzando com a PA. */
-function conduta(faixa, pas) {
-  if (pas >= 140) {
-    return "Com PA ≥ 140/90 o tratamento medicamentoso começa no diagnóstico, qualquer que seja o risco calculado.";
-  }
-  if (pas >= 130) {
-    return faixa === "Alto"
-      ? "Na faixa 130–139/80–89 com risco alto, entra medicação se a PA não controlar após três meses de medidas não farmacológicas."
-      : "Na faixa 130–139/80–89 sem risco alto, a conduta é de medidas não medicamentosas, com reavaliação periódica do risco.";
-  }
-  return "Abaixo de 130/80 a conduta é de medidas não medicamentosas e controle dos demais fatores de risco.";
+/* ---------- conduta para o paciente calculado ---------- */
+/* Cores da decisão, reaproveitadas dos limiares de início. */
+const COR_DECISAO = {
+  iniciar: INICIO_LIMIARES[2].cor,
+  escalar: INICIO_LIMIARES[2].cor,
+  condicional: INICIO_LIMIARES[1].cor,
+  mev: INICIO_LIMIARES[0].cor,
+  manter: INICIO_LIMIARES[0].cor,
+};
+
+/* Exemplos de droga e dose para o rótulo escolhido. Quando a conduta
+   já apontou um princípio ativo (losartana, metildopa), mostra só ele. */
+function exemplosDrogas(ids, rot) {
+  const alvo = norm(rot.split(/[ —(]/)[0]);
+  const todas = ids.reduce((a, id) => a.concat(classePorId(id).drogas), []);
+  const casam = todas.filter((d) => norm(d).startsWith(alvo));
+  if (casam.length) return casam;
+  if (ids.length > 1) return ids.map((id) => classePorId(id).drogas[0]);
+  return todas.slice(0, 3);
+}
+
+function linhaEsquema(e) {
+  const links = e.ids.map(
+    (id) => `<button class="rx-link" data-ir-classe="${id}">${esc(classePorId(id).nome)}</button>`
+  ).join("");
+  return `<article class="rx acc" style="${acento(e.cor)}">
+    <div class="rx-top">
+      <span class="rx-rot">${esc(e.rot)}</span>
+      <span class="rx-ord">${esc(e.ordem)}</span>
+    </div>
+    <ul class="rx-drogas">${exemplosDrogas(e.ids, e.rot).map((d) => `<li>${esc(d)}</li>`).join("")}</ul>
+    <div class="rx-why">${e.motivos.map((m) => esc(m)).join(" · ")}</div>
+    <div class="rx-links">${links}</div>
+  </article>`;
+}
+
+function condutaHTML(e, r) {
+  if (!Number.isFinite(e.pad)) return "";
+  const p = condutaPaciente({
+    pas: e.pas, pad: e.pad, idade: e.idade, tfg: e.tfg, rac: e.rac,
+    potassio: e.potassio, diabetes: e.diabetes, faixa: r.faixa.rot,
+    nDrogas: risco.nDrogas, cond: risco.cond,
+  });
+
+  const rotEsquema = p.decisao.chave === "manter"
+    ? "Esquema esperado para este perfil"
+    : p.decisao.chave === "mev"
+      ? "Se um dia precisar de medicação"
+      : "Esquema sugerido";
+
+  const evitar = p.evitar.length
+    ? `<div class="group-label">Não usar neste paciente</div>
+       <div class="plano-evitar">${p.evitar.map(
+         (x) => `<div class="ev"><span class="ev-rot">${esc(x.rot)}</span><span class="ev-txt">${esc(x.motivo)}</span></div>`
+       ).join("")}</div>`
+    : "";
+
+  const alertas = p.alertas.length
+    ? `<div class="group-label">Atenção</div>
+       <div class="stack">${p.alertas.map(
+         (a) => `<article class="combo acc" style="${acento(COR_COMBO[a.tipo])}">
+           <div class="rx-top">
+             <h3 class="combo-title">${esc(a.titulo)}</h3>
+             <span class="rx-ord">${esc(ROT_COMBO[a.tipo])}</span>
+           </div>
+           <p class="combo-txt">${esc(a.txt)}</p>
+         </article>`
+       ).join("")}</div>`
+    : "";
+
+  return `<section class="card card-pad plano" style="margin-top:10px">
+    <div class="eyebrow">Conduta para este paciente</div>
+
+    <div class="plano-pa acc" style="${acento(p.estagio.cor)}">
+      <span class="plano-pa-v">${e.pas}/${e.pad} <span class="unit">mmHg</span></span>
+      <span class="plano-pa-e">${esc(p.estagio.rot)}</span>
+    </div>
+    <p class="plano-nota">${esc(p.estagio.cond)}</p>
+    <div class="plano-meta">Meta pressórica <strong>${esc(p.meta)}</strong>${
+      p.naMeta ? '<span class="plano-ok">na meta</span>' : '<span class="plano-fora">fora da meta</span>'
+    }</div>
+
+    <div class="plano-dec acc" style="${acento(COR_DECISAO[p.decisao.chave])}">
+      <div class="plano-dec-rot">${esc(p.decisao.rot)}</div>
+      <p>${esc(p.decisao.txt)}</p>
+    </div>
+
+    <div class="group-label">Quantas drogas</div>
+    <div class="plano-passo">
+      <div class="plano-passo-rot">${esc(p.passo.nome)}</div>
+      <p>${esc(p.passo.txt)}</p>
+    </div>
+
+    <div class="group-label">${esc(rotEsquema)}</div>
+    <div class="stack">${p.esquema.map(linhaEsquema).join("")}</div>
+    ${p.referencia
+      ? `<div class="plano-ref"><span class="plano-ref-rot">${esc(p.referencia.titulo)}</span>
+         <p>${esc(p.referencia.txt)}</p>
+         ${p.referencia.ex ? `<div class="combo-ex">${esc(p.referencia.ex)}</div>` : ""}</div>`
+      : ""}
+
+    ${evitar}
+    ${alertas}
+
+    <p class="footnote">Sugestão montada a partir da DBHA 2025 com os dados digitados acima — não é prescrição. A escolha final depende de exame físico, exames complementares, disponibilidade, custo e do que o paciente já tolerou.</p>
+  </section>`;
 }
 
 function resultadoRiscoHTML() {
   if (!riscoCompleto()) {
-    return `<div class="result-empty">Preencha os cinco campos acima para ver o risco estimado.</div>`;
+    return `<div class="result-empty">Preencha os campos acima para ver o risco e a conduta.</div>`;
   }
   const e = entradasRisco();
   const r = calcularPrevent(e);
@@ -3811,11 +4383,11 @@ function resultadoRiscoHTML() {
       <div><dt>DCV total em 30 anos</dt><dd>${pct(r.dcv30)}</dd></div>
     </dl>
 
-    <div class="result-action">${esc(conduta(r.faixa.rot, e.pas))}</div>
     ${r.avisos.length
       ? `<div class="result-warn">Fora da faixa validada: ${esc(r.avisos.join("; "))}. O resultado deixa de ser confiável.</div>`
       : ""}
-  </div>`;
+  </div>
+  ${condutaHTML(e, r)}`;
 }
 
 function viewRisco() {
@@ -3843,8 +4415,18 @@ function viewRisco() {
     </button>`
   ).join("");
 
+  const condicoes = CONDICOES.filter((x) => !x.so || x.so === risco.sexo).map(
+    (x) => `<button class="toggle" data-cond="${x.k}" aria-pressed="${!!risco.cond[x.k]}">
+      <span class="box">${ICON.check}</span>${esc(x.rot)}
+    </button>`
+  ).join("");
+
+  const emUso = [0, 1, 2, 3, 4].map(
+    (n) => `<button data-ndrogas="${n}" aria-pressed="${risco.nDrogas === n}">${n === 0 ? "Nenhum" : n === 4 ? "4+" : n}</button>`
+  ).join("");
+
   return `
-  <p class="tab-intro">A DBHA 2025 adota o <strong>PREVENT</strong>, da American Heart Association, no lugar do escore de Framingham. Vale para 30 a 79 anos, em prevenção primária — quem já tem doença cardiovascular estabelecida é de alto risco por definição, sem precisar calcular.</p>
+  <p class="tab-intro">A DBHA 2025 adota o <strong>PREVENT</strong>, da American Heart Association, no lugar do escore de Framingham. Vale para 30 a 79 anos, em prevenção primária — quem já tem doença cardiovascular estabelecida é de alto risco por definição, sem precisar calcular. Com a PA e as condições preenchidas, o resultado vem com o esquema de medicação que a diretriz indica para este paciente.</p>
 
   <section class="card card-pad">
     <div class="eyebrow">Dados do paciente</div>
@@ -3871,11 +4453,23 @@ function viewRisco() {
     <p class="helper-note">Se o laboratório já informa a TFG, use aquele valor. A TFG é em mL/min/1,73m². O atalho aplica a CKD-EPI 2021, sem coeficiente de raça, e preenche o campo acima — precisa da idade e do sexo.</p>
 
     <div class="toggles">${marcadores}</div>
+
+    <div class="field" style="margin-top:16px">
+      <label>Anti-hipertensivos que já usa</label>
+      <div class="seg seg-num">${emUso}</div>
+    </div>
+    <p class="helper-note">É esse número que responde se falta combinar e se já é hora da terceira ou da quarta droga.</p>
+  </section>
+
+  <section class="card card-pad" style="margin-top:10px">
+    <div class="eyebrow">Condições associadas</div>
+    <p class="helper-note" style="margin:6px 0 0">A indicação específica vence a preferência genérica de primeira linha. Marque o que houver.</p>
+    <div class="toggles">${condicoes}</div>
   </section>
 
   <section class="card card-pad" style="margin-top:10px">
     <div class="eyebrow">Exames opcionais</div>
-    <p class="helper-note" style="margin:6px 0 0">Refinam a estimativa em diabetes e em doença renal. Sem eles o cálculo usa o modelo base, que é o padrão da diretriz.</p>
+    <p class="helper-note" style="margin:6px 0 0">HbA1c e albumina/creatinina refinam a estimativa de risco em diabetes e doença renal. A albuminúria e o potássio também mudam a escolha da classe.</p>
     <div class="form-grid">${opcionais}</div>
   </section>
 
@@ -4276,6 +4870,22 @@ function irParaAssunto(id) {
   scrollTo({ top: 0 });
 }
 
+/* Abre o cartão de uma classe vindo da conduta sugerida. */
+function irParaClasse(id) {
+  state.assunto = "has";
+  store.set("assunto", "has");
+  state.grupo = "Todos";
+  store.set("grupo", "Todos");
+  state.busca = "";
+  state.aberto = id;
+  state.aba = "classes";
+  renderCabecalho();
+  renderBarra();
+  renderAba();
+  const el = document.querySelector(`.klass[data-id="${id}"]`);
+  scrollTo({ top: el ? el.getBoundingClientRect().top + scrollY - 76 : 0 });
+}
+
 function irPara(id) {
   if (state.aba === id) {
     scrollTo({ top: 0, behavior: "smooth" });
@@ -4337,12 +4947,33 @@ document.addEventListener("click", (ev) => {
   const btSexo = ev.target.closest("[data-sexo]");
   if (btSexo) {
     risco.sexo = btSexo.dataset.sexo;
-    document.querySelectorAll("[data-sexo]").forEach((b) =>
-      b.setAttribute("aria-pressed", String(b.dataset.sexo === risco.sexo))
+    // gestação e hiperplasia prostática entram e saem conforme o sexo
+    CONDICOES.forEach((x) => { if (x.so && x.so !== risco.sexo) delete risco.cond[x.k]; });
+    renderAba();
+    return;
+  }
+
+  const btN = ev.target.closest("[data-ndrogas]");
+  if (btN) {
+    risco.nDrogas = Number(btN.dataset.ndrogas);
+    document.querySelectorAll("[data-ndrogas]").forEach((b) =>
+      b.setAttribute("aria-pressed", String(Number(b.dataset.ndrogas) === risco.nDrogas))
     );
     redesenharResultadoRisco();
     return;
   }
+
+  const btCond = ev.target.closest("[data-cond]");
+  if (btCond) {
+    const k = btCond.dataset.cond;
+    risco.cond[k] = !risco.cond[k];
+    btCond.setAttribute("aria-pressed", String(!!risco.cond[k]));
+    redesenharResultadoRisco();
+    return;
+  }
+
+  const btClasse = ev.target.closest("[data-ir-classe]");
+  if (btClasse) return irParaClasse(btClasse.dataset.irClasse);
 
   const marca = ev.target.closest("[data-marca]");
   if (marca) {

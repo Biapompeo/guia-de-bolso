@@ -115,7 +115,12 @@ const AUDIT = (exigencia) => `(() => {
       if (aba === 'classes') { await p.click('.klass[data-id="ieca"] .klass-head'); await p.waitForTimeout(400); }
       if (aba === 'dm-classes') { await p.click('.klass[data-id="dm-isglt2"] .klass-head'); await p.waitForTimeout(400); }
       if (aba === 'risco') {
-        for (const [id,v] of [['idade','58'],['pas','152'],['colesterolTotal','230'],['hdl','40'],['tfg','72']]) await p.fill('#r-'+id, v);
+        for (const [id,v] of [['idade','58'],['pas','152'],['pad','96'],['colesterolTotal','230'],['hdl','40'],['tfg','72'],['rac','180'],['potassio','4.2']]) await p.fill('#r-'+id, v);
+        // com três drogas em uso e comorbidades marcadas o cartão de conduta
+        // abre todos os blocos: esquema, "não usar", alertas e referência
+        await p.click('[data-marca="diabetes"]');
+        await p.click('[data-ndrogas="3"]');
+        for (const k of ['gota','asma','coronaria']) await p.click('[data-cond="'+k+'"]');
         await p.waitForTimeout(300);
       }
       const f = await p.evaluate(AUDIT(tema === 'dark' ? 1.22 : 1));
