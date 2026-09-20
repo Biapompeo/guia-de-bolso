@@ -3,13 +3,14 @@
    Guarda a página e os ícones para abrir sem internet.
    ================================================================= */
 
-const VERSAO = "v6";
+const VERSAO = "v7";
 const CACHE = "rodizio-" + VERSAO;
 
 const SHELL = [
   "./",
   "./index.html",
   "./resumos.js",
+  "./casos.js",
   "./manifest.webmanifest",
   "./icons/icon-512.png",
   "./icons/icon-maskable-512.png",

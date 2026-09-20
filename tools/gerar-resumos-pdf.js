@@ -31,6 +31,9 @@ const dados = new Function(
 const RESUMOS = new Function(
   fs.readFileSync(raiz + "resumos.js", "utf8") + "\nreturn RESUMOS;"
 )();
+const CASOS = fs.existsSync(raiz + "casos.js")
+  ? new Function(fs.readFileSync(raiz + "casos.js", "utf8") + "\nreturn CASOS;")()
+  : {};
 
 const esc = (s) => String(s).replace(/[&<>]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]));
 const rgb = (hex) => {
@@ -196,6 +199,24 @@ figure svg{ width:100%; height:auto }
 .pega{ background:#F9EFD9; border-color:var(--alerta) }
 .pega b{ color:var(--alerta) }
 
+/* ---------- casos clínicos ---------- */
+.casos{ margin-top:6px }
+.casos-tit{ font-family:var(--sans); font-size:8.6pt; letter-spacing:.14em; text-transform:uppercase;
+            color:#fff; background:var(--c); display:inline-block; padding:3px 9px;
+            border-radius:2px; margin:0 0 9px }
+.caso{ background:var(--carta); border:1px solid var(--linha-fina); border-left:4px solid var(--c);
+       border-radius:2px; padding:9px 11px; margin-bottom:9px; break-inside:avoid }
+.caso h4{ font-size:10.5pt; margin:0 0 5px; font-weight:600 }
+.caso .hist, .caso .exame{ margin:0 0 6px; font-size:8.8pt; color:var(--tinta-2); line-height:1.45 }
+.caso .exame b{ font-family:var(--sans); font-size:7.2pt; letter-spacing:.1em; text-transform:uppercase;
+                color:var(--apagado); margin-right:4px }
+.caso .cq{ columns:1; margin:0 0 7px; padding-left:9px; border-left:2px solid rgba(var(--c-rgb),.3) }
+.caso .cq .q{ font-family:var(--sans); font-size:7.8pt; font-weight:700; color:var(--c);
+              margin:0 0 2px; text-transform:uppercase; letter-spacing:.05em }
+.caso .cq .r{ margin:0; font-size:8.8pt; line-height:1.45 }
+.caso .chave{ margin:8px 0 0; padding:6px 9px; background:#F9EFD9; border-left:3px solid var(--alerta);
+              font-size:8.6pt; line-height:1.4 }
+
 /* ---------- fim ---------- */
 .fim{ page-break-before:always; padding-top:4mm }
 .fim ol{ padding-left:18px; font-size:10pt }
@@ -231,6 +252,19 @@ ${secoes.map((s, i) => `
       : esc(s.aula.nota || "")}</p>
   </div>
   ${s.temas.map((t, j) => bloco(t, `${i + 1}.${j + 1}`)).join("")}
+  ${(CASOS[s.aula.id] || []).length ? `
+  <div class="casos">
+    <h3 class="casos-tit">Casos clínicos da coordenação</h3>
+    ${CASOS[s.aula.id].map((c) => `
+      <article class="caso">
+        <h4>${esc(c.n)} — ${esc(c.quem)}</h4>
+        <p class="hist">${esc(c.historia)}</p>
+        <p class="exame"><b>Exame</b> ${esc(c.exame)}</p>
+        ${c.perguntas.map((q) => `<div class="cq"><p class="q">${esc(q.p)}</p>
+          <p class="r">${esc(q.r)}</p></div>`).join("")}
+        <p class="chave">${esc(c.chave)}</p>
+      </article>`).join("")}
+  </div>` : ""}
 </section>`).join("")}
 
 <section class="fim">

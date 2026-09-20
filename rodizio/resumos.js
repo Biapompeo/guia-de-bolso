@@ -718,7 +718,12 @@ const RESUMOS = {
     "Só progestagênio: minipílula, desogestrel, injetável trimestral e implante. São a saída quando o estrogênio está contraindicado, inclusive na amamentação.",
     "DIU de cobre: 10 anos, não hormonal, pode aumentar fluxo e cólica. SIU de levonorgestrel: 5 a 8 anos, reduz o fluxo e trata sangramento aumentado.",
     "Esterilização cirúrgica (Lei 9.263/96, redação atual): a partir de 21 anos ou com dois filhos vivos, manifestação escrita e prazo mínimo de 60 dias entre a manifestação e o procedimento. Não depende mais do consentimento do cônjuge, e é vedada durante o parto ou até 42 dias depois, salvo exceções legais.",
-    "Retorno da fertilidade é imediato com a maioria dos métodos; a exceção é o injetável trimestral, que pode demorar meses."
+    "Retorno da fertilidade é imediato com a maioria dos métodos; a exceção é o injetável trimestral, que pode demorar meses.",
+    "Composição: o combinado tem um estrogênio — quase sempre etinilestradiol, hoje em doses baixas, de 15 a 35 mcg — e um progestagênio, que é o que diferencia as pílulas (levonorgestrel, gestodeno, desogestrel, drospirenona, ciproterona). Progestagênios de 2ª geração, como o levonorgestrel, têm menor risco trombótico.",
+    "Quando iniciar: o mais prático é começar em qualquer dia, desde que haja certeza de que não há gravidez — se não for nos primeiros 5 dias do ciclo, usar preservativo por 7 dias. A minipílula protege em 2 dias.",
+    "Troca de método: passando de combinado para outro combinado ou para progestagênio, emenda sem intervalo e não precisa de proteção extra. Vindo de injetável, inicia na data da próxima injeção. Saindo de DIU, iniciar o novo método 7 dias antes da retirada, ou usar preservativo.",
+    "Interações que derrubam a eficácia do hormonal: rifampicina e rifabutina, alguns anticonvulsivantes (fenitoína, carbamazepina, fenobarbital, topiramato, oxcarbazepina) e a erva-de-são-joão. Antibiótico comum, como amoxicilina, NÃO reduz. Nessas situações, preferir DIU, SIU ou injetável trimestral.",
+    "Vantagens extra contraceptivas, que a professora cobra: combinado melhora acne, hirsutismo, dismenorreia, TPM e sangramento aumentado, e reduz risco de câncer de ovário e de endométrio; o SIU trata sangramento uterino aumentado e protege o endométrio."
   ],
   tabelas: [{
     t: "Os métodos, em uma olhada",
@@ -733,6 +738,20 @@ const RESUMOS = {
       ["DIU de cobre", "10 anos", "Não hormonal; também serve de emergência"],
       ["SIU levonorgestrel", "5 a 8 anos", "Reduz fluxo menstrual"],
       ["Laqueadura / vasectomia", "Definitivo", "Regras da Lei 9.263/96"]
+    ]
+  },
+  {
+    t: "Quando começar e o que fazer na troca",
+    c: ["Situação", "Conduta"],
+    l: [
+      ["Início nos 5 primeiros dias do ciclo", "Proteção imediata, sem método extra"],
+      ["Início em qualquer outro dia", "Preservativo por 7 dias (minipílula: 2 dias)"],
+      ["Pós-parto, amamentando", "Progestagênio isolado já; combinado só após 6 meses"],
+      ["Pós-parto, sem amamentar", "Combinado a partir de 21 dias, se não houver risco trombótico"],
+      ["Pós-abortamento", "Qualquer método, imediatamente"],
+      ["Trocando de combinado para outro", "Emenda sem intervalo, sem proteção extra"],
+      ["Trocando de injetável", "Começar na data da injeção seguinte"],
+      ["Uso de rifampicina ou anticonvulsivante", "Preferir DIU, SIU ou injetável trimestral"]
     ]
   }],
   pega: "A diferença entre uso perfeito e uso típico é o centro da orientação — e é o que explica os LARC terem virado primeira linha."

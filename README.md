@@ -138,6 +138,16 @@ chrome --headless=new --no-pdf-header-footer \
        --print-to-pdf=rodizio/resumos.pdf file:///tmp/resumos.html
 ```
 
+O cronograma que a coordenação publica a cada semana fica em `CRONOGRAMA`,
+no código do app: é institucional, igual para todos os grupos, e diz o que
+acontece em cada turno — UBS, aula teórica com local e hora, folga. A escala
+pessoal entra por cima dele, no "ajustar este dia". Um dia pode ter os dois
+turnos ocupados, e aí sobram só os dois blocos da noite para estudo.
+
+`rodizio/casos.js` guarda os casos clínicos que a coordenação distribui, com
+resposta comentada, ancorada no manual do agravo. Eles aparecem no cartão da
+aula a que pertencem, no app e na apostila.
+
 Os lembretes ficam junto do resto do estado, e por isso sobrevivem a
 "recomeçar o plano". A aba acende um pontinho na barra quando há algo em
 aberto de semana ou de mês — os de "sempre à vista", como a dieta, não

@@ -339,6 +339,29 @@ table.quadro tr:last-child td{ border-bottom: none }
 .resumo-fig{ margin: 14px 0 }
 .resumo-fig svg{ width: 100%; height: auto }
 
+/* ---------- casos clínicos ---------- */
+.aula-casos{ margin:-6px 0 12px; font-size:12px; color:var(--verde); font-weight:600 }
+.caso{ margin-top:10px; border:1px solid var(--linha-fina); border-radius:var(--r-p);
+       background:var(--carta-2); overflow:hidden }
+.caso-topo{ width:100%; display:flex; align-items:center; gap:9px; padding:10px 12px;
+            border:none; background:none; text-align:left }
+.caso-n{ font-size:11px; font-weight:700; letter-spacing:.06em; text-transform:uppercase;
+         color:var(--verde); flex:0 0 auto }
+.caso-quem{ flex:1; font-size:13px; color:var(--tinta-2) }
+.caso-seta{ flex:0 0 auto; font-size:17px; color:var(--apagado); line-height:1 }
+.caso-corpo{ padding:0 12px 12px; font-size:13.5px; line-height:1.5 }
+.caso-hist{ margin:0 0 8px; color:var(--tinta-2) }
+.caso-exame{ margin:0 0 12px; color:var(--tinta-2) }
+.caso-exame b, .caso-q .q{ font-family:var(--sans) }
+.caso-exame b{ font-size:10.5px; letter-spacing:.08em; text-transform:uppercase;
+               color:var(--apagado); display:block; margin-bottom:2px }
+.caso-q{ margin-bottom:11px; padding-left:11px; border-left:2px solid var(--verde-lavado) }
+.caso-q .q{ margin:0 0 3px; font-size:12px; font-weight:700; color:var(--verde) }
+.caso-q .r{ margin:0; color:var(--tinta-2) }
+.caso-chave{ margin:12px 0 0; padding:9px 11px; border-radius:var(--r-p);
+             background:#F9EFD9; border-left:3px solid var(--alerta);
+             font-size:13px; color:var(--tinta-2) }
+
 /* ---------- aulas ---------- */
 .aula{
   padding: 14px 16px; background: var(--carta); border: 1px solid var(--linha-fina);
@@ -411,6 +434,9 @@ table.padrao tr:last-child th, table.padrao tr:last-child td{ border-bottom: non
 
 <!-- Os resumos de estudo, um por tema do plano de ensino. -->
 <script src="./resumos.js"></script>
+
+<!-- Casos clínicos entregues pela coordenação. -->
+<script src="./casos.js"></script>
 
 <div class="folha">
   <header class="capa">
@@ -525,6 +551,7 @@ const AULAS=[
   "Saúde sexual e reprodutiva: prevenção da gravidez e IST/Aids"]},
 
  {id:"mul", tema:"Atenção à Mulher", eixos:["mul"],
+  quando:"Planejamento Familiar e Doenças das Mamas · segunda, 21/09, 8h · Univag, sala T400",
   quem:[["Zuleide Aparecida Felix Cabral","professor"],
         ["Ronald Benedito dos Anjos","preceptor"]], conteudo:[
   "Planejamento da vida sexual e reprodutiva: assistência à anticoncepção e métodos contraceptivos",
@@ -544,6 +571,7 @@ const AULAS=[
   "Assistência domiciliar à pessoa idosa na atenção básica"]},
 
  {id:"han", tema:"Hanseníase", eixos:["han"],
+  quando:"Casos clínicos, com tuberculose · terça, 22/09, 13h · Univag, sala T401, bloco D",
   quem:[["Tiago Rodrigues Viana","professor"]], conteudo:[
   "Definição de caso",
   "Aspectos epidemiológicos: agente etiológico e modo de transmissão",
@@ -556,6 +584,7 @@ const AULAS=[
   "Atividades desenvolvidas na unidade de saúde"]},
 
  {id:"tb", tema:"Tuberculose", eixos:["tb"],
+  quando:"Casos clínicos, com hanseníase · terça, 22/09, 13h · Univag, sala T401, bloco D",
   quem:[["Tiago Rodrigues Viana","professor"]], conteudo:[
   "Atribuições das unidades básicas de saúde no controle da tuberculose",
   "Etiologia, transmissão e patogênese",
@@ -655,9 +684,22 @@ const SLOTS={
  manha:["14h30–16h00","16h15–17h15","19h00–20h30","20h45–21h45"],
  tarde:["08h00–09h30","09h45–11h15","19h00–20h30","20h45–21h45"],
  sexta:["08h00–09h30","10h00–11h30","14h00–15h30","16h00–17h30","19h00–20h30"],
+ integral:["19h00–20h30","20h45–21h45"],
  sabado:["08h00–11h00","15h00–16h30"],
  domingo:["09h00–11h00","16h00–17h00"]
 };
+/* O que a coordenação publica a cada semana, igual para todos os grupos:
+   onde cada turno está e que aula acontece. A escala pessoal — com quem,
+   qual turno é o dela — entra por cima disto, pelo "ajustar este dia". */
+const CRONOGRAMA={
+  /* Semana 4 — 21 a 25 de setembro */
+  "2026-09-21":{m:"aula",mTxt:"Planejamento Familiar e Doenças Benignas das Mamas · Univag, sala T400 · 8h",t:"ubs"},
+  "2026-09-22":{m:"ubs",t:"aula",tTxt:"Casos clínicos de tuberculose e hanseníase · Prof. Tiago · Univag, sala T401, bloco D · 13h"},
+  "2026-09-23":{m:"ubs",t:"ubs"},
+  "2026-09-24":{m:"ubs",t:"folga"},
+  "2026-09-25":{m:"ubs",t:"ubs"}
+};
+
 /* A escala das práticas na UBS e os compromissos avulsos são dados de quem
    usa, não do programa: ficam no aparelho, editados pelo botão "ajustar o
    dia", e nunca no código. Um arquivo meus-dados.js ao lado pode trazer uma
@@ -714,11 +756,34 @@ const curto=s=>{const d=toDate(s);return `${p2(d.getDate())}/${p2(d.getMonth()+1
 const extenso=s=>{const d=toDate(s);return `${d.getDate()} de ${MES_EXT[d.getMonth()]}`};
 function hoje(){const t=toStr(new Date());return t<START?START:(t>FIM?FIM:t)}
 function tipoDia(d){const w=toDate(d).getDay();return w===0?"domingo":w===6?"sabado":w===5?"sexta":"ubs"}
+/* A escala fala em turnos: m e t valem "ubs", "aula" ou "folga". A forma
+   antiga, com um turno só, continua lida — quem já tem dado guardado não
+   perde nada. */
+function diaEscala(d){
+  const base=CRONOGRAMA[d], bruto=ESCALA[d];
+  if(!base&&!bruto) return null;
+  let e=bruto||{};
+  if(!e.m&&!e.t){                       /* forma antiga, de um turno só */
+    if(e.turno==="manha") e={...e, m:"ubs"};
+    else if(e.turno==="tarde") e={...e, t:"ubs"};
+    else if(e.turno==="aula")  e={...e, m:"aula"};
+    else if(e.turno==="folga") e={...e, folga:true};
+  }
+  return base?{...base, ...e}:e;
+}
+function ocupado(v){ return v==="ubs"||v==="aula" }
+
 function slotsDe(d,m){
-  const e=ESCALA[d];
-  /* a escala pode dizer só com quem é o dia, sem mexer no turno */
-  if(e&&e.turno) return e.turno==="folga"?SLOTS.sexta:SLOTS[e.turno==="aula"?"manha":e.turno];
-  if(FERIADOS[d]) return SLOTS.sexta;          /* feriado rende como a sexta */
+  const e=diaEscala(d);
+  if(e&&(e.m||e.t)){
+    const manha=ocupado(e.m), tarde=ocupado(e.t);
+    if(manha&&tarde) return SLOTS.integral;   /* sobra a noite */
+    if(manha) return SLOTS.manha;
+    if(tarde) return SLOTS.tarde;
+    return SLOTS.sexta;                       /* dia livre */
+  }
+  if(e&&e.folga) return SLOTS.sexta;
+  if(FERIADOS[d]) return SLOTS.sexta;
   const t=tipoDia(d);
   return t==="ubs"?SLOTS[m==="tarde"?"tarde":"manha"]:SLOTS[t];
 }
@@ -769,8 +834,7 @@ function montarPlano(){
   const cap={ubs:2,sexta:3,sabado:1,domingo:0}; let i=0;
   for(const d of dias){
     if(i>=CONTEUDO.length) break;
-    const livre=(ESCALA[d]&&ESCALA[d].turno==="folga")||FERIADOS[d];
-    const vagas=livre?cap.sexta:cap[tipoDia(d)];
+    const vagas=Math.min(cap.sexta, Math.max(0, slotsDe(d,"manha").length-2));
     for(let k=0;k<vagas&&i<CONTEUDO.length;k++){
       const[e,t]=CONTEUDO[i++];
       T.push({id:id++,tipo:"eixo",rank:1,data:d,eixo:e,titulo:t,status:"pendente"});
@@ -818,6 +882,8 @@ let S=carregar(), diaAtivo=hoje(), aba="dia", recado="";
 let rascunho="", escopoNovo="semana", ajustando=null, colando=false, aulaAberta=null;
 let resumoAberto=null;
 const TEMRESUMO=(typeof RESUMOS!=="undefined"&&RESUMOS)||{};
+const TEMCASO=(typeof CASOS!=="undefined"&&CASOS)||{};
+let casoAberto=null;
 
 /* o estado manda; onde ele ainda não tem, entra a primeira carga, se houver */
 if(!S.escala) S.escala=ESCALA; else ESCALA=S.escala;
@@ -923,46 +989,55 @@ function viewDia(){
       média.</p></div>`;
   }
 
-  /* com escala o turno já está decidido; sem escala, ela escolhe no alternador */
-  const escalaDia=ESCALA[d], feriado=FERIADOS[d];
-  if(t==="ubs"&&!feriado&&!(escalaDia&&escalaDia.turno)){
+  /* com escala os turnos já estão decididos; sem escala, ela escolhe no alternador */
+  const escalaDia=diaEscala(d), feriado=FERIADOS[d];
+  const temTurnos=escalaDia&&(escalaDia.m||escalaDia.t);
+  if(t==="ubs"&&!feriado&&!temTurnos&&!(escalaDia&&escalaDia.folga)){
     h+=`<div class="turno" role="group" aria-label="Turno na UBS">
       <button aria-pressed="${modo==="manha"}" onclick="setModo('manha')">UBS de manhã</button>
       <button aria-pressed="${modo==="tarde"}" onclick="setModo('tarde')">UBS de tarde</button></div>`;
   }
 
-  const turno=(escalaDia&&escalaDia.turno)||(feriado?"feriado":t==="ubs"?modo:null);
   const treino=`Academia — ${TREINOS[S.treinoAtual].n}: ${esc(TREINOS[S.treinoAtual].f)}`;
   const naUbs=esc(UBS)+(escalaDia&&escalaDia.com?" — com "+esc(escalaDia.com):"");
   const outras=escalaDia&&escalaDia.outras?esc(escalaDia.outras):"";
-  const linha=(hora,txt)=>`<div><span class="h">${hora}</span><span>${txt}</span></div>`;
+  const linha=(hora,txt,cls)=>`<div class="${cls||""}"><span class="h">${hora}</span><span>${txt}</span></div>`;
+
+  /* o que cada turno é, já normalizado: "ubs", "aula", "folga" ou vazio */
+  let manha, tarde, txtM="", txtT="";
+  if(temTurnos){
+    manha=escalaDia.m; tarde=escalaDia.t;
+    txtM=escalaDia.mTxt||""; txtT=escalaDia.tTxt||"";
+  }else if(feriado){ manha=tarde="feriado"; }
+  else if(escalaDia&&escalaDia.folga){ manha=tarde=""; }
+  else if(t==="ubs"){ if(modo==="tarde") tarde="ubs"; else manha="ubs"; }
+
+  const qual=(v,txt)=>v==="ubs"?naUbs:v==="aula"?("Aula teórica"+(txt?" — "+esc(txt):" na UNIVAG")):
+              v==="folga"?"Folga semanal":v==="feriado"?esc(feriado)+" — sem UBS e sem aula":"";
+  /* academia se encaixa na brecha que o dia deixar */
+  const horaGym=ocupado(manha)&&ocupado(tarde)?"11h30–12h45"
+    :ocupado(manha)?"12h30–13h45":ocupado(tarde)?"11h30–12h45":"12h00–13h30";
 
   h+=`<div class="agenda">`;
-  /* compromisso abre o dia: é o que não pode passar batido */
   (COMPROMISSOS[d]||[]).forEach(c=>{
     h+=`<div class="compromisso"><span class="h">${esc(c.h)}</span><span>${esc(c.txt)}</span></div>`;
   });
-  if(turno==="tarde"){
-    if(outras) h+=linha("07h30–11h30", outras+" na UBS — sua manhã está livre");
-    h+=linha("11h30–12h45", treino);
-    h+=linha("13h00–17h00", naUbs);
-  }else if(turno==="manha"||turno==="aula"){
-    h+=linha("07h30–11h30", turno==="aula"?"Aula teórica na UNIVAG":naUbs);
-    h+=linha("12h30–13h45", treino);
-  }else if(turno==="folga"){
-    h+=linha("sem UBS", (outras?outras+" na escala — ":"")+"o dia todo é de estudo");
-    h+=linha("12h00–13h30", treino);
-  }else if(turno==="feriado"){
-    h+=linha("feriado", esc(feriado)+" — sem UBS e sem aula");
-    h+=linha("12h00–13h30", treino);
-  }else if(t==="sexta"){
-    h+=linha("sem UBS", "sexta é dia de estudo");
-    h+=linha("12h00–13h30", treino);
-  }else{
-    h+=linha("11h30–13h00", treino);
-  }
-  /* o plano de ensino reserva a tarde de quinta para descanso */
-  if(toDate(d).getDay()===4&&turno!=="tarde") h+=linha("tarde", "descanso semanal, pelo plano de ensino");
+  /* o resto da agenda sai em ordem de relógio, não na ordem em que foi montada */
+  const fixas=[];
+  if(manha==="folga") fixas.push([7.5, linha("manhã","Folga semanal")]);
+  else if(manha) fixas.push([7.5, linha("07h30–11h30", qual(manha,txtM), manha==="aula"?"compromisso":"")]);
+  else if(outras&&ocupado(tarde)) fixas.push([7.5, linha("07h30–11h30", outras+" na UBS — sua manhã está livre")]);
+  else if(!ocupado(tarde)&&(t==="sexta"||(escalaDia&&escalaDia.folga)))
+    fixas.push([7.5, linha("manhã","sem UBS — dia de estudo")]);
+
+  fixas.push([horaGym==="12h30–13h45"?12.5:horaGym==="11h30–12h45"?11.5:12, linha(horaGym, treino)]);
+
+  if(tarde==="folga") fixas.push([13, linha("tarde","folga semanal")]);
+  else if(tarde) fixas.push([13, linha("13h00–17h00", qual(tarde,txtT), tarde==="aula"?"compromisso":"")]);
+  else if(outras&&ocupado(manha)) fixas.push([13, linha("13h00–17h00", outras+" na UBS — sua tarde está livre")]);
+  else if(toDate(d).getDay()===4) fixas.push([13, linha("tarde","descanso semanal, pelo plano de ensino")]);
+
+  fixas.sort((a,b)=>a[0]-b[0]).forEach(x=>{h+=x[1]});
   h+=`</div>`;
   h+=painelAjuste(d,escalaDia);
 
@@ -997,10 +1072,15 @@ function viewDia(){
 
 function marcaEscala(d){
   if(FERIADOS[d]) return `<span class="chip" style="--c:var(--alerta)">feriado</span>`;
-  const e=ESCALA[d]; if(!e||!e.turno) return "";
-  const r=e.turno==="folga"?"sem UBS":e.turno==="tarde"?"UBS à tarde"
-         :e.turno==="aula"?"aula na UNIVAG":"UBS de manhã";
-  return `<span class="chip neutro">${r}</span>`;
+  const e=diaEscala(d); if(!e) return "";
+  const selos=[];
+  if(e.m==="aula"||e.t==="aula")
+    selos.push(`<span class="chip" style="--c:var(--verde)">aula teórica</span>`);
+  const ubs=[e.m==="ubs"&&"manhã", e.t==="ubs"&&"tarde"].filter(Boolean);
+  if(ubs.length) selos.push(`<span class="chip neutro">UBS ${ubs.join(" e ")}</span>`);
+  else if(!selos.length&&(e.folga||(!e.m&&!e.t&&e.outras))) selos.push(`<span class="chip neutro">sem UBS</span>`);
+  if(e.t==="folga") selos.push(`<span class="chip neutro">folga à tarde</span>`);
+  return selos.join("");
 }
 
 function selosCompromisso(d){
@@ -1180,13 +1260,15 @@ function viewAulas(){
 
   AULAS.forEach(a=>{
     const aberta=aulaAberta===a.id;
-    const quando=(S.aulas&&S.aulas[a.id])||"";
+    const quando=(S.aulas&&S.aulas[a.id])||a.quando||"";
     h+=`<div class="aula">
       <h3 class="aula-tema">${a.tema}</h3>
       <p class="aula-quem">${a.quem.length
         ? a.quem.map(([nome,papel])=>`${esc(nome)} <span class="papel">${papel}</span>`).join(" · ")
         : `<span class="papel">${esc(a.nota||"")}</span>`}</p>
       ${quando?`<p class="aula-quando">${esc(quando)}</p>`:""}
+      ${(TEMCASO[a.id]||[]).length?`<p class="aula-casos">${TEMCASO[a.id].length} casos clínicos
+        da coordenação, com resposta comentada, no fim deste cartão</p>`:""}
       ${a.eixos.map(barraEixo).join("")}
       <button class="btn-ajustar" style="margin:6px 0 0"
         onclick="verAula('${a.id}')">${aberta?"fechar":"ver o conteúdo e anotar o horário"}</button>`;
@@ -1197,6 +1279,21 @@ function viewAulas(){
                  value="${esc(quando)}" placeholder="terça, 22/09, pela manhã"></label>
         <button class="btn-larga" onclick="salvarQuando('${a.id}')">salvar o horário</button>`;
     }
+    (TEMCASO[a.id]||[]).forEach((c,i)=>{
+      const chave=a.id+i, aberto=casoAberto===chave;
+      h+=`<div class="caso">
+        <button class="caso-topo" onclick="verCaso('${chave}')">
+          <span class="caso-n">${c.n}</span><span class="caso-quem">${esc(c.quem)}</span>
+          <span class="caso-seta">${aberto?"−":"+"}</span></button>
+        ${aberto?`<div class="caso-corpo">
+          <p class="caso-hist">${esc(c.historia)}</p>
+          <p class="caso-exame"><b>Exame</b> ${esc(c.exame)}</p>
+          ${c.perguntas.map(q=>`<div class="caso-q"><p class="q">${esc(q.p)}</p>
+            <p class="r">${esc(q.r)}</p></div>`).join("")}
+          <p class="caso-chave">${esc(c.chave)}</p>
+        </div>`:""}
+      </div>`;
+    });
     h+=`</div>`;
   });
   h+=`</div>
@@ -1279,6 +1376,7 @@ function tirarLembrete(id){
 }
 function abrirAjuste(d){ ajustando=ajustando===d?null:d; render(); }
 function verAula(id){ aulaAberta=aulaAberta===id?null:id; render(); }
+function verCaso(k){ casoAberto=casoAberto===k?null:k; render(); }
 function verResumo(id){ resumoAberto=resumoAberto===id?null:id; render(); }
 function salvarQuando(id){
   const v=document.getElementById("aula-quando").value.trim();
