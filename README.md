@@ -349,6 +349,41 @@ escolha automática do modelo, e seis valores de TFG contra uma implementação
 independente da equação publicada, incluindo duas âncoras definicionais.
 Rode isso sempre que mexer no cálculo.
 
+## Conduta para o paciente calculado
+
+O resultado do PREVENT não para no número: `assets/conduta.js` cruza a PA
+medida, a faixa de risco, a TFG, a albuminúria, o potássio, quantos
+anti-hipertensivos o paciente já usa e as condições associadas, e devolve o
+estágio, a decisão de tratar, em quantas drogas parar e quais classes entram —
+cada uma com o motivo e um link para o cartão da classe.
+
+Nenhuma regra ali é nova. Todas saem do conteúdo que já está em
+`assets/data.js`:
+
+| O que decide | De onde vem |
+| --- | --- |
+| estágio pela PA | `ESTAGIOS` |
+| tratar agora, em três meses ou não tratar | `INICIO_LIMIARES` + faixa do PREVENT |
+| monoterapia, dupla, tripla ou quarta droga | `ESCALONAMENTO` + quantas já usa |
+| qual classe em cada comorbidade | `PERFIS` |
+| o que nunca combinar e o que vigiar | `COMBOS` |
+| trocas por TFG, gota, potássio | contraindicações das próprias `CLASSES` |
+
+Se um campo não é coletado, a regra correspondente não roda — o app não
+adivinha. Por isso as condições que a tabela `PERFIS` resolve (gestação,
+pessoa negra, gota, asma, coronariopatia, IC, fibrilação atrial, pós-AVC,
+osteoporose, hiperplasia prostática, enxaqueca, fragilidade) entram como
+marcadores no formulário.
+
+```bash
+node tests/test-conduta.js
+```
+
+Trinta e oito casos: quando começar, quando escalar, qual esquema sai em cada
+comorbidade e quais avisos disparam. Rode sempre que mexer nas regras ou no
+conteúdo de `data.js` — a conduta lê aquele arquivo, então mudar um texto lá
+pode mudar o que o app sugere aqui.
+
 Os casos do modelo `full` usam `sdiDecil: 3` para reproduzir o CEP 14738 dos
 testes originais. Esse parâmetro existe só para a validação; o app nunca o
 informa.
@@ -434,9 +469,12 @@ python3 -m http.server 8000
 
 ```
 index.html               casca da página, metadados e manifesto
-assets/data.js           todo o conteúdo clínico (classes, combos, perfis…)
+assets/data.js           conteúdo clínico da hipertensão (classes, combos, perfis…)
+assets/data-diabetes.js  conteúdo clínico do diabete melito tipo 2
+assets/data-rastreio.js  conteúdo clínico dos rastreamentos
 assets/prevent-betas.js  coeficientes do PREVENT (gerado)
 assets/prevent.js        cálculo do risco e CKD-EPI 2021
+assets/conduta.js        conduta por paciente derivada de data.js
 assets/fontes/           fonte da assinatura e sua licença
 assets/app.js            renderização, abas, busca, tema e instalação
 assets/styles.css        sistema visual: tokens, tema claro/escuro, componentes
@@ -445,7 +483,7 @@ sw.js                    cache offline
 rodizio/                 o segundo app: página, manifesto, ícones e sw próprios
 icons/                   ícones do app
 tools/                   empacotador do arquivo único e extrator dos coeficientes
-tests/                   validação da calculadora de risco e do contraste
+tests/                   validação do risco, da conduta e do contraste
 dist/                    saída gerada: anti-hipertensivos.html
 ```
 
