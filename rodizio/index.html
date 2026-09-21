@@ -1025,7 +1025,12 @@ function viewDia(){
   });
   /* o resto da agenda sai em ordem de relógio, não na ordem em que foi montada */
   const fixas=[];
-  if(manha==="folga") fixas.push([7.5, linha("manhã","Folga semanal")]);
+  const diaTodoLivre=(manha==="livre"||!manha)&&(tarde==="livre"||!tarde)&&!feriado
+                     &&(manha==="livre"||tarde==="livre");
+  if(diaTodoLivre){
+    fixas.push([7.5, linha("sem UBS", (outras?outras+" na escala — ":"")+"o dia todo é de estudo")]);
+  }
+  else if(manha==="folga") fixas.push([7.5, linha("manhã","Folga semanal")]);
   else if(manha==="livre") fixas.push([7.5, linha("07h30–11h30",
     (outras?outras+" na UBS — ":"")+"sua manhã está livre")]);
   else if(manha) fixas.push([7.5, linha("07h30–11h30", qual(manha,txtM), manha==="aula"?"compromisso":"")]);
@@ -1035,7 +1040,8 @@ function viewDia(){
 
   fixas.push([horaGym==="12h30–13h45"?12.5:horaGym==="11h30–12h45"?11.5:12, linha(horaGym, treino)]);
 
-  if(tarde==="folga") fixas.push([13, linha("tarde","folga semanal")]);
+  if(diaTodoLivre){ /* a linha única da manhã já falou pelo dia inteiro */ }
+  else if(tarde==="folga") fixas.push([13, linha("tarde","folga semanal")]);
   else if(tarde==="livre") fixas.push([13, linha("13h00–17h00",
     (outras?outras+" na UBS — ":"")+"sua tarde está livre")]);
   else if(tarde) fixas.push([13, linha("13h00–17h00", qual(tarde,txtT), tarde==="aula"?"compromisso":"")]);
