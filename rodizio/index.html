@@ -772,6 +772,7 @@ function diaEscala(d){
   return base?{...base, ...e}:e;
 }
 function ocupado(v){ return v==="ubs"||v==="aula" }
+function meuTurno(v){ return v&&v!=="livre" }
 
 function slotsDe(d,m){
   const e=diaEscala(d);
@@ -1025,6 +1026,8 @@ function viewDia(){
   /* o resto da agenda sai em ordem de relógio, não na ordem em que foi montada */
   const fixas=[];
   if(manha==="folga") fixas.push([7.5, linha("manhã","Folga semanal")]);
+  else if(manha==="livre") fixas.push([7.5, linha("07h30–11h30",
+    (outras?outras+" na UBS — ":"")+"sua manhã está livre")]);
   else if(manha) fixas.push([7.5, linha("07h30–11h30", qual(manha,txtM), manha==="aula"?"compromisso":"")]);
   else if(outras&&ocupado(tarde)) fixas.push([7.5, linha("07h30–11h30", outras+" na UBS — sua manhã está livre")]);
   else if(!ocupado(tarde)&&(t==="sexta"||(escalaDia&&escalaDia.folga)))
@@ -1033,6 +1036,8 @@ function viewDia(){
   fixas.push([horaGym==="12h30–13h45"?12.5:horaGym==="11h30–12h45"?11.5:12, linha(horaGym, treino)]);
 
   if(tarde==="folga") fixas.push([13, linha("tarde","folga semanal")]);
+  else if(tarde==="livre") fixas.push([13, linha("13h00–17h00",
+    (outras?outras+" na UBS — ":"")+"sua tarde está livre")]);
   else if(tarde) fixas.push([13, linha("13h00–17h00", qual(tarde,txtT), tarde==="aula"?"compromisso":"")]);
   else if(outras&&ocupado(manha)) fixas.push([13, linha("13h00–17h00", outras+" na UBS — sua tarde está livre")]);
   else if(toDate(d).getDay()===4) fixas.push([13, linha("tarde","descanso semanal, pelo plano de ensino")]);
@@ -1469,6 +1474,27 @@ let convite=null;
 addEventListener("beforeinstallprompt",e=>{e.preventDefault();convite=e;if(aba==="aulas")render()});
 function instalar(){ if(!convite) return; const c=convite; convite=null; c.prompt(); render(); }
 addEventListener("appinstalled",()=>{convite=null;recado="Rodízio instalado na tela de início.";render()});
+
+/* A escala da semana pode chegar por link: tudo depois do # fica no
+   aparelho e nunca é enviado ao servidor. Ela entra por cima do que já
+   existe, dia a dia, sem tocar no resto do que foi marcado. */
+(function(){
+  const h=location.hash||"";
+  if(!h.startsWith("#escala=")) return;
+  try{
+    const b64=h.slice(8).replace(/-/g,"+").replace(/_/g,"/");
+    const json=new TextDecoder().decode(Uint8Array.from(atob(b64),c=>c.charCodeAt(0)));
+    const novo=JSON.parse(json);
+    let dias=0;
+    Object.entries(novo.escala||{}).forEach(([d,v])=>{ ESCALA[d]=v; dias++; });
+    Object.entries(novo.compromissos||{}).forEach(([d,v])=>{ COMPROMISSOS[d]=v; });
+    if(novo.ubs) UBS=S.ubs=novo.ubs;
+    S.escala=ESCALA; S.compromissos=COMPROMISSOS;
+    salvar();
+    recado=(novo.nome?novo.nome+": ":"")+dias+(dias>1?" dias entraram":" dia entrou")+" na sua escala.";
+  }catch(e){ recado="Esse link de escala veio quebrado. Me peça outro."; }
+  history.replaceState(null,"",location.pathname+location.search);
+})();
 
 /* atalho por URL, que é o que os shortcuts do manifesto usam: ?aba=treino */
 const pedida=new URLSearchParams(location.search).get("aba");
