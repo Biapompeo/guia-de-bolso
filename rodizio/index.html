@@ -339,6 +339,36 @@ table.quadro tr:last-child td{ border-bottom: none }
 .resumo-fig{ margin: 14px 0 }
 .resumo-fig svg{ width: 100%; height: auto }
 
+/* ---------- como fazer: o método de cada tipo de tarefa ---------- */
+.metodo{ margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--linha-fina) }
+.metodo-tit{
+  margin: 0 0 5px; font-size: 10.5px; letter-spacing: .07em; text-transform: uppercase;
+  color: var(--c); font-weight: 700;
+}
+.metodo-ideia{ margin: 0 0 13px; font-size: 14px; line-height: 1.5; color: var(--tinta) }
+.metodo-passos{ margin: 0; padding-left: 20px; font-size: 13.5px; line-height: 1.55; color: var(--tinta-2) }
+.metodo-passos li{ margin-bottom: 9px }
+.metodo-passos li:last-child{ margin-bottom: 0 }
+.metodo-passos li::marker{ color: var(--c); font-weight: 700 }
+.metodo-passos b{ color: var(--tinta); font-weight: 600 }
+.metodo-tempo{
+  margin-top: 14px; padding: 11px 13px; border-radius: var(--r-p);
+  background: var(--verde-lavado); font-size: 13px; line-height: 1.5; color: #13423C;
+}
+.metodo-tempo b{ display: block; font-size: 10.5px; letter-spacing: .07em; text-transform: uppercase;
+                 margin-bottom: 4px; opacity: .8 }
+.metodo-trava{
+  margin: 13px 0 0; padding-left: 12px; border-left: 3px solid var(--alerta);
+  font-size: 13px; line-height: 1.5; color: var(--tinta-2);
+}
+.metodo-trava b{ display: block; font-size: 10.5px; letter-spacing: .07em; text-transform: uppercase;
+                 color: var(--alerta); margin-bottom: 3px }
+.metodo-nota{ margin: 13px 0 0; font-size: 13px; line-height: 1.5; color: var(--tinta-2) }
+/* dentro do acordeão da aba Aulas o painel já tem a moldura do cartão, e o
+   nome do método já está no cabeçalho que se toca para abrir */
+.caso-corpo .metodo{ margin-top: 0; padding-top: 0; border-top: none }
+.caso-corpo .metodo-tit{ display: none }
+
 /* ---------- casos clínicos ---------- */
 .aula-casos{ margin:-6px 0 12px; font-size:12px; color:var(--verde); font-weight:600 }
 .caso{ margin-top:10px; border:1px solid var(--linha-fina); border-radius:var(--r-p);
@@ -660,6 +690,96 @@ const MEDWAY=["Preventiva: SUS e atenção primária","Bioestatística e epidemi
  "Pediatria ambulatorial","Ginecologia e rastreamentos","Obstetrícia: pré-natal",
  "Infectologia: TB e hanseníase","Revisão dirigida e questões"];
 
+/* Como se faz cada tipo de tarefa. O plano diz o quê e quando; isto diz
+   como, porque "revisão espaçada" e "questões" só funcionam de um jeito —
+   tentando lembrar antes de ler, e tratando o erro como conteúdo. Cada
+   tarefa do dia abre o método que é dela, e a aba Aulas traz todos. */
+const METODOS={
+
+ revisao:{
+  n:"Revisão espaçada", curto:"lembrar antes de ler",
+  ideia:"Tente lembrar antes de ler. É só isso que separa revisão de releitura — e releitura dá sensação de estudo sem fixar nada.",
+  passos:[
+   "Abra a apostila no eixo, mas <b>só nos títulos</b>. Cada eixo tem de três a cinco temas.",
+   "Tema por tema, <b>feche o texto e fale em voz alta</b> — ou escreva numa folha — tudo o que você lembra. Dois minutos por tema. É desconfortável, e é aí que a memória se fixa.",
+   "<b>Só então confira</b> contra o resumo. Grife o que você <b>não</b> lembrou; ignore o que já saiu certo.",
+   "Releia apenas as duas caixas — <b>De cabeça</b> e <b>Onde se erra</b> — dos temas que falharam.",
+   "<b>Feche com questões</b> daquele eixo no Medway. Questão é a melhor forma de recuperação que existe."
+  ],
+  tempo:"Num bloco de duas horas com quatro temas: cerca de 15 minutos de tentativa e conferência por tema, e o resto em questões.",
+  trava:"Se num tema você travar por completo, não force os 15 minutos. Marque a tarefa como pendente e trate o tema como conteúdo novo no próximo bloco livre — revisão espaçada só funciona sobre o que já foi aprendido uma primeira vez.",
+  nota:"O espaçamento já está montado no plano: o eixo que você viu na semana volta no domingo seguinte, volta nos dois simulados gerais e volta na revisão final, de 15 a 20 de outubro. Os intervalos crescem de propósito — lembrar depois de ter quase esquecido é o que consolida."
+ },
+
+ questoes:{
+  n:"Questões", curto:"o ganho está na correção",
+  ideia:"Questão não é prova de que você sabe: é o modo mais eficiente de aprender. O ganho está no que você faz depois de responder, não em quantas você fez.",
+  passos:[
+   "Responda <b>sem consultar nada</b>, e antes de confirmar <b>escreva por que</b> descartou cada alternativa errada. Uma linha basta.",
+   "Marque cada questão como <b>acertei sabendo</b>, <b>acertei na dúvida</b> ou <b>errei</b>. Chutes certos contam como erro.",
+   "Leia o comentário de <b>todas</b> as que não foram \"acertei sabendo\" — inclusive as que você acertou.",
+   "Para cada erro, escreva <b>uma frase</b> com o que faltou: um número, um critério, uma definição trocada. Essa frase é o material de revisão, não a questão.",
+   "Volte nas questões erradas <b>três ou quatro dias depois</b>, não no mesmo dia. No mesmo dia você lembra da resposta, não do raciocínio."
+  ],
+  tempo:"Num bloco de 90 minutos: cerca de 20 questões em 40 minutos e 50 minutos de comentário e anotação. Se a conta inverter, você está fazendo questão demais e aprendendo de menos.",
+  trava:"Abaixo de 60% de acerto num assunto, pare as questões dele: falta conteúdo, e questão não ensina do zero. Volte ao resumo do eixo primeiro."
+ },
+
+ eixo:{
+  n:"Conteúdo novo", curto:"primeira passada num tema",
+  ideia:"Primeira passada num tema. O objetivo não é decorar — é entender bem o suficiente para conseguir recontar o tema no domingo, quando ele volta como revisão.",
+  passos:[
+   "Leia o resumo do tema uma vez, inteiro, <b>sem grifar</b>. Grifar na primeira leitura marca o que parece importante, não o que é.",
+   "Na segunda passada, grife e escreva na margem. Aqui a apostila em PDF serve para isso.",
+   "<b>Feche e reconte</b> o tema em três ou quatro frases, de memória. Se não sair, a leitura não pegou: releia só a parte que faltou.",
+   "Anote na folha de última hora qualquer <b>número, prazo ou portaria</b> que apareceu.",
+   "Faça de cinco a dez questões do tema, pelo método das questões, no mesmo dia."
+  ],
+  tempo:"Um tema por bloco de 90 minutos: cerca de 50 minutos de leitura e recontagem, 30 de questões, 10 de anotação.",
+  trava:"Se o tema não couber no bloco, pare no meio e remarque o resto. Tema entendido pela metade rende mais na revisão do que dois temas atravessados."
+ },
+
+ simulado:{
+  n:"Simulado", curto:"decidir sem saber o assunto",
+  ideia:"O simulado treina uma coisa que o estudo por tema não treina: decidir sem saber de qual assunto a questão é. A correção vale mais que a nota.",
+  passos:[
+   "<b>Marque o tempo e não pare</b>: cerca de 2 minutos e meio por questão, sem consultar, sem pular para o celular.",
+   "Ao responder, marque as questões em que você ficou <b>na dúvida</b> — mesmo as que acertou depois.",
+   "Corrija e some os erros <b>por eixo</b>, não no total. O número que importa é qual dos dez eixos concentra os erros.",
+   "Escreva a frase do que faltou em cada erro, como nas questões do dia.",
+   "Os <b>dois eixos com mais erros</b> passam à frente nos próximos blocos de revisão."
+  ],
+  tempo:"40 questões em cerca de 1h40, e no mínimo o mesmo tempo de correção — geralmente em outro bloco, ou no dia seguinte.",
+  trava:"Não interrompa o simulado para estudar a questão que você não sabe. Anote e siga: a interrupção estraga justamente o que o simulado treina."
+ },
+
+ videoaulas:{
+  n:"Aulas do Medway", curto:"vídeo só conta com anotação",
+  ideia:"Vídeo é entrada de conteúdo, e conteúdo que só entrou não fica. A aula só conta como estudada quando virou anotação sua e questão respondida.",
+  passos:[
+   "Assista em velocidade que ainda deixe você <b>pausar para escrever</b> — em geral 1,25× ou 1,5×.",
+   "Não copie o slide. Anote <b>só</b> o que o professor disse e não está escrito: número, critério, pegadinha de prova.",
+   "No fim, feche o caderno e <b>diga em voz alta</b> as três ideias centrais da aula.",
+   "Faça as questões do bloco no mesmo dia, pelo método das questões."
+  ],
+  tempo:"O bloco de 90 minutos cabe cerca de uma hora de aula e 30 minutos de questões.",
+  trava:"Aula assistida em 2× sem pausa não é estudo, é entretenimento com tema médico. Se você não conseguiu anotar nada, refaça o trecho."
+ },
+
+ folha:{
+  n:"Folha de última hora", curto:"uma folha, escrita à mão",
+  ideia:"Uma folha só, escrita à mão, com o que não se deduz: números, prazos, portarias, doses e critérios. É o que se lê na véspera e nada mais.",
+  passos:[
+   "Junte o que você anotou nas caixas <b>De cabeça</b> dos resumos e nas frases dos erros.",
+   "Escreva <b>à mão</b>, numa folha só, agrupado por eixo. Escrever à mão é parte do método, não capricho.",
+   "Corte tudo que você acertou duas vezes seguidas: se já fixou, ocupa espaço.",
+   "Na véspera da prova, leia <b>só esta folha</b>. Não abra resumo novo, não comece assunto novo."
+  ],
+  tempo:"Montar leva um bloco. Reler leva dez minutos, e é a única coisa da véspera.",
+  trava:"Se a folha passar de uma página, ela deixou de ser folha de última hora e virou resumo. Corte até caber."
+ }
+};
+
 const TREINOS=[
  {n:"Treino 1",f:"Quadríceps e panturrilha",ex:[
    ["Cadeira extensora (2s de contração)","4 × 15"],["Agachamento hack ou Smith","4 × 12"],
@@ -789,6 +909,19 @@ function slotsDe(d,m){
   return t==="ubs"?SLOTS[m==="tarde"?"tarde":"manha"]:SLOTS[t];
 }
 function temaMedway(d){return MEDWAY[Math.min(Math.floor(range(START,d).length/7),MEDWAY.length-1)]}
+
+/* Que método vale para cada tarefa. O título é o que distingue as tarefas de
+   um mesmo tipo — simulado, folha e revisão de eixo são todas "revisao". */
+function metodoDe(x){
+  const t=x.titulo||"";
+  if(t.startsWith("Simulado geral")||t==="Medway — simulado da semana") return "simulado";
+  if(t.startsWith("Folha de última hora")) return "folha";
+  if(t==="Medway — questões do dia") return "questoes";
+  if(t.startsWith("Medway — aulas")) return "videoaulas";
+  if(x.tipo==="revisao") return "revisao";
+  if(x.tipo==="eixo") return "eixo";
+  return null;
+}
 function ceuDe(cod){return CEUS.find(c=>c.cods.includes(cod))||{g:"nuvem",t:"tempo fechado"}}
 
 /* --------------------------------------------------------------- previsão */
@@ -881,7 +1014,7 @@ function carregar(){
 
 let S=carregar(), diaAtivo=hoje(), aba="dia", recado="";
 let rascunho="", escopoNovo="semana", ajustando=null, colando=false, aulaAberta=null;
-let resumoAberto=null;
+let resumoAberto=null, metodoAberto=null, metodoNaAba=null;
 const TEMRESUMO=(typeof RESUMOS!=="undefined"&&RESUMOS)||{};
 const TEMCASO=(typeof CASOS!=="undefined"&&CASOS)||{};
 let casoAberto=null;
@@ -1075,6 +1208,9 @@ function viewDia(){
       </div>
       ${TEMRESUMO[x.titulo]?`<button class="btn-ajustar" style="margin:12px 0 0"
         onclick="verResumo(${x.id})">${resumoAberto===x.id?"fechar o resumo":"estudar por aqui"}</button>`:""}
+      ${metodoDe(x)?`<button class="btn-ajustar" style="margin:${TEMRESUMO[x.titulo]?6:12}px 0 0"
+        onclick="verMetodo(${x.id})">${metodoAberto===x.id?"fechar":"como fazer esta tarefa"}</button>`:""}
+      ${metodoAberto===x.id?painelMetodo(metodoDe(x)):""}
       ${resumoAberto===x.id?painelResumo(TEMRESUMO[x.titulo]):""}
       </li>`;
   });
@@ -1157,6 +1293,20 @@ function painelResumo(r){
       <ul>${r.numeros.map(n=>`<li>${esc(n)}</li>`).join("")}</ul></div>`:""}
     ${r.pega?`<p class="resumo-pega"><b>Onde se erra</b> ${esc(r.pega)}</p>`:""}
     <p class="resumo-fonte">${esc(r.fonte)}</p>
+  </div>`;
+}
+
+/* Como se faz a tarefa. Os passos trazem <b> escrito no próprio texto, em
+   METODOS, e por isso não passam pelo esc() — nada aqui vem de quem usa. */
+function painelMetodo(k){
+  const m=METODOS[k]; if(!m) return "";
+  return `<div class="metodo">
+    <p class="metodo-tit">Como fazer · ${esc(m.n)}</p>
+    <p class="metodo-ideia">${esc(m.ideia)}</p>
+    <ol class="metodo-passos">${m.passos.map(p=>`<li>${p}</li>`).join("")}</ol>
+    <div class="metodo-tempo"><b>Quanto tempo</b>${esc(m.tempo)}</div>
+    <p class="metodo-trava"><b>Se travar</b>${esc(m.trava)}</p>
+    ${m.nota?`<p class="metodo-nota">${esc(m.nota)}</p>`:""}
   </div>`;
 }
 
@@ -1310,7 +1460,21 @@ function viewAulas(){
   h+=`</div>
 
   <section class="rodape">
-    <h2 class="sec">A apostila</h2>
+    <h2 class="sec">Como estudar</h2>
+    <p class="nota">O plano diz o que cai em cada bloco; isto diz como se faz. Cada tarefa do
+    dia também abre o método que é dela, no botão <b>como fazer esta tarefa</b>. Os seis seguem
+    a mesma regra: <b>tentar lembrar vale mais que reler</b>, e o erro é o material de estudo.</p>
+    ${["eixo","questoes","revisao","simulado","videoaulas","folha"].map(k=>{
+      const m=METODOS[k], aberto=metodoNaAba===k;
+      return `<div class="caso">
+        <button class="caso-topo" onclick="verMetodoNaAba('${k}')" aria-expanded="${aberto}">
+          <span class="caso-n">${esc(m.n)}</span><span class="caso-quem">${esc(m.curto)}</span>
+          <span class="caso-seta">${aberto?"−":"+"}</span></button>
+        ${aberto?`<div class="caso-corpo">${painelMetodo(k)}</div>`:""}
+      </div>`;
+    }).join("")}
+
+    <h2 class="sec" style="margin-top:22px">A apostila</h2>
     <p class="nota">Os ${Object.keys(TEMRESUMO).length} resumos, num PDF só, com margem larga para
     grifar e escrever à mão.</p>
     <a class="btn-larga" style="display:block;text-align:center;text-decoration:none"
@@ -1389,6 +1553,8 @@ function abrirAjuste(d){ ajustando=ajustando===d?null:d; render(); }
 function verAula(id){ aulaAberta=aulaAberta===id?null:id; render(); }
 function verCaso(k){ casoAberto=casoAberto===k?null:k; render(); }
 function verResumo(id){ resumoAberto=resumoAberto===id?null:id; render(); }
+function verMetodo(id){ metodoAberto=metodoAberto===id?null:id; render(); }
+function verMetodoNaAba(k){ metodoNaAba=metodoNaAba===k?null:k; render(); }
 function salvarQuando(id){
   const v=document.getElementById("aula-quando").value.trim();
   if(v) S.aulas[id]=v; else delete S.aulas[id];
