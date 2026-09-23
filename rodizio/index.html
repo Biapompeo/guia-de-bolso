@@ -441,6 +441,7 @@ table.padrao tr:last-child th, table.padrao tr:last-child td{ border-bottom: non
   background: var(--carta-2); color: var(--tinta);
 }
 .ajuste-tit{ margin: 18px 0 8px; font-size: 13px; font-weight: 600 }
+.ajuste-base{ margin: -2px 0 12px; font-size: 12.5px; line-height: 1.45; color: var(--tinta-2) }
 .ajuste .novo{ margin-bottom: 4px }
 .ajuste .novo button{ padding: 11px 16px }
 .caixa{
@@ -1246,13 +1247,22 @@ function painelAjuste(d,e){
   if(ajustando!==d)
     return `<button class="btn-ajustar" onclick="abrirAjuste('${d}')">ajustar este dia</button>`;
   const c=COMPROMISSOS[d]||[];
-  const opc=[["","padrão do dia"],["manha","UBS de manhã"],["tarde","UBS à tarde"],
-             ["aula","aula teórica na UNIVAG"],["folga","sem UBS neste dia"]];
+  /* Um turno de cada vez, na mesma língua que a agenda e os horários de
+     estudo leem — m e t. O que aparece selecionado é o que ela mesma pôs
+     aqui; sem nada posto, fica "como está no cronograma", e a linha abaixo
+     diz o que o cronograma manda naquele dia. */
+  const opc=[["","como está no cronograma"],["ubs","UBS"],["aula","aula teórica na UNIVAG"],
+             ["folga","folga"],["livre","livre — o turno é da outra dupla"]];
+  const meu=ESCALA[d]||{};
+  const sel=(id,atual)=>`<select id="${id}">${opc.map(([v,r])=>
+    `<option value="${v}" ${(atual||"")===v?"selected":""}>${r}</option>`).join("")}</select>`;
+  const base=CRONOGRAMA[d];
+  const rotulo=v=>({ubs:"UBS",aula:"aula teórica",folga:"folga",livre:"livre"})[v]||"nada marcado";
   return `<div class="ajuste">
-    <label class="campo"><span>Turno na UBS</span>
-      <select id="aj-turno">${opc.map(([v,r])=>
-        `<option value="${v}" ${e&&e.turno===v?"selected":""}>${r}</option>`).join("")}</select>
-    </label>
+    <label class="campo"><span>Manhã</span>${sel("aj-manha",meu.m)}</label>
+    <label class="campo"><span>Tarde</span>${sel("aj-tarde",meu.t)}</label>
+    ${base?`<p class="ajuste-base">No cronograma da coordenação:
+      manhã ${rotulo(base.m)} · tarde ${rotulo(base.t)}</p>`:""}
     <label class="campo"><span>Com quem</span>
       <input id="aj-com" type="text" maxlength="60" autocomplete="off"
              value="${e&&e.com?esc(e.com):""}" placeholder="nome da dupla"></label>
@@ -1569,16 +1579,19 @@ function lerCampos(){
   const d=diaAtivo;
   const nome=document.getElementById("aj-ubs").value.trim();
   UBS=S.ubs=nome||"UBS";
-  const turno=document.getElementById("aj-turno").value;
+  const m=document.getElementById("aj-manha").value;
+  const t=document.getElementById("aj-tarde").value;
   const com=document.getElementById("aj-com").value.trim();
   const outras=document.getElementById("aj-outras").value.trim();
-  if(turno||com||outras){
-    const e=ESCALA[d]||(ESCALA[d]={});
-    if(turno) e.turno=turno; else delete e.turno;
-    if(com) e.com=com; else delete e.com;
-    if(outras) e.outras=outras; else delete e.outras;
-    if(!e.turno&&!e.com&&!e.outras) delete ESCALA[d];
-  }else delete ESCALA[d];
+  const e=ESCALA[d]||{};
+  /* a forma antiga, de um turno só, não manda mais neste dia: ela perdia
+     para o CRONOGRAMA e o ajuste parecia não fazer nada */
+  delete e.turno; delete e.folga;
+  if(m) e.m=m; else delete e.m;
+  if(t) e.t=t; else delete e.t;
+  if(com) e.com=com; else delete e.com;
+  if(outras) e.outras=outras; else delete e.outras;
+  if(Object.keys(e).length) ESCALA[d]=e; else delete ESCALA[d];
 }
 function salvarDia(){
   lerCampos(); ajustando=null;
@@ -1662,9 +1675,16 @@ addEventListener("appinstalled",()=>{convite=null;recado="Rodízio instalado na 
     const b64=h.slice(8).replace(/-/g,"+").replace(/_/g,"/");
     const json=new TextDecoder().decode(Uint8Array.from(atob(b64),c=>c.charCodeAt(0)));
     const novo=JSON.parse(json);
-    let dias=0;
-    Object.entries(novo.escala||{}).forEach(([d,v])=>{ ESCALA[d]=v; dias++; });
-    Object.entries(novo.compromissos||{}).forEach(([d,v])=>{ COMPROMISSOS[d]=v; });
+    let dias=0, tirados=0;
+    /* valor vazio no link apaga aquele dia, em vez de sobrescrever: é o que
+       permite corrigir um compromisso que foi parar no dia errado */
+    Object.entries(novo.escala||{}).forEach(([d,v])=>{
+      if(v===null){ delete ESCALA[d]; tirados++; } else { ESCALA[d]=v; dias++; }
+    });
+    Object.entries(novo.compromissos||{}).forEach(([d,v])=>{
+      if(v===null||(Array.isArray(v)&&!v.length)){ delete COMPROMISSOS[d]; tirados++; }
+      else COMPROMISSOS[d]=v;
+    });
     if(novo.ubs) UBS=S.ubs=novo.ubs;
     /* lembrete do link só entra se ainda não existir com esse texto: abrir o
        mesmo link duas vezes, ou nos dois aparelhos, não duplica a lista */
@@ -1679,8 +1699,9 @@ addEventListener("appinstalled",()=>{convite=null;recado="Rodízio instalado na 
     salvar();
     const partes=[];
     if(dias) partes.push(dias+(dias>1?" dias entraram":" dia entrou")+" na sua escala");
+    if(tirados) partes.push(tirados+(tirados>1?" foram apagados":" foi apagado"));
     if(novosLembretes) partes.push(novosLembretes+(novosLembretes>1?" lembretes novos":" lembrete novo"));
-    recado=(novo.nome?novo.nome+": ":"")+(partes.join(" e ")||"nada de novo")+".";
+    recado=(novo.nome?novo.nome+": ":"")+(partes.join(", ")||"nada de novo")+".";
   }catch(e){ recado="Esse link de escala veio quebrado. Me peça outro."; }
   history.replaceState(null,"",location.pathname+location.search);
 })();
