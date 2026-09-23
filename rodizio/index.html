@@ -523,6 +523,10 @@ table.padrao tr:last-child th, table.padrao tr:last-child td{ border-bottom: non
 const START="2026-08-31", LAST="2026-10-20", PROVA="2026-10-21",
       VISTA="2026-10-22", FIM="2026-10-23", KEY="rodizio-sc-v1";
 
+/* Aparece na aba Aulas. Serve para saber, olhando o aparelho, se ele já
+   pegou a versão nova — anda junto com o VERSAO do sw.js. */
+const VERSAO_APP="v15";
+
 /* Feriados do cronograma: sem UBS e sem aula, mas o dia continua seu. */
 const FERIADOS={"2026-09-07":"Independência","2026-10-12":"Nossa Senhora Aparecida"};
 
@@ -820,6 +824,38 @@ const CRONOGRAMA={
   "2026-09-24":{m:"ubs",t:"folga"},
   "2026-09-25":{m:"ubs",t:"ubs"}
 };
+
+/* ------------------------------------------- correções que viajam no código
+
+   Um ajuste pessoal que ficou errado — um dia trocado, um compromisso que
+   foi parar no dia seguinte — mora no aparelho, e aparelho não conversa com
+   aparelho. Mandar um link não resolve: no iPhone, link tocado abre no
+   Safari, que guarda num lugar separado do aplicativo da tela de início, e
+   o que está instalado nunca vê.
+
+   Uma correção daqui viaja dentro da própria página. Todo aparelho que abrir
+   o rodízio aplica a que ainda não aplicou — o Safari e o aplicativo
+   instalado, cada um no seu canto, o celular e o iPad —, uma única vez cada,
+   anotando o id para não repetir nem desfazer ajuste feito depois. Não
+   depende de tocar, colar ou digitar nada.
+
+   Serve para consertar o que já foi parar errado nos aparelhos. O caminho
+   normal continua sendo o "ajustar este dia". */
+const CORRECOES=[
+ {id:"s4-quarta-quinta",
+  diz:"quarta 23 sem UBS o dia todo, com a casa às 17h30, e quinta 24 na UBS com a Érika",
+  escala:{
+    "2026-09-23":{m:"livre",t:"livre"},
+    "2026-09-24":{m:"ubs",com:"Érika"}},
+  compromissos:{
+    "2026-09-23":[{h:"17h30–19h00",txt:"Organização da casa",curto:"casa"}],
+    "2026-09-24":[]},
+  lembretes:[
+    {txt:"Casa: trocar os lixos",escopo:"semana"},
+    {txt:"Casa: lavar a louça",escopo:"semana"},
+    {txt:"Casa: recolher e estender a roupa",escopo:"semana"},
+    {txt:"Casa: trocar a roupa de cama",escopo:"semana"}]}
+];
 
 /* A escala das práticas na UBS e os compromissos avulsos são dados de quem
    usa, não do programa: ficam no aparelho, editados pelo botão "ajustar o
@@ -1505,6 +1541,8 @@ function viewAulas(){
     próprio dele, abre também em tela cheia e sem precisar de internet.</p>
     ${convite?'<button class="btn-larga" onclick="instalar()">Instalar na tela de início</button>':
       '<p class="nota">No iPhone: botão Compartilhar → <b>Adicionar à Tela de Início</b>. No Android, o menu do navegador traz <b>Instalar aplicativo</b>.</p>'}
+    <p class="nota">Este aparelho está na versão <b>${VERSAO_APP}</b>. Ele procura versão nova toda
+    vez que você volta para a tela do rodízio, e se atualiza sozinho.</p>
     <h2 class="sec" style="margin-top:22px">A previsão do tempo</h2>
     <p class="nota">É de ${LOCAL.nome}, do Open-Meteo, e alcança uns dezesseis dias.
     ${TEMPO?`Buscada ${curto(toStr(new Date(TEMPO.buscado)))} às
@@ -1738,7 +1776,22 @@ function colarEscala(){
 }
 function abrirColarEscala(){ colandoEscala=!colandoEscala; render(); }
 
-/* vindo pelo endereço */
+/* vindas no código, sozinhas: cada correção entra uma vez só por aparelho */
+(function(){
+  if(!Array.isArray(S.correcoes)) S.correcoes=[];
+  const feitas=[];
+  CORRECOES.forEach(c=>{
+    if(S.correcoes.includes(c.id)) return;
+    try{ aplicarPacote(c); S.correcoes.push(c.id); feitas.push(c.diz); }
+    catch(e){ /* uma correção quebrada não pode impedir o app de abrir */ }
+  });
+  if(feitas.length){
+    salvar();
+    recado="Corrigido sozinho neste aparelho: "+feitas.join("; ")+".";
+  }
+})();
+
+/* vindo pelo endereço, que entra por cima da correção do código */
 (function(){
   const h=location.hash||"";
   if(!h.startsWith("#escala=")) return;
@@ -1758,8 +1811,28 @@ document.querySelectorAll(".barra button").forEach(b=>{
 render();
 buscarTempo();
 
+/* O app guardado na tela de início pode ficar semanas na mesma versão: o
+   iPhone o congela em vez de recarregar, e sem recarregar nada que eu
+   publique chega. Então: a cada volta para a tela, pergunta se há versão
+   nova; quando uma assume, recarrega uma vez só — é nesse instante que as
+   correções acima entram. */
 if("serviceWorker" in navigator){
-  addEventListener("load",()=>navigator.serviceWorker.register("./sw.js",{scope:"./"}).catch(()=>{}));
+  /* Só recarrega quando já havia um service worker antes: a primeira
+     instalação também troca o controle, e recarregar ali seria uma volta
+     à toa que ainda apagaria o aviso da correção. */
+  let recarregando=false;
+  if(navigator.serviceWorker.controller){
+    navigator.serviceWorker.addEventListener("controllerchange",()=>{
+      if(recarregando) return; recarregando=true; location.reload();
+    });
+  }
+  addEventListener("load",()=>{
+    navigator.serviceWorker.register("./sw.js",{scope:"./"}).then(reg=>{
+      const procurar=()=>{ if(document.visibilityState==="visible") reg.update().catch(()=>{}) };
+      addEventListener("visibilitychange",procurar);
+      addEventListener("focus",procurar);
+    }).catch(()=>{});
+  });
 }
 </script>
 </body>
