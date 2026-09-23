@@ -1666,9 +1666,21 @@ addEventListener("appinstalled",()=>{convite=null;recado="Rodízio instalado na 
     Object.entries(novo.escala||{}).forEach(([d,v])=>{ ESCALA[d]=v; dias++; });
     Object.entries(novo.compromissos||{}).forEach(([d,v])=>{ COMPROMISSOS[d]=v; });
     if(novo.ubs) UBS=S.ubs=novo.ubs;
+    /* lembrete do link só entra se ainda não existir com esse texto: abrir o
+       mesmo link duas vezes, ou nos dois aparelhos, não duplica a lista */
+    let novosLembretes=0;
+    (novo.lembretes||[]).forEach((l,i)=>{
+      const txt=(l.txt||"").trim(); if(!txt) return;
+      if(S.lembretes.some(x=>x.txt.trim().toLowerCase()===txt.toLowerCase())) return;
+      S.lembretes.push({id:Date.now()+i, txt, escopo:l.escopo||"semana", feito:false});
+      novosLembretes++;
+    });
     S.escala=ESCALA; S.compromissos=COMPROMISSOS;
     salvar();
-    recado=(novo.nome?novo.nome+": ":"")+dias+(dias>1?" dias entraram":" dia entrou")+" na sua escala.";
+    const partes=[];
+    if(dias) partes.push(dias+(dias>1?" dias entraram":" dia entrou")+" na sua escala");
+    if(novosLembretes) partes.push(novosLembretes+(novosLembretes>1?" lembretes novos":" lembrete novo"));
+    recado=(novo.nome?novo.nome+": ":"")+(partes.join(" e ")||"nada de novo")+".";
   }catch(e){ recado="Esse link de escala veio quebrado. Me peça outro."; }
   history.replaceState(null,"",location.pathname+location.search);
 })();
