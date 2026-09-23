@@ -1153,11 +1153,16 @@ function viewDia(){
     :ocupado(manha)?"12h30–13h45":ocupado(tarde)?"11h30–12h45":"12h00–13h30";
 
   h+=`<div class="agenda">`;
+  /* Compromisso com hora ("17h30–19h00") entra na agenda no lugar do relógio;
+     o que só diz o turno ("manhã") fica em cima, onde sempre esteve. */
+  const horaDe=s=>{const m=/^(\d{1,2})h(\d{2})?/.exec(s||""); return m?+m[1]+(+(m[2]||0))/60:null};
+  const fixas=[];
   (COMPROMISSOS[d]||[]).forEach(c=>{
-    h+=`<div class="compromisso"><span class="h">${esc(c.h)}</span><span>${esc(c.txt)}</span></div>`;
+    const bloco=`<div class="compromisso"><span class="h">${esc(c.h)}</span><span>${esc(c.txt)}</span></div>`;
+    const hr=horaDe(c.h);
+    if(hr===null) h+=bloco; else fixas.push([hr, bloco]);
   });
   /* o resto da agenda sai em ordem de relógio, não na ordem em que foi montada */
-  const fixas=[];
   const diaTodoLivre=(manha==="livre"||!manha)&&(tarde==="livre"||!tarde)&&!feriado
                      &&(manha==="livre"||tarde==="livre");
   if(diaTodoLivre){
