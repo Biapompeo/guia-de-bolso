@@ -1015,6 +1015,7 @@ function carregar(){
 
 let S=carregar(), diaAtivo=hoje(), aba="dia", recado="";
 let rascunho="", escopoNovo="semana", ajustando=null, colando=false, aulaAberta=null;
+let colandoEscala=false;
 let resumoAberto=null, metodoAberto=null, metodoNaAba=null;
 const TEMRESUMO=(typeof RESUMOS!=="undefined"&&RESUMOS)||{};
 const TEMCASO=(typeof CASOS!=="undefined"&&CASOS)||{};
@@ -1515,6 +1516,16 @@ function viewAulas(){
     ${TEMPO?"":`<a class="btn-fantasma" style="display:block;text-align:center;text-decoration:none"
       href="${LOCAL.link}" target="_blank" rel="noopener">Ver a previsão de ${LOCAL.nome} no navegador</a>`}
 
+    <h2 class="sec" style="margin-top:22px">Uma escala pronta</h2>
+    <p class="nota">Quando a escala da semana chegar por link, cole o link aqui dentro em vez de
+    tocar nele. No iPhone, o aplicativo da tela de início guarda os dados num lugar separado do
+    Safari: o link tocado abre no Safari e não chega aqui. Colado aqui, entra neste aplicativo.</p>
+    ${colandoEscala?`<textarea id="caixa-escala" class="caixa" rows="3" spellcheck="false"
+       autocapitalize="off" placeholder="Cole o link inteiro, do https até o fim"></textarea>
+      <button class="btn-larga" onclick="colarEscala()">aplicar esta escala</button>
+      <button class="btn-fantasma" onclick="abrirColarEscala()">fechar</button>`
+      :`<button class="btn-larga" onclick="abrirColarEscala()">colar uma escala</button>`}
+
     <h2 class="sec" style="margin-top:22px">Seus dados</h2>
     <p class="nota">Tudo o que você marcou vive só neste aparelho, neste navegador. Copie para
     guardar ou para levar o rodízio para outro lugar sem perder nada.</p>
@@ -1665,44 +1676,74 @@ addEventListener("beforeinstallprompt",e=>{e.preventDefault();convite=e;if(aba==
 function instalar(){ if(!convite) return; const c=convite; convite=null; c.prompt(); render(); }
 addEventListener("appinstalled",()=>{convite=null;recado="Rodízio instalado na tela de início.";render()});
 
-/* A escala da semana pode chegar por link: tudo depois do # fica no
-   aparelho e nunca é enviado ao servidor. Ela entra por cima do que já
-   existe, dia a dia, sem tocar no resto do que foi marcado. */
+/* --------------------------------------------- a escala que chega pronta
+
+   Ela entra por cima do que já existe, dia a dia, sem tocar no resto do que
+   foi marcado. Chega de dois jeitos, e os dois passam por aqui:
+
+   - por link, no #escala= — o que vem depois do # fica no aparelho e nunca
+     é enviado ao servidor;
+   - colada dentro do app, em "Seus dados". No iPhone, o app da tela de
+     início guarda os dados num lugar separado do Safari, então um link
+     tocado no WhatsApp cai no Safari e não chega no app instalado. Colar
+     aqui dentro entra onde ela está olhando, seja qual for.            */
+
+function lerPacote(texto){
+  const t=(texto||"").trim();
+  const i=t.indexOf("#escala=");
+  const bruto=(i>=0?t.slice(i+8):t).trim().replace(/\s+/g,"");
+  const b64=bruto.replace(/-/g,"+").replace(/_/g,"/");
+  const json=new TextDecoder().decode(Uint8Array.from(atob(b64),c=>c.charCodeAt(0)));
+  const novo=JSON.parse(json);
+  if(!novo||typeof novo!=="object") throw 0;
+  return novo;
+}
+
+function aplicarPacote(novo){
+  let dias=0, tirados=0;
+  /* valor vazio apaga aquele dia, em vez de sobrescrever: é o que permite
+     corrigir um compromisso que foi parar no dia errado */
+  Object.entries(novo.escala||{}).forEach(([d,v])=>{
+    if(v===null){ if(ESCALA[d]){delete ESCALA[d]; tirados++;} } else { ESCALA[d]=v; dias++; }
+  });
+  Object.entries(novo.compromissos||{}).forEach(([d,v])=>{
+    if(v===null||(Array.isArray(v)&&!v.length)){ if(COMPROMISSOS[d]){delete COMPROMISSOS[d]; tirados++;} }
+    else COMPROMISSOS[d]=v;
+  });
+  if(novo.ubs) UBS=S.ubs=novo.ubs;
+  /* lembrete só entra se ainda não existir com esse texto: aplicar o mesmo
+     pacote duas vezes, ou nos dois aparelhos, não duplica a lista */
+  let novosLembretes=0;
+  (novo.lembretes||[]).forEach((l,i)=>{
+    const txt=(l.txt||"").trim(); if(!txt) return;
+    if(S.lembretes.some(x=>x.txt.trim().toLowerCase()===txt.toLowerCase())) return;
+    S.lembretes.push({id:Date.now()+i, txt, escopo:l.escopo||"semana", feito:false});
+    novosLembretes++;
+  });
+  S.escala=ESCALA; S.compromissos=COMPROMISSOS;
+  salvar();
+  const partes=[];
+  if(dias) partes.push(dias+(dias>1?" dias entraram":" dia entrou")+" na sua escala");
+  if(tirados) partes.push(tirados+(tirados>1?" foram apagados":" foi apagado"));
+  if(novosLembretes) partes.push(novosLembretes+(novosLembretes>1?" lembretes novos":" lembrete novo"));
+  return (novo.nome?novo.nome+": ":"")+(partes.join(", ")||"nada de novo")+".";
+}
+
+/* colado dentro do app, na aba Aulas */
+function colarEscala(){
+  const c=document.getElementById("caixa-escala");
+  try{ recado=aplicarPacote(lerPacote(c.value)); colandoEscala=false; diaAtivo=hoje(); }
+  catch(e){ recado="Não consegui ler essa escala. Cole o link inteiro, do https até o fim."; }
+  render();
+}
+function abrirColarEscala(){ colandoEscala=!colandoEscala; render(); }
+
+/* vindo pelo endereço */
 (function(){
   const h=location.hash||"";
   if(!h.startsWith("#escala=")) return;
-  try{
-    const b64=h.slice(8).replace(/-/g,"+").replace(/_/g,"/");
-    const json=new TextDecoder().decode(Uint8Array.from(atob(b64),c=>c.charCodeAt(0)));
-    const novo=JSON.parse(json);
-    let dias=0, tirados=0;
-    /* valor vazio no link apaga aquele dia, em vez de sobrescrever: é o que
-       permite corrigir um compromisso que foi parar no dia errado */
-    Object.entries(novo.escala||{}).forEach(([d,v])=>{
-      if(v===null){ delete ESCALA[d]; tirados++; } else { ESCALA[d]=v; dias++; }
-    });
-    Object.entries(novo.compromissos||{}).forEach(([d,v])=>{
-      if(v===null||(Array.isArray(v)&&!v.length)){ delete COMPROMISSOS[d]; tirados++; }
-      else COMPROMISSOS[d]=v;
-    });
-    if(novo.ubs) UBS=S.ubs=novo.ubs;
-    /* lembrete do link só entra se ainda não existir com esse texto: abrir o
-       mesmo link duas vezes, ou nos dois aparelhos, não duplica a lista */
-    let novosLembretes=0;
-    (novo.lembretes||[]).forEach((l,i)=>{
-      const txt=(l.txt||"").trim(); if(!txt) return;
-      if(S.lembretes.some(x=>x.txt.trim().toLowerCase()===txt.toLowerCase())) return;
-      S.lembretes.push({id:Date.now()+i, txt, escopo:l.escopo||"semana", feito:false});
-      novosLembretes++;
-    });
-    S.escala=ESCALA; S.compromissos=COMPROMISSOS;
-    salvar();
-    const partes=[];
-    if(dias) partes.push(dias+(dias>1?" dias entraram":" dia entrou")+" na sua escala");
-    if(tirados) partes.push(tirados+(tirados>1?" foram apagados":" foi apagado"));
-    if(novosLembretes) partes.push(novosLembretes+(novosLembretes>1?" lembretes novos":" lembrete novo"));
-    recado=(novo.nome?novo.nome+": ":"")+(partes.join(", ")||"nada de novo")+".";
-  }catch(e){ recado="Esse link de escala veio quebrado. Me peça outro."; }
+  try{ recado=aplicarPacote(lerPacote(h)); }
+  catch(e){ recado="Esse link de escala veio quebrado. Me peça outro."; }
   history.replaceState(null,"",location.pathname+location.search);
 })();
 
