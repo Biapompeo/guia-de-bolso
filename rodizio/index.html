@@ -525,7 +525,7 @@ const START="2026-08-31", LAST="2026-10-20", PROVA="2026-10-21",
 
 /* Aparece na aba Aulas. Serve para saber, olhando o aparelho, se ele já
    pegou a versão nova — anda junto com o VERSAO do sw.js. */
-const VERSAO_APP="v17";
+const VERSAO_APP="v18";
 
 /* Feriados do cronograma: sem UBS e sem aula, mas o dia continua seu. */
 const FERIADOS={"2026-09-07":"Independência","2026-10-12":"Nossa Senhora Aparecida"};
@@ -842,6 +842,18 @@ const CRONOGRAMA={
    Serve para consertar o que já foi parar errado nos aparelhos. O caminho
    normal continua sendo o "ajustar este dia". */
 const CORRECOES=[
+ {id:"sexta25-so-tb-e-hanseniase",
+  diz:"a videoaula de ginecologia da sexta virou o primeiro tema de tuberculose",
+  /* A sexta é o dia de hanseníase, com os três temas e os resumos; sobrava
+     ali a videoaula de ginecologia, que é o tema da semana no Medway. No
+     lugar dela entra a abertura de tuberculose, que estava no sábado — o dia
+     fica inteiro de TB e hanseníase, e o sábado fica com o simulado. */
+  trocar:[{data:"2026-09-25", comeca:"Medway — aulas",
+           para:"Etiologia, transmissão, patogênese e história clínica",
+           tipo:"eixo", eixo:"tb"}],
+  tirar:[{titulo:"Etiologia, transmissão, patogênese e história clínica",
+          exceto:"2026-09-25"}]},
+
  {id:"medway-de-hoje-tb-han",
   diz:"a aula do Medway de hoje passou a ser a de tuberculose e hanseníase",
   /* O tema da semana no Medway é ginecologia, mas a aula do Prof. Tiago e os
@@ -1772,6 +1784,7 @@ function aplicarPacote(novo){
   if(novo.ubs) UBS=S.ubs=novo.ubs;
   const puxadas=novo.puxar?puxarTarefas(novo.puxar):0;
   const trocadas=trocarTitulos(novo.trocar);
+  const tiradas=tirarTarefas(novo.tirar);
   /* lembrete só entra se ainda não existir com esse texto: aplicar o mesmo
      pacote duas vezes, ou nos dois aparelhos, não duplica a lista */
   let novosLembretes=0;
@@ -1788,6 +1801,7 @@ function aplicarPacote(novo){
   if(tirados) partes.push(tirados+(tirados>1?" foram apagados":" foi apagado"));
   if(puxadas) partes.push(puxadas+(puxadas>1?" tarefas vieram":" tarefa veio")+" para a frente");
   if(trocadas) partes.push(trocadas+(trocadas>1?" blocos trocaram":" bloco trocou")+" de assunto");
+  if(tiradas) partes.push(tiradas+(tiradas>1?" repetidas saíram":" repetida saiu"));
   if(novosLembretes) partes.push(novosLembretes+(novosLembretes>1?" lembretes novos":" lembrete novo"));
   return (novo.nome?novo.nome+": ":"")+(partes.join(", ")||"nada de novo")+".";
 }
@@ -1796,13 +1810,40 @@ function aplicarPacote(novo){
    continuam os mesmos; muda o que se estuda ali. Casa pelo começo do título,
    e não pelo título inteiro, porque o tema da semana do Medway é calculado
    no aparelho e pode não ser o que eu imagino daqui. Não mexe no que já foi
-   marcado como feito. */
+   marcado como feito.
+
+   tipo e eixo entram quando o bloco muda de natureza — uma videoaula do
+   Medway que vira tema de conteúdo precisa da cor do eixo, do resumo e do
+   método certos, que saem daí. */
 function trocarTitulos(lista){
   let n=0;
   (lista||[]).forEach(t=>{
     S.tarefas.filter(x=>x.data===t.data&&x.status!=="feita"
         &&(t.comeca?x.titulo.startsWith(t.comeca):x.titulo===t.de))
-      .forEach(x=>{ x.titulo=t.para; n++; });
+      .forEach(x=>{
+        x.titulo=t.para;
+        if(t.tipo) x.tipo=t.tipo;
+        if(t.eixo!==undefined) x.eixo=t.eixo;
+        n++;
+      });
+  });
+  return n;
+}
+
+/* Tira uma tarefa da lista. Serve para o par do trocarTitulos: quando um
+   bloco passa a ser um tema que já estava marcado noutro dia, o antigo sai,
+   senão o mesmo assunto apareceria duas vezes. "exceto" guarda o dia que
+   acabou de recebê-lo, e por isso não depende de eu adivinhar em que dia o
+   antigo caiu no aparelho dela. Nunca tira o que já foi feito. */
+function tirarTarefas(lista){
+  let n=0;
+  (lista||[]).forEach(t=>{
+    const fora=S.tarefas.filter(x=>x.titulo===t.titulo&&x.status!=="feita"
+      &&(t.data?x.data===t.data:true)&&(t.exceto?x.data!==t.exceto:true));
+    if(!fora.length) return;
+    const ids=fora.map(x=>x.id);
+    S.tarefas=S.tarefas.filter(x=>!ids.includes(x.id));
+    n+=ids.length;
   });
   return n;
 }
