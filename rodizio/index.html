@@ -525,7 +525,7 @@ const START="2026-08-31", LAST="2026-10-20", PROVA="2026-10-21",
 
 /* Aparece na aba Aulas. Serve para saber, olhando o aparelho, se ele já
    pegou a versão nova — anda junto com o VERSAO do sw.js. */
-const VERSAO_APP="v15";
+const VERSAO_APP="v16";
 
 /* Feriados do cronograma: sem UBS e sem aula, mas o dia continua seu. */
 const FERIADOS={"2026-09-07":"Independência","2026-10-12":"Nossa Senhora Aparecida"};
@@ -842,6 +842,19 @@ const CRONOGRAMA={
    Serve para consertar o que já foi parar errado nos aparelhos. O caminho
    normal continua sendo o "ajustar este dia". */
 const CORRECOES=[
+ {id:"sexta25-e-nome-da-ubs",
+  diz:"a sexta 25 ficou sem UBS, e a unidade passou a se chamar UBS Manaíra",
+  ubs:"UBS Manaíra",
+  escala:{"2026-09-25":{m:"livre",t:"livre"}}},
+
+ {id:"tb-han-para-a-sexta",
+  diz:"tuberculose e hanseníase vieram do fim de outubro para a sexta 25 em diante",
+  /* A aula do Prof. Tiago e os sete casos da coordenação foram na terça 22;
+     o plano guardava os dois assuntos para os últimos dias antes da prova.
+     Estudar agora, com a aula fresca, vale mais — e eles voltam assim mesmo
+     na revisão espaçada de outubro. */
+  puxar:{desde:"2026-09-25", eixos:["tb","han"]}},
+
  {id:"s4-quarta-quinta",
   diz:"quarta 23 sem UBS o dia todo, com a casa às 17h30, e quinta 24 na UBS com a Érika",
   escala:{
@@ -1749,6 +1762,7 @@ function aplicarPacote(novo){
     else COMPROMISSOS[d]=v;
   });
   if(novo.ubs) UBS=S.ubs=novo.ubs;
+  const puxadas=novo.puxar?puxarTarefas(novo.puxar):0;
   /* lembrete só entra se ainda não existir com esse texto: aplicar o mesmo
      pacote duas vezes, ou nos dois aparelhos, não duplica a lista */
   let novosLembretes=0;
@@ -1763,8 +1777,41 @@ function aplicarPacote(novo){
   const partes=[];
   if(dias) partes.push(dias+(dias>1?" dias entraram":" dia entrou")+" na sua escala");
   if(tirados) partes.push(tirados+(tirados>1?" foram apagados":" foi apagado"));
+  if(puxadas) partes.push(puxadas+(puxadas>1?" tarefas vieram":" tarefa veio")+" para a frente");
   if(novosLembretes) partes.push(novosLembretes+(novosLembretes>1?" lembretes novos":" lembrete novo"));
   return (novo.nome?novo.nome+": ":"")+(partes.join(", ")||"nada de novo")+".";
+}
+
+/* Traz para a frente os assuntos que o plano guardava para o fim.
+
+   Primeiro ocupa vaga que esteja sobrando; quando não sobra — e no fim de um
+   plano cheio nunca sobra —, troca de lugar com a tarefa de conteúdo mais
+   próxima, que vai para a data de onde esta veio. Assim nenhum dia fica mais
+   cheio nem mais vazio do que já estava: o que muda é o assunto de cada dia.
+   Mexe só no que ainda está pendente. */
+function puxarTarefas(p){
+  const eixos=p.eixos||[], desde=p.desde||hoje();
+  const porData=(a,b)=>a.data<b.data?-1:a.data>b.data?1:a.id-b.id;
+  const conteudo=x=>x.tipo==="eixo"&&x.status!=="feita";
+  const cheio=d=>S.tarefas.filter(x=>x.data===d).length>=slotsDe(d,S.modos[d]).length;
+  const vindas=S.tarefas.filter(x=>conteudo(x)&&eixos.includes(x.eixo)&&x.data>desde).sort(porData);
+
+  let vaga=desde, movidas=0;
+  for(const t of vindas){
+    while(vaga<=LAST&&cheio(vaga)) vaga=addDays(vaga,1);
+    const livre=(vaga<=LAST&&vaga<t.data)?vaga:null;
+    const troca=S.tarefas
+      .filter(x=>conteudo(x)&&!eixos.includes(x.eixo)&&x.data>=desde&&x.data<t.data)
+      .sort(porData)[0];
+    /* vale o que vier mais cedo: a vaga que sobrou ou a troca de lugar. A
+       vaga livre existe lá adiante quase sempre, e sozinha ela espalharia o
+       assunto pelo mês em vez de trazê-lo para agora. */
+    if(livre&&(!troca||livre<=troca.data)) t.data=livre;
+    else if(troca){ const veioDe=t.data; t.data=troca.data; troca.data=veioDe; }
+    else break;                       /* nem vaga nem troca mais cedo */
+    movidas++;
+  }
+  return movidas;
 }
 
 /* colado dentro do app, na aba Aulas */
