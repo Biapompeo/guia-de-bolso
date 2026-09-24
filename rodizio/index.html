@@ -525,7 +525,7 @@ const START="2026-08-31", LAST="2026-10-20", PROVA="2026-10-21",
 
 /* Aparece na aba Aulas. Serve para saber, olhando o aparelho, se ele já
    pegou a versão nova — anda junto com o VERSAO do sw.js. */
-const VERSAO_APP="v16";
+const VERSAO_APP="v17";
 
 /* Feriados do cronograma: sem UBS e sem aula, mas o dia continua seu. */
 const FERIADOS={"2026-09-07":"Independência","2026-10-12":"Nossa Senhora Aparecida"};
@@ -842,6 +842,14 @@ const CRONOGRAMA={
    Serve para consertar o que já foi parar errado nos aparelhos. O caminho
    normal continua sendo o "ajustar este dia". */
 const CORRECOES=[
+ {id:"medway-de-hoje-tb-han",
+  diz:"a aula do Medway de hoje passou a ser a de tuberculose e hanseníase",
+  /* O tema da semana no Medway é ginecologia, mas a aula do Prof. Tiago e os
+     casos da coordenação foram de TB e hanseníase, e é isso que ela está
+     estudando agora. O bloco fica onde está; muda o assunto. */
+  trocar:[{data:"2026-09-24", comeca:"Medway — aulas",
+           para:"Medway — aulas: Infectologia: TB e hanseníase"}]},
+
  {id:"sexta25-e-nome-da-ubs",
   diz:"a sexta 25 ficou sem UBS, e a unidade passou a se chamar UBS Manaíra",
   ubs:"UBS Manaíra",
@@ -1763,6 +1771,7 @@ function aplicarPacote(novo){
   });
   if(novo.ubs) UBS=S.ubs=novo.ubs;
   const puxadas=novo.puxar?puxarTarefas(novo.puxar):0;
+  const trocadas=trocarTitulos(novo.trocar);
   /* lembrete só entra se ainda não existir com esse texto: aplicar o mesmo
      pacote duas vezes, ou nos dois aparelhos, não duplica a lista */
   let novosLembretes=0;
@@ -1778,8 +1787,24 @@ function aplicarPacote(novo){
   if(dias) partes.push(dias+(dias>1?" dias entraram":" dia entrou")+" na sua escala");
   if(tirados) partes.push(tirados+(tirados>1?" foram apagados":" foi apagado"));
   if(puxadas) partes.push(puxadas+(puxadas>1?" tarefas vieram":" tarefa veio")+" para a frente");
+  if(trocadas) partes.push(trocadas+(trocadas>1?" blocos trocaram":" bloco trocou")+" de assunto");
   if(novosLembretes) partes.push(novosLembretes+(novosLembretes>1?" lembretes novos":" lembrete novo"));
   return (novo.nome?novo.nome+": ":"")+(partes.join(", ")||"nada de novo")+".";
+}
+
+/* Troca o assunto de um bloco sem tirá-lo do lugar. O dia e o horário
+   continuam os mesmos; muda o que se estuda ali. Casa pelo começo do título,
+   e não pelo título inteiro, porque o tema da semana do Medway é calculado
+   no aparelho e pode não ser o que eu imagino daqui. Não mexe no que já foi
+   marcado como feito. */
+function trocarTitulos(lista){
+  let n=0;
+  (lista||[]).forEach(t=>{
+    S.tarefas.filter(x=>x.data===t.data&&x.status!=="feita"
+        &&(t.comeca?x.titulo.startsWith(t.comeca):x.titulo===t.de))
+      .forEach(x=>{ x.titulo=t.para; n++; });
+  });
+  return n;
 }
 
 /* Traz para a frente os assuntos que o plano guardava para o fim.
