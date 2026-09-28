@@ -525,7 +525,7 @@ const START="2026-08-31", LAST="2026-10-20", PROVA="2026-10-21",
 
 /* Aparece na aba Aulas. Serve para saber, olhando o aparelho, se ele já
    pegou a versão nova — anda junto com o VERSAO do sw.js. */
-const VERSAO_APP="v19";
+const VERSAO_APP="v20";
 
 /* Feriados do cronograma: sem UBS e sem aula, mas o dia continua seu. */
 const FERIADOS={"2026-09-07":"Independência","2026-10-12":"Nossa Senhora Aparecida"};
@@ -852,17 +852,40 @@ const CRONOGRAMA={
    Serve para consertar o que já foi parar errado nos aparelhos. O caminho
    normal continua sendo o "ajustar este dia". */
 const CORRECOES=[
- {id:"semana5-ubs-so-terca-e-quarta",
-  diz:"na semana 5 a UBS ficou só na terça e na quarta",
-  /* O cronograma da coordenação marca UBS também na tarde de segunda e na
-     manhã de sexta; o grupo dela não tem prática nesses dois turnos. As
-     aulas teóricas da semana vêm do cronograma e não se mexe nelas. */
-  escala:{"2026-09-28":{t:"livre"}, "2026-10-02":{m:"livre"}},
-  /* Com a UBS e as aulas ocupando os dois turnos de terça, quarta e quinta,
-     esses dias passam a ter só os dois blocos da noite, e o que o plano
-     tinha posto ali não cabe mais. O que sobra vai para o próximo dia com
-     vaga em vez de ficar sem hora nenhuma. */
-  desafogar:{de:"2026-09-28", ate:"2026-10-02"}},
+ {id:"s4-quarta-quinta",
+  diz:"quarta 23 sem UBS o dia todo, com a casa às 17h30, e quinta 24 na UBS com a Érika",
+  escala:{
+    "2026-09-23":{m:"livre",t:"livre"},
+    "2026-09-24":{m:"ubs",com:"Érika"}},
+  compromissos:{
+    "2026-09-23":[{h:"17h30–19h00",txt:"Organização da casa",curto:"casa"}],
+    "2026-09-24":[]},
+  lembretes:[
+    {txt:"Casa: trocar os lixos",escopo:"semana"},
+    {txt:"Casa: lavar a louça",escopo:"semana"},
+    {txt:"Casa: recolher e estender a roupa",escopo:"semana"},
+    {txt:"Casa: trocar a roupa de cama",escopo:"semana"}]},
+
+ {id:"tb-han-para-a-sexta",
+  diz:"tuberculose e hanseníase vieram do fim de outubro para a sexta 25 em diante",
+  /* A aula do Prof. Tiago e os sete casos da coordenação foram na terça 22;
+     o plano guardava os dois assuntos para os últimos dias antes da prova.
+     Estudar agora, com a aula fresca, vale mais — e eles voltam assim mesmo
+     na revisão espaçada de outubro. */
+  puxar:{desde:"2026-09-25", eixos:["tb","han"]}},
+
+ {id:"sexta25-e-nome-da-ubs",
+  diz:"a sexta 25 ficou sem UBS, e a unidade passou a se chamar UBS Manaíra",
+  ubs:"UBS Manaíra",
+  escala:{"2026-09-25":{m:"livre",t:"livre"}}},
+
+ {id:"medway-de-hoje-tb-han",
+  diz:"a aula do Medway de hoje passou a ser a de tuberculose e hanseníase",
+  /* O tema da semana no Medway é ginecologia, mas a aula do Prof. Tiago e os
+     casos da coordenação foram de TB e hanseníase, e é isso que ela está
+     estudando agora. O bloco fica onde está; muda o assunto. */
+  trocar:[{data:"2026-09-24", comeca:"Medway — aulas",
+           para:"Medway — aulas: Infectologia: TB e hanseníase"}]},
 
  {id:"sexta25-so-tb-e-hanseniase",
   diz:"a videoaula de ginecologia da sexta virou o primeiro tema de tuberculose",
@@ -876,40 +899,42 @@ const CORRECOES=[
   tirar:[{titulo:"Etiologia, transmissão, patogênese e história clínica",
           exceto:"2026-09-25"}]},
 
- {id:"medway-de-hoje-tb-han",
-  diz:"a aula do Medway de hoje passou a ser a de tuberculose e hanseníase",
-  /* O tema da semana no Medway é ginecologia, mas a aula do Prof. Tiago e os
-     casos da coordenação foram de TB e hanseníase, e é isso que ela está
-     estudando agora. O bloco fica onde está; muda o assunto. */
-  trocar:[{data:"2026-09-24", comeca:"Medway — aulas",
-           para:"Medway — aulas: Infectologia: TB e hanseníase"}]},
+ {id:"semana5-ubs-so-terca-e-quarta",
+  diz:"na semana 5 a UBS ficou só na terça e na quarta",
+  /* O cronograma da coordenação marca UBS também na tarde de segunda e na
+     manhã de sexta; o grupo dela não tem prática nesses dois turnos. As
+     aulas teóricas da semana vêm do cronograma e não se mexe nelas. */
+  escala:{"2026-09-28":{t:"livre"}, "2026-10-02":{m:"livre"}},
+  /* Com a UBS e as aulas ocupando os dois turnos de terça, quarta e quinta,
+     esses dias passam a ter só os dois blocos da noite, e o que o plano
+     tinha posto ali não cabe mais. O que sobra vai para o próximo dia com
+     vaga em vez de ficar sem hora nenhuma. */
+  desafogar:{de:"2026-09-28", ate:"2026-10-02"}},
 
- {id:"sexta25-e-nome-da-ubs",
-  diz:"a sexta 25 ficou sem UBS, e a unidade passou a se chamar UBS Manaíra",
-  ubs:"UBS Manaíra",
-  escala:{"2026-09-25":{m:"livre",t:"livre"}}},
+ {id:"congresso-rio-outubro",
+  diz:"o congresso no Rio entrou de 14 a 18 de outubro, e o conteúdo novo foi todo para antes da viagem",
+  /* Ela viaja na noite de 13 ou no dia 14 e volta no 18 — e a prova é no
+     21. Eram 21 tarefas naqueles seis dias, entre elas nove temas de
+     conteúdo que ela veria pela primeira vez a cinco dias da prova.
 
- {id:"tb-han-para-a-sexta",
-  diz:"tuberculose e hanseníase vieram do fim de outubro para a sexta 25 em diante",
-  /* A aula do Prof. Tiago e os sete casos da coordenação foram na terça 22;
-     o plano guardava os dois assuntos para os últimos dias antes da prova.
-     Estudar agora, com a aula fresca, vale mais — e eles voltam assim mesmo
-     na revisão espaçada de outubro. */
-  puxar:{desde:"2026-09-25", eixos:["tb","han"]}},
-
- {id:"s4-quarta-quinta",
-  diz:"quarta 23 sem UBS o dia todo, com a casa às 17h30, e quinta 24 na UBS com a Érika",
+     Três coisas, nesta ordem. Os dias 14 a 18 viram dias "fora": sem UBS,
+     com o congresso escrito na agenda e só os dois blocos da noite, para o
+     que der. A rotina diária do Medway sai desses dias, que é o que se
+     larga primeiro numa semana de viagem. E o conteúdo novo é puxado para
+     antes do dia 13, onde há folga de sobra: são 29 temas para 53 blocos. */
   escala:{
-    "2026-09-23":{m:"livre",t:"livre"},
-    "2026-09-24":{m:"ubs",com:"Érika"}},
+    "2026-10-14":{fora:"Congresso no Rio de Janeiro"},
+    "2026-10-15":{fora:"Congresso no Rio de Janeiro"},
+    "2026-10-16":{fora:"Congresso no Rio de Janeiro"},
+    "2026-10-17":{fora:"Congresso no Rio de Janeiro"},
+    "2026-10-18":{fora:"Congresso no Rio de Janeiro — volta"}},
   compromissos:{
-    "2026-09-23":[{h:"17h30–19h00",txt:"Organização da casa",curto:"casa"}],
-    "2026-09-24":[]},
-  lembretes:[
-    {txt:"Casa: trocar os lixos",escopo:"semana"},
-    {txt:"Casa: lavar a louça",escopo:"semana"},
-    {txt:"Casa: recolher e estender a roupa",escopo:"semana"},
-    {txt:"Casa: trocar a roupa de cama",escopo:"semana"}]}
+    "2026-10-13":[{h:"à noite",txt:"Viagem para o Rio — se não for amanhã cedo",curto:"viagem"}]},
+  tirar:[{comeca:"Medway — ", de:"2026-10-14", ate:"2026-10-18"}],
+  puxar:{desde:"2026-09-28",
+         eixos:["vig1","vig2","epi","cri","ado","mul","ido","han","tb","ind"],
+         ate:"2026-10-13"},
+  desafogar:{de:"2026-10-13", ate:"2026-10-18"}}
 ];
 
 /* A escala das práticas na UBS e os compromissos avulsos são dados de quem
@@ -988,6 +1013,9 @@ function meuTurno(v){ return v&&v!=="livre" }
 
 function slotsDe(d,m){
   const e=diaEscala(d);
+  /* dia fora: congresso, viagem. O dia é do compromisso; sobra a noite, e
+     mesmo essa é para o que der — nada de conteúdo novo. */
+  if(e&&e.fora) return SLOTS.integral;
   if(e&&(e.m||e.t)){
     const manha=ocupado(e.m), tarde=ocupado(e.t);
     if(manha&&tarde) return SLOTS.integral;   /* sobra a noite */
@@ -1232,7 +1260,9 @@ function viewDia(){
 
   /* o que cada turno é, já normalizado: "ubs", "aula", "folga" ou vazio */
   let manha, tarde, txtM="", txtT="";
-  if(temTurnos){
+  const fora=escalaDia&&escalaDia.fora;
+  if(fora){ manha=tarde=""; }
+  else if(temTurnos){
     manha=escalaDia.m; tarde=escalaDia.t;
     txtM=escalaDia.mTxt||""; txtT=escalaDia.tTxt||"";
   }else if(feriado){ manha=tarde="feriado"; }
@@ -1256,9 +1286,12 @@ function viewDia(){
     if(hr===null) h+=bloco; else fixas.push([hr, bloco]);
   });
   /* o resto da agenda sai em ordem de relógio, não na ordem em que foi montada */
-  const diaTodoLivre=(manha==="livre"||!manha)&&(tarde==="livre"||!tarde)&&!feriado
+  const diaTodoLivre=!fora&&(manha==="livre"||!manha)&&(tarde==="livre"||!tarde)&&!feriado
                      &&(manha==="livre"||tarde==="livre");
-  if(diaTodoLivre){
+  if(fora){
+    fixas.push([7.5, linha("o dia todo", esc(fora), "compromisso")]);
+  }
+  else if(diaTodoLivre){
     fixas.push([7.5, linha("sem UBS", (outras?outras+" na escala — ":"")+"o dia todo é de estudo")]);
   }
   else if(manha==="folga") fixas.push([7.5, linha("manhã","Folga semanal")]);
@@ -1269,9 +1302,11 @@ function viewDia(){
   else if(!ocupado(tarde)&&(t==="sexta"||(escalaDia&&escalaDia.folga)))
     fixas.push([7.5, linha("manhã","sem UBS — dia de estudo")]);
 
-  fixas.push([horaGym==="12h30–13h45"?12.5:horaGym==="11h30–12h45"?11.5:12, linha(horaGym, treino)]);
+  /* fora de casa não há academia: o treino espera a volta */
+  if(!fora) fixas.push([horaGym==="12h30–13h45"?12.5:horaGym==="11h30–12h45"?11.5:12,
+                        linha(horaGym, treino)]);
 
-  if(diaTodoLivre){ /* a linha única da manhã já falou pelo dia inteiro */ }
+  if(fora||diaTodoLivre){ /* a linha única da manhã já falou pelo dia inteiro */ }
   else if(tarde==="folga") fixas.push([13, linha("tarde","folga semanal")]);
   else if(tarde==="livre") fixas.push([13, linha("13h00–17h00",
     (outras?outras+" na UBS — ":"")+"sua tarde está livre")]);
@@ -1318,6 +1353,7 @@ function viewDia(){
 function marcaEscala(d){
   if(FERIADOS[d]) return `<span class="chip" style="--c:var(--alerta)">feriado</span>`;
   const e=diaEscala(d); if(!e) return "";
+  if(e.fora) return `<span class="chip" style="--c:var(--alerta)">fora</span>`;
   const selos=[];
   if(e.m==="aula"||e.t==="aula")
     selos.push(`<span class="chip" style="--c:var(--verde)">aula teórica</span>`);
@@ -1862,10 +1898,13 @@ function trocarTitulos(lista){
 function tirarTarefas(lista){
   let n=0;
   (lista||[]).forEach(t=>{
-    const fora=S.tarefas.filter(x=>x.titulo===t.titulo&&x.status!=="feita"
-      &&(t.data?x.data===t.data:true)&&(t.exceto?x.data!==t.exceto:true));
-    if(!fora.length) return;
-    const ids=fora.map(x=>x.id);
+    const saem=S.tarefas.filter(x=>x.status!=="feita"
+      &&(t.comeca?x.titulo.startsWith(t.comeca):x.titulo===t.titulo)
+      &&(t.data?x.data===t.data:true)
+      &&(t.de?x.data>=t.de:true)&&(t.ate?x.data<=t.ate:true)
+      &&(t.exceto?x.data!==t.exceto:true));
+    if(!saem.length) return;
+    const ids=saem.map(x=>x.id);
     S.tarefas=S.tarefas.filter(x=>!ids.includes(x.id));
     n+=ids.length;
   });
@@ -1908,10 +1947,11 @@ function puxarTarefas(p){
   const cheio=d=>S.tarefas.filter(x=>x.data===d).length>=slotsDe(d,S.modos[d]).length;
   const vindas=S.tarefas.filter(x=>conteudo(x)&&eixos.includes(x.eixo)&&x.data>desde).sort(porData);
 
+  const limite=p.ate||LAST;      /* não adianta adiantar para depois da viagem */
   let vaga=desde, movidas=0;
   for(const t of vindas){
-    while(vaga<=LAST&&cheio(vaga)) vaga=addDays(vaga,1);
-    const livre=(vaga<=LAST&&vaga<t.data)?vaga:null;
+    while(vaga<=limite&&cheio(vaga)) vaga=addDays(vaga,1);
+    const livre=(vaga<=limite&&vaga<t.data)?vaga:null;
     const troca=S.tarefas
       .filter(x=>conteudo(x)&&!eixos.includes(x.eixo)&&x.data>=desde&&x.data<t.data)
       .sort(porData)[0];
