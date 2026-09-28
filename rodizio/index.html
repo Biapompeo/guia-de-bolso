@@ -525,7 +525,7 @@ const START="2026-08-31", LAST="2026-10-20", PROVA="2026-10-21",
 
 /* Aparece na aba Aulas. Serve para saber, olhando o aparelho, se ele já
    pegou a versão nova — anda junto com o VERSAO do sw.js. */
-const VERSAO_APP="v20";
+const VERSAO_APP="v21";
 
 /* Feriados do cronograma: sem UBS e sem aula, mas o dia continua seu. */
 const FERIADOS={"2026-09-07":"Independência","2026-10-12":"Nossa Senhora Aparecida"};
@@ -934,6 +934,35 @@ const CORRECOES=[
   puxar:{desde:"2026-09-28",
          eixos:["vig1","vig2","epi","cri","ado","mul","ido","han","tb","ind"],
          ate:"2026-10-13"},
+  desafogar:{de:"2026-10-13", ate:"2026-10-18"}},
+
+ {id:"medway-questoes-sai-ate-a-viagem",
+  diz:"as questões do dia do Medway saíram dos dias até 13 de outubro, e a Saúde da Mulher coube antes da viagem",
+  /* Escolha dela: das três formas de abrir espaço antes da viagem — cortar
+     a rotina de questões, estudar um bloco a mais por dia, ou deixar a
+     Saúde da Mulher para depois —, cortar o bloco separado de questões do
+     dia. As aulas do Medway ficam, e o método de conteúdo novo já manda
+     fazer de cinco a dez questões do tema no mesmo dia: questão ela continua
+     fazendo, só não num bloco à parte.
+
+     O que isso libera vai todo para o conteúdo; depois as revisões ocupam
+     o que ainda sobrar, inclusive esvaziando a pilha que o plano empilha no
+     último dia. */
+  tirar:[{titulo:"Medway — questões do dia", de:"2026-09-29", ate:"2026-10-13"},
+         /* nos dois últimos dias os simulados já são a prática de questões */
+         {titulo:"Medway — questões do dia", de:"2026-10-19", ate:"2026-10-20"}],
+  /* Os dois simulados tinham caído no dia 18, o da volta do Rio, e a véspera
+     da prova ficara só com Medway. Simulado no dia 19, já em casa; a folha de
+     última hora no dia 20, que é para o que ela é. */
+  mover:[{comeca:"Simulado geral", para:"2026-10-19"},
+         {comeca:"Folha de última hora", para:"2026-10-20"}],
+  puxar:[{desde:"2026-09-28", ate:"2026-10-13",
+          eixos:["vig1","vig2","epi","cri","ado","mul","ido","han","tb","ind"]},
+         /* as revisões só se espalham depois que todo o conteúdo já passou,
+            senão ela reveria um eixo antes de o ter estudado; a janela vai
+            do dia 15 ao 20 e serve para esvaziar a pilha que o plano empilha
+            no último dia */
+         {desde:"2026-10-15", ate:"2026-10-20", tipos:["revisao"]}],
   desafogar:{de:"2026-10-13", ate:"2026-10-18"}}
 ];
 
@@ -1840,9 +1869,15 @@ function aplicarPacote(novo){
     else COMPROMISSOS[d]=v;
   });
   if(novo.ubs) UBS=S.ubs=novo.ubs;
-  const puxadas=novo.puxar?puxarTarefas(novo.puxar):0;
+  /* puxar aceita um pedido ou vários, aplicados na ordem em que vêm */
+  /* A ordem importa e é esta: primeiro o que muda o que existe, depois o que
+     sai, e só então o que se mexe de lugar — puxar procura vaga, e a vaga só
+     existe depois que o que saiu saiu. Desafogar fecha, com o que sobrou.
+     puxar aceita um pedido ou vários, aplicados na ordem em que vêm. */
   const trocadas=trocarTitulos(novo.trocar);
   const tiradas=tirarTarefas(novo.tirar);
+  const puxadas=[].concat(novo.puxar||[]).reduce((n,p)=>n+puxarTarefas(p),0)
+                 +moverTarefas(novo.mover);
   const remarcadas=novo.desafogar?desafogar(novo.desafogar):0;
   /* lembrete só entra se ainda não existir com esse texto: aplicar o mesmo
      pacote duas vezes, ou nos dois aparelhos, não duplica a lista */
@@ -1911,6 +1946,20 @@ function tirarTarefas(lista){
   return n;
 }
 
+/* Põe uma tarefa num dia escolhido, pelo título ou pelo começo dele. No fim
+   do plano a ordem importa mais que o encaixe automático: simulado não se faz
+   no dia da volta de viagem, e a folha de última hora é para a véspera. Vem
+   depois do puxar, para ter a última palavra. */
+function moverTarefas(lista){
+  let n=0;
+  (lista||[]).forEach(m=>{
+    S.tarefas.filter(x=>x.status!=="feita"
+      &&(m.comeca?x.titulo.startsWith(m.comeca):x.titulo===m.titulo))
+      .forEach(x=>{ if(x.data!==m.para){ x.data=m.para; n++; } });
+  });
+  return n;
+}
+
 /* Tira do dia o que não cabe nele. Quando a escala de uma semana muda e os
    dias encolhem — dois turnos ocupados deixam só a noite —, as tarefas que
    já estavam ali passam a sobrar, e o app as mostra como "encaixar no dia",
@@ -1941,11 +1990,14 @@ function desafogar(p){
    cheio nem mais vazio do que já estava: o que muda é o assunto de cada dia.
    Mexe só no que ainda está pendente. */
 function puxarTarefas(p){
-  const eixos=p.eixos||[], desde=p.desde||hoje();
+  const tipos=p.tipos||["eixo"], eixos=p.eixos||null, desde=p.desde||hoje();
   const porData=(a,b)=>a.data<b.data?-1:a.data>b.data?1:a.id-b.id;
-  const conteudo=x=>x.tipo==="eixo"&&x.status!=="feita";
+  const cabe=x=>tipos.includes(x.tipo)&&x.status!=="feita";
+  const alvo=x=>cabe(x)&&(!eixos||eixos.includes(x.eixo));
+  /* sem lista de eixos não há com quem trocar: só se ocupa vaga que sobra */
+  const outro=x=>cabe(x)&&eixos&&!eixos.includes(x.eixo);
   const cheio=d=>S.tarefas.filter(x=>x.data===d).length>=slotsDe(d,S.modos[d]).length;
-  const vindas=S.tarefas.filter(x=>conteudo(x)&&eixos.includes(x.eixo)&&x.data>desde).sort(porData);
+  const vindas=S.tarefas.filter(x=>alvo(x)&&x.data>desde).sort(porData);
 
   const limite=p.ate||LAST;      /* não adianta adiantar para depois da viagem */
   let vaga=desde, movidas=0;
@@ -1953,14 +2005,17 @@ function puxarTarefas(p){
     while(vaga<=limite&&cheio(vaga)) vaga=addDays(vaga,1);
     const livre=(vaga<=limite&&vaga<t.data)?vaga:null;
     const troca=S.tarefas
-      .filter(x=>conteudo(x)&&!eixos.includes(x.eixo)&&x.data>=desde&&x.data<t.data)
+      .filter(x=>outro(x)&&x.data>=desde&&x.data<t.data)
       .sort(porData)[0];
     /* vale o que vier mais cedo: a vaga que sobrou ou a troca de lugar. A
        vaga livre existe lá adiante quase sempre, e sozinha ela espalharia o
        assunto pelo mês em vez de trazê-lo para agora. */
     if(livre&&(!troca||livre<=troca.data)) t.data=livre;
     else if(troca){ const veioDe=t.data; t.data=troca.data; troca.data=veioDe; }
-    else break;                       /* nem vaga nem troca mais cedo */
+    else continue;                    /* esta fica onde está; as outras seguem
+                                         sendo tentadas, porque a vaga anda
+                                         para a frente e pode servir a uma
+                                         tarefa que hoje está mais para lá */
     movidas++;
   }
   return movidas;
