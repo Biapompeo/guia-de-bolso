@@ -525,7 +525,7 @@ const START="2026-08-31", LAST="2026-10-20", PROVA="2026-10-21",
 
 /* Aparece na aba Aulas. Serve para saber, olhando o aparelho, se ele já
    pegou a versão nova — anda junto com o VERSAO do sw.js. */
-const VERSAO_APP="v18";
+const VERSAO_APP="v19";
 
 /* Feriados do cronograma: sem UBS e sem aula, mas o dia continua seu. */
 const FERIADOS={"2026-09-07":"Independência","2026-10-12":"Nossa Senhora Aparecida"};
@@ -586,7 +586,7 @@ const AULAS=[
   "Saúde sexual e reprodutiva: prevenção da gravidez e IST/Aids"]},
 
  {id:"mul", tema:"Atenção à Mulher", eixos:["mul"],
-  quando:"Planejamento Familiar e Doenças das Mamas · segunda, 21/09, 8h · Univag, sala T400",
+  quando:"Planejamento Familiar e Doenças das Mamas · segunda, 21/09, 8h, sala T400 · Colo uterino e rastreamento do câncer de colo · segunda, 28/09, 9h",
   quem:[["Zuleide Aparecida Felix Cabral","professor"],
         ["Ronald Benedito dos Anjos","preceptor"]], conteudo:[
   "Planejamento da vida sexual e reprodutiva: assistência à anticoncepção e métodos contraceptivos",
@@ -597,6 +597,7 @@ const AULAS=[
   "Consultas subsequentes: condutas e orientações"]},
 
  {id:"ido", tema:"Atenção ao Idoso", eixos:["ido"],
+  quando:"Duas aulas · terça, 29/09, 16h · Univag, sala a definir",
   quem:[["Glória Maria de Campos Gomes","professor"]], conteudo:[
   "Atribuições dos profissionais da atenção básica no atendimento à pessoa idosa",
   "Avaliação global: alimentação e nutrição, acuidade visual e auditiva, incontinência urinária, sexualidade e vacinação",
@@ -632,6 +633,7 @@ const AULAS=[
   "Sistema de informação"]},
 
  {id:"ind", tema:"Saúde Indígena", eixos:["ind"],
+  quando:"Parte 1 · quinta, 01/10, 10h · Parte 2 · quinta, 01/10, 13h · Univag, sala a definir",
   quem:[["Daniel Ignacchiti Lacerda","professor"]], conteudo:[
   "Histórico e institucionalização da Secretaria Especial de Saúde Indígena",
   "O SUS e o Subsistema de Atenção à Saúde Indígena",
@@ -822,7 +824,15 @@ const CRONOGRAMA={
   "2026-09-22":{m:"ubs",t:"aula",tTxt:"Casos clínicos de tuberculose e hanseníase · Prof. Tiago · Univag, sala T401, bloco D · 13h"},
   "2026-09-23":{m:"ubs",t:"ubs"},
   "2026-09-24":{m:"ubs",t:"folga"},
-  "2026-09-25":{m:"ubs",t:"ubs"}
+  "2026-09-25":{m:"ubs",t:"ubs"},
+
+  /* Semana 5 — 28 de setembro a 2 de outubro */
+  "2026-09-28":{m:"aula",mTxt:"Doenças benignas do colo uterino e rastreamento do câncer de colo · Profª Zuleide · Univag, sala a definir · 9h",t:"ubs"},
+  "2026-09-29":{m:"ubs",t:"aula",tTxt:"Saúde do Idoso, duas aulas · Profª Glória · Univag, sala a definir · 16h"},
+  "2026-09-30":{m:"ubs",t:"ubs"},
+  "2026-10-01":{m:"aula",mTxt:"Saúde indígena, parte 1 · Prof. Daniel · Univag, sala a definir · 10h",
+                t:"aula",tTxt:"Saúde indígena, parte 2 · Prof. Daniel · Univag, sala a definir · 13h"},
+  "2026-10-02":{m:"ubs",t:"folga"}
 };
 
 /* ------------------------------------------- correções que viajam no código
@@ -842,6 +852,18 @@ const CRONOGRAMA={
    Serve para consertar o que já foi parar errado nos aparelhos. O caminho
    normal continua sendo o "ajustar este dia". */
 const CORRECOES=[
+ {id:"semana5-ubs-so-terca-e-quarta",
+  diz:"na semana 5 a UBS ficou só na terça e na quarta",
+  /* O cronograma da coordenação marca UBS também na tarde de segunda e na
+     manhã de sexta; o grupo dela não tem prática nesses dois turnos. As
+     aulas teóricas da semana vêm do cronograma e não se mexe nelas. */
+  escala:{"2026-09-28":{t:"livre"}, "2026-10-02":{m:"livre"}},
+  /* Com a UBS e as aulas ocupando os dois turnos de terça, quarta e quinta,
+     esses dias passam a ter só os dois blocos da noite, e o que o plano
+     tinha posto ali não cabe mais. O que sobra vai para o próximo dia com
+     vaga em vez de ficar sem hora nenhuma. */
+  desafogar:{de:"2026-09-28", ate:"2026-10-02"}},
+
  {id:"sexta25-so-tb-e-hanseniase",
   diz:"a videoaula de ginecologia da sexta virou o primeiro tema de tuberculose",
   /* A sexta é o dia de hanseníase, com os três temas e os resumos; sobrava
@@ -1785,6 +1807,7 @@ function aplicarPacote(novo){
   const puxadas=novo.puxar?puxarTarefas(novo.puxar):0;
   const trocadas=trocarTitulos(novo.trocar);
   const tiradas=tirarTarefas(novo.tirar);
+  const remarcadas=novo.desafogar?desafogar(novo.desafogar):0;
   /* lembrete só entra se ainda não existir com esse texto: aplicar o mesmo
      pacote duas vezes, ou nos dois aparelhos, não duplica a lista */
   let novosLembretes=0;
@@ -1802,6 +1825,7 @@ function aplicarPacote(novo){
   if(puxadas) partes.push(puxadas+(puxadas>1?" tarefas vieram":" tarefa veio")+" para a frente");
   if(trocadas) partes.push(trocadas+(trocadas>1?" blocos trocaram":" bloco trocou")+" de assunto");
   if(tiradas) partes.push(tiradas+(tiradas>1?" repetidas saíram":" repetida saiu"));
+  if(remarcadas) partes.push(remarcadas+(remarcadas>1?" tarefas foram remarcadas":" tarefa foi remarcada"));
   if(novosLembretes) partes.push(novosLembretes+(novosLembretes>1?" lembretes novos":" lembrete novo"));
   return (novo.nome?novo.nome+": ":"")+(partes.join(", ")||"nada de novo")+".";
 }
@@ -1845,6 +1869,28 @@ function tirarTarefas(lista){
     S.tarefas=S.tarefas.filter(x=>!ids.includes(x.id));
     n+=ids.length;
   });
+  return n;
+}
+
+/* Tira do dia o que não cabe nele. Quando a escala de uma semana muda e os
+   dias encolhem — dois turnos ocupados deixam só a noite —, as tarefas que
+   já estavam ali passam a sobrar, e o app as mostra como "encaixar no dia",
+   que é um jeito educado de dizer que não há hora para elas. Aqui elas vão
+   para o próximo dia com vaga, na mesma ordem em que estavam, do fim da
+   lista para o começo, para que o que sai seja o de menor prioridade do dia.
+   Não mexe no que já foi feito. */
+function desafogar(p){
+  let n=0;
+  for(const d of range(p.de, p.ate||p.de)){
+    let cabem=slotsDe(d,S.modos[d]).length;
+    const doDia=S.tarefas.filter(x=>x.data===d).sort((a,b)=>a.rank-b.rank||a.id-b.id);
+    for(const t of doDia.slice(cabem)){
+      if(t.status==="feita") continue;
+      const dest=proximoLivre(S.tarefas,S.modos,d);
+      if(dest===d) break;
+      t.data=dest; n++;
+    }
+  }
   return n;
 }
 
