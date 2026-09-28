@@ -1227,6 +1227,97 @@ const RESUMOS = {
     ]
   }],
   pega: "Se a questão pedir o princípio que organiza a política, a resposta é atenção diferenciada — e não 'universalidade', que vale para todo o SUS."
+},
+
+/* =================================================================
+   Cirurgia — quatro resumos de orientação, para o congresso.
+
+   Não são do plano de ensino e não caem na prova de Saúde Coletiva.
+   Servem para acompanhar as mesas de um congresso de cirurgia sem
+   perder o fio: o vocabulário, o que se pergunta antes de operar, o
+   que dá errado depois, e as urgências que aparecem em toda sala.
+
+   Escritos a partir do que é consenso nos textos de referência —
+   Sabiston/Townsend, as diretrizes do Colégio Brasileiro de Cirurgiões
+   e da WSES, o checklist de cirurgia segura da OMS. Como em todo o
+   resto desta apostila: número, prazo e dose valem ser conferidos na
+   fonte antes de usar em prova ou em paciente.
+   ================================================================= */
+
+"Cirurgia — pré-operatório: risco, jejum e profilaxias": {
+  fonte: "Textos de referência em cirurgia e as diretrizes de segurança do paciente da OMS",
+  pontos: [
+    "A pergunta do pré-operatório não é “o paciente está bom?”, e sim “o risco de operar é menor que o de não operar, e o que dá para reduzir antes?”.",
+    "ASA classifica o estado físico, não o porte da cirurgia: I hígido, II doença sistêmica leve, III doença grave que limita, IV doença grave com ameaça constante à vida, V moribundo, VI morte encefálica para doação. O sufixo E marca a emergência.",
+    "Risco cardíaco: o índice de Lee (RCRI) soma cirurgia de alto risco, doença coronariana, insuficiência cardíaca, doença cerebrovascular, diabetes em insulina e creatinina alta. Capacidade funcional abaixo de 4 METs é o sinal que faz parar e avaliar melhor.",
+    "Jejum moderno, não o da meia-noite: líquidos claros costumam ser liberados até 2 horas antes, refeição leve 6 horas, refeição completa 8 horas. É a recomendação que o ERAS popularizou.",
+    "Profilaxia antibiótica entra antes da incisão, não depois — na primeira hora, e mais cedo para as drogas de infusão longa. Repete-se na cirurgia arrastada ou no sangramento grande, e termina em até 24 horas: manter antibiótico “até tirar o dreno” é erro clássico.",
+    "Tromboprofilaxia estratificada por risco (Caprini e semelhantes), somando meia elástica e compressão pneumática à heparina quando o risco é alto.",
+    "Classificação da ferida operatória — limpa, potencialmente contaminada, contaminada e infectada — é o que prevê a infecção de sítio cirúrgico e orienta a profilaxia.",
+    "O checklist de cirurgia segura tem três momentos: antes da anestesia, antes da incisão (o time out, com a equipe parada) e antes de sair da sala. Reduz mortalidade e é a coisa mais barata do centro cirúrgico."
+  ],
+  numeros: [
+    "Jejum: 2 h líquidos claros · 6 h refeição leve · 8 h refeição completa",
+    "Profilaxia antibiótica: até 60 min antes da incisão, e no máximo 24 h no total",
+    "Capacidade funcional de corte: 4 METs",
+    "Infecção de sítio cirúrgico conta até 30 dias — 90 dias quando há prótese"
+  ],
+  pega: "Profilaxia antibiótica é antes da incisão e por pouco tempo. Prolongar não previne infecção: seleciona resistência."
+},
+
+"Cirurgia — pós-operatório: as complicações no tempo": {
+  fonte: "Textos de referência em cirurgia; definições de infecção de sítio cirúrgico dos CDC e classificação de Clavien-Dindo",
+  pontos: [
+    "No pós-operatório o relógio é quase um diagnóstico: cada complicação tem o seu dia preferido, e é por isso que se pergunta sempre “que dia de pós-operatório é hoje?”.",
+    "Febre nas primeiras 24 a 48 horas costuma ser atelectasia e resposta inflamatória à própria cirurgia; do terceiro ao quinto dia pensa-se em infecção urinária, sobretudo com sonda; do quinto ao sétimo, na ferida e na trombose venosa profunda. Droga e transfusão dão febre em qualquer dia.",
+    "Febre muito precoce, nas primeiras horas, com dor desproporcional e crepitação, é infecção necrosante de partes moles até prova em contrário — e é cirúrgica, não clínica.",
+    "Íleo pós-operatório é esperado e se resolve com o tempo; obstrução mecânica precoce dói em cólica, distende e tem parada de eliminação. A diferença aparece na radiografia e na evolução, não num exame só.",
+    "Deiscência de anastomose aparece tipicamente entre o quinto e o sétimo dia: taquicardia, febre, dor que piora em vez de melhorar, drenagem suspeita. Taquicardia isolada no pós-operatório merece susto, não analgésico.",
+    "Infecção de sítio cirúrgico é superficial, profunda ou de órgão/cavidade, e conta até 30 dias — 90 quando há prótese.",
+    "Clavien-Dindo gradua a complicação pelo que foi preciso fazer: I sem tratamento, II medicamento, III intervenção (a sem anestesia geral, b com), IV terapia intensiva, V óbito.",
+    "ERAS inverte o pós-operatório antigo: dieta e mobilização precoces, analgesia sem opioide sempre que der, menos dreno e menos sonda. Menos tempo deitado é menos complicação."
+  ],
+  numeros: [
+    "Febre: 24–48 h pulmão · 3–5 dias urina · 5–7 dias ferida e trombose",
+    "Deiscência de anastomose: pico entre o 5º e o 7º dia",
+    "Clavien-Dindo: I, II, IIIa, IIIb, IV, V"
+  ],
+  pega: "Taquicardia persistente no pós-operatório é sinal de complicação até prova em contrário — costuma vir antes da febre e antes da hipotensão."
+},
+
+"Cirurgia — abdome agudo e as urgências mais comuns": {
+  fonte: "Textos de referência em cirurgia e diretrizes da WSES para as emergências abdominais",
+  pontos: [
+    "Cinco síndromes organizam o abdome agudo: inflamatório, perfurativo, obstrutivo, vascular e hemorrágico. Classificar primeiro poupa exame e tempo.",
+    "Apendicite: dor periumbilical que migra para a fossa ilíaca direita, anorexia, febre baixa. O escore de Alvarado ajuda a estratificar; a tomografia confirma no adulto, e a ultrassonografia é a primeira escolha em criança e gestante.",
+    "Colecistite aguda: dor em hipocôndrio direito por mais de seis horas, Murphy positivo, febre. Ultrassonografia é o exame de escolha; a colecistectomia precoce, nas primeiras 72 horas, é a conduta preferida.",
+    "Diverticulite: dor em fossa ilíaca esquerda, febre. Hinchey gradua do fleimão ao abscesso e à peritonite; os casos não complicados podem ser tratados clinicamente.",
+    "Obstrução intestinal: no delgado, a causa mais comum são aderências de cirurgia prévia, depois hérnias; no cólon, o câncer. Dor em cólica, vômitos, distensão e parada de eliminação — e sempre examinar as regiões herniárias.",
+    "Isquemia mesentérica: dor desproporcional ao exame físico, em paciente com fibrilação atrial ou aterosclerose, com exame abdominal que engana no começo. Angiotomografia e cirurgia sem demora.",
+    "Úlcera perfurada: dor súbita e intensa, abdome em tábua, pneumoperitônio à radiografia em ortostase ou à tomografia.",
+    "Hérnias: redutível, encarcerada (irredutível, sem sofrimento) e estrangulada (com isquemia). Estrangulada é emergência; encarcerada não se reduz à força quando há sinais de sofrimento."
+  ],
+  numeros: [
+    "Colecistite: colecistectomia preferencialmente nas primeiras 72 h",
+    "Obstrução de delgado: aderências > hérnias · de cólon: câncer",
+    "Dor desproporcional ao exame = isquemia mesentérica até prova em contrário"
+  ],
+  pega: "Em obstrução intestinal, examinar as regiões herniárias faz parte do exame — a hérnia estrangulada é a causa que se perde por não olhar."
+},
+
+"Cirurgia — o vocabulário do centro cirúrgico e do congresso": {
+  fonte: "Vocabulário corrente dos textos e dos congressos de cirurgia",
+  pontos: [
+    "Acesso: laparotomia (aberta), videolaparoscopia (minimamente invasiva) e cirurgia robótica. Conversão é passar de laparoscópica para aberta no meio — não é fracasso, é julgamento.",
+    "Damage control: numa emergência grave, controlar sangramento e contaminação, fechar temporariamente, estabilizar na terapia intensiva e voltar depois para a reconstrução definitiva. Second look é a reoperação programada para reavaliar alça de viabilidade duvidosa.",
+    "Anastomose é unir dois segmentos; ostomia é exteriorizar. Colostomia e ileostomia podem ser terminais ou em alça, definitivas ou temporárias. Cirurgia de Hartmann é ressecar, fechar o coto distal e fazer colostomia terminal, deixando a reconstrução para depois.",
+    "Em oncologia cirúrgica, R0 é ressecção com margens livres, R1 tem doença microscópica na margem e R2, doença macroscópica residual. A linfadenectomia é graduada por níveis (D1, D2), e é um dos pontos que mais se discute em mesa de congresso.",
+    "ERAS (Enhanced Recovery After Surgery) é o protocolo de recuperação acelerada: jejum curto, sem preparo de cólon de rotina, analgesia poupadora de opioide, dieta e mobilização precoces.",
+    "Time out é a parada antes da incisão, com a equipe toda, para conferir paciente, procedimento e lado — parte do checklist de cirurgia segura da OMS.",
+    "Na hora de ouvir os trabalhos: série de casos descreve, coorte acompanha, caso-controle olha para trás, ensaio clínico randomizado sorteia. Só o último permite falar em causa com alguma segurança, e é isso que separa a mesa boa da mesa entusiasmada.",
+    "Ao ouvir um resultado, procure o denominador, o tempo de seguimento e quem ficou de fora do estudo. É onde mora quase toda a diferença entre o que foi mostrado e o que foi concluído."
+  ],
+  pega: "Num congresso, a pergunta mais útil que um estudante pode fazer é “em quem isso não funcionaria?”. Delimita a aplicação e quase sempre rende a melhor resposta da mesa."
 }
 
 };

@@ -525,7 +525,7 @@ const START="2026-08-31", LAST="2026-10-20", PROVA="2026-10-21",
 
 /* Aparece na aba Aulas. Serve para saber, olhando o aparelho, se ele já
    pegou a versão nova — anda junto com o VERSAO do sw.js. */
-const VERSAO_APP="v21";
+const VERSAO_APP="v22";
 
 /* Feriados do cronograma: sem UBS e sem aula, mas o dia continua seu. */
 const FERIADOS={"2026-09-07":"Independência","2026-10-12":"Nossa Senhora Aparecida"};
@@ -773,6 +773,21 @@ const METODOS={
   trava:"Aula assistida em 2× sem pausa não é estudo, é entretenimento com tema médico. Se você não conseguiu anotar nada, refaça o trecho."
  },
 
+ caso:{
+  n:"O caso do congresso", curto:"saber o seu caso melhor que a plateia",
+  ideia:"Quem apresenta um caso não está contando uma história: está defendendo uma decisão. A plateia vai perguntar por que você fez o que fez, não o que aconteceu depois.",
+  passos:[
+   "Reconstrua o caso <b>da fonte</b> — prontuário, exames, laudos —, em ordem de relógio. Data de cada coisa, não “alguns dias depois”.",
+   "Escreva <b>a pergunta do caso</b> em uma frase: o que nele merece uma sala inteira. Se não couber numa frase, ainda não é um caso, é um relato.",
+   "Separe o que é <b>achado</b> do que é <b>interpretação</b>. Na apresentação, o achado vem primeiro e a interpretação depois — inverter é o erro que mais custa em arguição.",
+   "Procure <b>duas ou três referências</b> que sustentem a conduta, e uma que a contrarie. A que contraria é a que te salva na pergunta difícil.",
+   "Liste as <b>cinco perguntas</b> que você menos gostaria de ouvir, e escreva a resposta de cada uma. Quase sempre uma delas é feita.",
+   "<b>Ensaie em voz alta e cronometrado</b>, inteiro, sem parar para corrigir. Depois corrija e ensaie de novo. Ler em voz baixa não treina nada."
+  ],
+  tempo:"Três blocos: um para reconstruir o caso, um para a literatura e as perguntas difíceis, e um inteiro só de ensaio em voz alta.",
+  trava:"Se um dado do caso não estiver na fonte, ele não entra — nem “de memória”, nem “mais ou menos”. Numa apresentação, o dado frouxo é justamente o que a plateia pega."
+ },
+
  folha:{
   n:"Folha de última hora", curto:"uma folha, escrita à mão",
   ideia:"Uma folha só, escrita à mão, com o que não se deduz: números, prazos, portarias, doses e critérios. É o que se lê na véspera e nada mais.",
@@ -963,7 +978,27 @@ const CORRECOES=[
             do dia 15 ao 20 e serve para esvaziar a pilha que o plano empilha
             no último dia */
          {desde:"2026-10-15", ate:"2026-10-20", tipos:["revisao"]}],
-  desafogar:{de:"2026-10-13", ate:"2026-10-18"}}
+  desafogar:{de:"2026-10-13", ate:"2026-10-18"}},
+
+ {id:"congresso-caso-e-cirurgia",
+  diz:"o caso do congresso e uma introdução de cirurgia entraram nos dias 12, 13 e 14",
+  /* Duas frentes que não são da prova de Saúde Coletiva e por isso não
+     entram na contagem do plano: o caso que ela vai apresentar e uma
+     orientação de cirurgia, que é o tema do congresso e a parte com que ela
+     teve menos contato na faculdade.
+
+     Cabem sem tirar nada: depois de o conteúdo todo terminar no dia 12,
+     sobraram exatamente sete vagas em 12, 13 e 14 — os dois dias antes da
+     viagem e o da ida. O caso fica primeiro, porque tem hora marcada; a
+     cirurgia vem depois, e o vocabulário fica para o dia do voo. */
+  adicionar:[
+    {data:"2026-10-12", rank:3, titulo:"Congresso — o caso: reconstruir a história e os exames"},
+    {data:"2026-10-12", rank:4, titulo:"Congresso — o caso: o que a literatura diz, e o que a contraria"},
+    {data:"2026-10-13", rank:3, titulo:"Congresso — ensaiar a apresentação em voz alta, cronometrada"},
+    {data:"2026-10-13", rank:4, titulo:"Cirurgia — pré-operatório: risco, jejum e profilaxias"},
+    {data:"2026-10-13", rank:5, titulo:"Cirurgia — pós-operatório: as complicações no tempo"},
+    {data:"2026-10-14", rank:3, titulo:"Cirurgia — abdome agudo e as urgências mais comuns"},
+    {data:"2026-10-14", rank:4, titulo:"Cirurgia — o vocabulário do centro cirúrgico e do congresso"}]}
 ];
 
 /* A escala das práticas na UBS e os compromissos avulsos são dados de quem
@@ -1063,6 +1098,8 @@ function temaMedway(d){return MEDWAY[Math.min(Math.floor(range(START,d).length/7
    um mesmo tipo — simulado, folha e revisão de eixo são todas "revisao". */
 function metodoDe(x){
   const t=x.titulo||"";
+  if(t.startsWith("Congresso — ")) return "caso";
+  if(t.startsWith("Cirurgia — ")) return "eixo";
   if(t.startsWith("Simulado geral")||t==="Medway — simulado da semana") return "simulado";
   if(t.startsWith("Folha de última hora")) return "folha";
   if(t==="Medway — questões do dia") return "questoes";
@@ -1194,8 +1231,10 @@ const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",
 const C=2*Math.PI*31;
 
 function render(){
-  const tot=S.tarefas.filter(t=>t.tipo!=="medway").length;
-  const ok=S.tarefas.filter(t=>t.tipo!=="medway"&&t.status==="feita").length;
+  /* o congresso é trabalho dela, mas não é do rodízio: fica fora da conta */
+  const doPlano=t=>t.tipo!=="medway"&&t.tipo!=="congresso";
+  const tot=S.tarefas.filter(doPlano).length;
+  const ok=S.tarefas.filter(t=>doPlano(t)&&t.status==="feita").length;
   const pc=tot?Math.round(ok/tot*100):0;
   document.getElementById("pct").textContent=pc+"%";
   const arco=document.getElementById("arco");
@@ -1355,12 +1394,14 @@ function viewDia(){
   }
   h+=`<ol class="lista">`;
   lista.forEach((x,i)=>{
-    const cor=x.eixo?EIXOS[x.eixo].c:"var(--apagado)", feita=x.status==="feita";
+    const cor=x.eixo?EIXOS[x.eixo].c:x.tipo==="congresso"?"var(--alerta)":"var(--apagado)",
+          feita=x.status==="feita";
     h+=`<li class="tarefa ${feita?"feita":""}" style="--c:${cor}">
       <div class="t-topo">
         <span class="t-hora">${slots[i]||"encaixar no dia"}</span>
         ${x.eixo?`<span class="chip">${EIXOS[x.eixo].n}</span>`:""}
         ${x.tipo==="medway"?'<span class="chip neutro">Medway</span>':""}
+        ${x.tipo==="congresso"?'<span class="chip">congresso</span>':""}
         ${x.adiada?`<span class="chip adiada">remarcada ${x.adiada}×</span>`:""}
       </div>
       <p class="t-tit">${esc(x.titulo)}</p>
@@ -1636,7 +1677,7 @@ function viewAulas(){
     <p class="nota">O plano diz o que cai em cada bloco; isto diz como se faz. Cada tarefa do
     dia também abre o método que é dela, no botão <b>como fazer esta tarefa</b>. Os seis seguem
     a mesma regra: <b>tentar lembrar vale mais que reler</b>, e o erro é o material de estudo.</p>
-    ${["eixo","questoes","revisao","simulado","videoaulas","folha"].map(k=>{
+    ${["eixo","questoes","revisao","simulado","videoaulas","caso","folha"].map(k=>{
       const m=METODOS[k], aberto=metodoNaAba===k;
       return `<div class="caso">
         <button class="caso-topo" onclick="verMetodoNaAba('${k}')" aria-expanded="${aberto}">
@@ -1647,7 +1688,8 @@ function viewAulas(){
     }).join("")}
 
     <h2 class="sec" style="margin-top:22px">A apostila</h2>
-    <p class="nota">Os ${Object.keys(TEMRESUMO).length} resumos, num PDF só, com margem larga para
+    <p class="nota">Os ${CONTEUDO.filter(([,t])=>TEMRESUMO[t]).length} resumos do plano de ensino,
+    num PDF só, com margem larga para
     grifar e escrever à mão.</p>
     <a class="btn-larga" style="display:block;text-align:center;text-decoration:none"
        href="./resumos.pdf" target="_blank" rel="noopener">Abrir os resumos em PDF</a>
@@ -1876,6 +1918,7 @@ function aplicarPacote(novo){
      puxar aceita um pedido ou vários, aplicados na ordem em que vêm. */
   const trocadas=trocarTitulos(novo.trocar);
   const tiradas=tirarTarefas(novo.tirar);
+  const novas=adicionarTarefas(novo.adicionar);
   const puxadas=[].concat(novo.puxar||[]).reduce((n,p)=>n+puxarTarefas(p),0)
                  +moverTarefas(novo.mover);
   const remarcadas=novo.desafogar?desafogar(novo.desafogar):0;
@@ -1896,6 +1939,7 @@ function aplicarPacote(novo){
   if(puxadas) partes.push(puxadas+(puxadas>1?" tarefas vieram":" tarefa veio")+" para a frente");
   if(trocadas) partes.push(trocadas+(trocadas>1?" blocos trocaram":" bloco trocou")+" de assunto");
   if(tiradas) partes.push(tiradas+(tiradas>1?" repetidas saíram":" repetida saiu"));
+  if(novas) partes.push(novas+(novas>1?" tarefas novas":" tarefa nova"));
   if(remarcadas) partes.push(remarcadas+(remarcadas>1?" tarefas foram remarcadas":" tarefa foi remarcada"));
   if(novosLembretes) partes.push(novosLembretes+(novosLembretes>1?" lembretes novos":" lembrete novo"));
   return (novo.nome?novo.nome+": ":"")+(partes.join(", ")||"nada de novo")+".";
@@ -1942,6 +1986,20 @@ function tirarTarefas(lista){
     const ids=saem.map(x=>x.id);
     S.tarefas=S.tarefas.filter(x=>!ids.includes(x.id));
     n+=ids.length;
+  });
+  return n;
+}
+
+/* Acrescenta tarefas que o plano não previa — um congresso, um trabalho que
+   apareceu. O título é a chave: se já existe uma com o mesmo, não entra de
+   novo, então aplicar a mesma correção duas vezes não duplica nada. */
+function adicionarTarefas(lista){
+  let n=0, id=S.tarefas.reduce((m,x)=>Math.max(m,x.id),0)+1;
+  (lista||[]).forEach(t=>{
+    if(S.tarefas.some(x=>x.titulo===t.titulo)) return;
+    S.tarefas.push({id:id++, tipo:t.tipo||"congresso", rank:t.rank===undefined?1:t.rank,
+                    data:t.data, eixo:t.eixo||null, titulo:t.titulo, status:"pendente"});
+    n++;
   });
   return n;
 }
