@@ -525,7 +525,7 @@ const START="2026-08-31", LAST="2026-10-20", PROVA="2026-10-21",
 
 /* Aparece na aba Aulas. Serve para saber, olhando o aparelho, se ele já
    pegou a versão nova — anda junto com o VERSAO do sw.js. */
-const VERSAO_APP="v24";
+const VERSAO_APP="v25";
 
 /* Feriados do cronograma: sem UBS e sem aula, mas o dia continua seu. */
 const FERIADOS={"2026-09-07":"Independência","2026-10-12":"Nossa Senhora Aparecida"};
@@ -1035,7 +1035,17 @@ const CORRECOES=[
      e descobrir isso hoje é diferente de descobrir no dia 12. */
   escala:{"2026-09-29":{m:"livre", outras:"Juliana e Luana"},
           "2026-09-30":{m:"ubs", com:"Érika"}},
-  mover:[{comeca:"Congresso — o caso: reconstruir", para:"2026-09-29"}]}
+  mover:[{comeca:"Congresso — o caso: reconstruir", para:"2026-09-29"}]},
+
+ {id:"quarta30-tarde-sem-ubs",
+  diz:"a quarta 30 ficou sem UBS à tarde, e o dia dobrou de tamanho",
+  /* Só a manhã de quarta é dela. Com a tarde livre, o dia sai de dois
+     blocos para quatro, e os dois que sobraram recebem a segunda metade da
+     preparação do caso: a literatura vem logo depois de reconstruir a
+     história, no dia seguinte, que é quando as lacunas ainda estão na
+     cabeça. Isso deixa o dia 12, véspera da viagem, com folga. */
+  escala:{"2026-09-30":{m:"ubs", com:"Érika", t:"livre"}},
+  mover:[{comeca:"Congresso — o caso: o que a literatura", para:"2026-09-30"}]}
 ];
 
 /* A escala das práticas na UBS e os compromissos avulsos são dados de quem
