@@ -1318,6 +1318,97 @@ const RESUMOS = {
     "Ao ouvir um resultado, procure o denominador, o tempo de seguimento e quem ficou de fora do estudo. É onde mora quase toda a diferença entre o que foi mostrado e o que foi concluído."
   ],
   pega: "Num congresso, a pergunta mais útil que um estudante pode fazer é “em quem isso não funcionaria?”. Delimita a aplicação e quase sempre rende a melhor resposta da mesa."
+},
+
+/* =================================================================
+   O caso dela — trabalho 15909, apresentação oral, tema Hérnias e
+   Parede Abdominal: "Terapia por Pressão Negativa no Manejo do
+   Abdome Aberto e na Fístula Enteroatmosférica".
+
+   Mulher de 18 anos, trauma abdominal fechado em acidente
+   motociclístico; laparotomia de urgência com colectomia segmentar
+   de transverso e colostomia terminal; reabordagens por infecção de
+   sítio cirúrgico e deiscência; peritoneostomia com bolsa de Bogotá
+   e depois TPN contínua a -100 mmHg; Pseudomonas aeruginosa
+   multirresistente; fístula entérica de baixo débito em hipocôndrio
+   esquerdo, manejada com suspensão temporária da TPN, hidrocoloide e
+   nutrição parenteral total; aos quatro meses, granulação viável e
+   colostomia funcionante.
+
+   Os dois resumos abaixo são do assunto do caso e das perguntas que
+   uma mesa faz. Os números vieram do resumo dela e do que é corrente
+   na literatura de abdome aberto; confira cada um na fonte antes de
+   dizê-lo no microfone — numa apresentação, número errado é o que a
+   plateia pega.
+   ================================================================= */
+
+"Congresso — abdome aberto, TPN e fístula enteroatmosférica": {
+  fonte: "O resumo do trabalho 15909 e a literatura que ele cita — EAST, Boele van Hensbroek (World J Surg, 2009), Bobkiewicz (Int Wound J, 2016), Antonini (ABCD, 2026)",
+  pontos: [
+    "Abdome aberto não é falha: é decisão. Indica-se no controle de danos, na síndrome compartimental abdominal, na sepse abdominal que vai exigir reabordagem e quando a viabilidade intestinal é duvidosa e se planeja um second look.",
+    "O objetivo é um só: <b>fechamento fascial o mais cedo possível</b>. Cada dia aberto aumenta a chance de perda de domínio, de hérnia ventral e — o que importa neste caso — de fístula.",
+    "Björck classifica o abdome aberto de 1 a 4, pela contaminação, pela aderência e pela presença de fístula; o grau 4 é o abdome congelado com fístula enteroatmosférica, o pior cenário.",
+    "A terapia por pressão negativa é o fechamento temporário mais estudado: controla o terceiro espaço, contém as vísceras, quantifica a perda e mantém a fáscia tracionável. Costuma-se usar de -100 a -125 mmHg, contínua — o caso usou -100 mmHg contínua.",
+    "A bolsa de Bogotá, usada antes da TPN neste caso, é barata e disponível, mas não drena, não quantifica e não traciona. Migrar para TPN é o passo que reabre a possibilidade de fechamento fascial.",
+    "<b>Fístula enteroatmosférica é diferente de enterocutânea</b>: não tem trajeto nem tecido de cobertura, abre direto na ferida exposta. É a complicação mais temida do abdome aberto e a de maior mortalidade.",
+    "O débito classifica e orienta: baixo abaixo de 200 mL/dia, moderado entre 200 e 500, alto acima de 500. <b>Fístula de baixo débito, como a do caso, é a que mais fecha espontaneamente.</b>",
+    "O manejo se organiza em sepse, nutrição e ferida — controlar a infecção, nutrir (parenteral quando o trânsito não permite enteral) e isolar o efluente para proteger a pele e permitir granulação. Só depois se pensa em reconstrução.",
+    "A EAST recomenda, de forma <b>condicional</b>, associar tração fascial à TPN: reduz falha de fechamento sem aumentar mortalidade — com a ressalva, que é dela mesma, de que a qualidade geral da evidência é baixa.",
+    "Reconstrução definitiva da parede é tardia, em geral seis a doze meses depois, com o abdome limpo, a nutrição recuperada e a hérnia ventral já estabelecida — a chamada hérnia ventral planejada."
+  ],
+  numeros: [
+    "Fechamento fascial tardio: cerca de 60% · mortalidade cerca de 18% (revisão com mais de 3 mil pacientes)",
+    "Pressão usada no caso: -100 mmHg contínua (faixa corrente: -100 a -125)",
+    "Débito: baixo < 200 mL/dia · moderado 200–500 · alto > 500",
+    "Reconstrução definitiva da parede: em geral 6 a 12 meses depois",
+    "Quatro meses até granulação viável e colostomia funcionante, neste caso"
+  ],
+  /* Na vertical: cinco etapas com duas linhas cada não cabem lado a lado na
+     largura de um celular — empilhadas, cada uma tem a linha inteira. */
+  figura: `<svg viewBox="0 0 320 226" role="img"
+      aria-label="As etapas do caso, da laparotomia de urgência à colostomia funcionante">
+    <style>
+      .cx{fill:none;stroke:#0F6070;stroke-width:1.5}
+      .tit{font:600 11px system-ui;fill:#27221C}
+      .sub{font:10px system-ui;fill:#5D5852}
+      .num{font:700 9px system-ui;fill:#0F6070}
+      .bola{fill:#E0EBE6;stroke:#0F6070;stroke-width:1.4}
+      .fim{font:700 10.5px system-ui;fill:#0F6070}
+    </style>
+    <line x1="14" y1="14" x2="14" y2="146" class="cx"/>
+    ${[["Laparotomia de urgência","colectomia de transverso + colostomia terminal"],
+       ["Reabordagens","infecção de sítio cirúrgico e deiscência de parede"],
+       ["Peritoneostomia","bolsa de Bogotá"],
+       ["Terapia por pressão negativa","−100 mmHg, contínua"],
+       ["Fístula entérica","baixo débito, em hipocôndrio esquerdo"]]
+      .map(([a,b],i)=>{const y=14+i*33; return `
+      <circle cx="14" cy="${y}" r="6.5" class="bola"/>
+      <text x="14" y="${y+3}" text-anchor="middle" class="num">${i+1}</text>
+      <text x="30" y="${y-1}" class="tit">${a}</text>
+      <text x="30" y="${y+11}" class="sub">${b}</text>`}).join("")}
+    <line x1="14" y1="152" x2="14" y2="186" class="cx" stroke-dasharray="3 3"/>
+    <text x="30" y="183" class="sub">
+      suspensão da TPN · hidrocoloide · nutrição parenteral</text>
+    <circle cx="14" cy="206" r="6.5" class="bola"/>
+    <text x="30" y="203" class="fim">4 meses</text>
+    <text x="30" y="215" class="sub">granulação viável · colostomia funcionante</text>
+  </svg>`,
+  pega: "A pergunta que não pode pegar você de surpresa é se a TPN causou a fístula. A associação existe na literatura e é disputada; o que se sustenta é que o tempo de abdome aberto e a manipulação repetida pesam mais que a terapia em si — e que, diante de mucosa protrusa, manter pressão contínua sobre ela não fecha fístula nenhuma. Foi exatamente por isso que a TPN foi suspensa neste caso."
+},
+
+"Congresso — as perguntas que a mesa vai fazer": {
+  fonte: "As perguntas mais prováveis sobre o trabalho 15909, escritas para serem respondidas antes de serem feitas",
+  pontos: [
+    "<b>“A TPN causou a fístula?”</b> — A literatura discute a associação e ela não está resolvida. O que se defende: o tempo de abdome aberto e as reabordagens repetidas são os fatores mais consistentes; e a conduta do caso foi justamente suspender a pressão contínua diante da mucosa protrusa, porque nessa condição a fístula não fecha sob TPN.",
+    "<b>“Por que -100 mmHg e não -125?”</b> — Ambas estão na faixa corrente. A menor tende a ser escolhida quando há alça exposta e preocupação com lesão visceral. Responda pela lógica da escolha, não por um número decorado.",
+    "<b>“Por que não associaram tração fascial?”</b> — A EAST recomenda condicionalmente, com evidência de baixa qualidade. Vale dizer o que havia de disponível no serviço e qual era a condição da parede — e reconhecer que é uma recomendação que o caso não seguiu.",
+    "<b>“Por que nutrição parenteral e não enteral?”</b> — A enteral é preferida quando o trânsito permite; aqui havia fístula e necessidade de repouso do segmento. Saiba dizer se houve tentativa de reintrodução enteral e em que momento.",
+    "<b>“Qual era o débito, e como foi medido?”</b> — Baixo débito é abaixo de 200 mL/dia. Se você tiver o número real do prontuário, ele vale mais que a categoria.",
+    "<b>“Como foi conduzida a Pseudomonas multirresistente?”</b> — Guiada por antibiograma, como está no resumo. Tenha em mente por quanto tempo, se houve descalonamento e se a coleta foi de secreção abdominal, urina ou ambas.",
+    "<b>“E a parede, agora?”</b> — Hérnia ventral planejada, reconstrução tardia em geral entre seis e doze meses, depois de nutrição recuperada e abdome limpo. Diga também qual é o plano para a colostomia.",
+    "<b>“O que este caso acrescenta?”</b> — É a pergunta mais importante e a que mais desarma quem não a preparou. A resposta do próprio resumo: a individualização, mais que a técnica isolada, definiu o desfecho — inclusive a decisão de suspender a terapia que estava indicada."
+  ],
+  pega: "Quando não souber, diga que não sabe e devolva o que você sabe: “não tenho esse dado aqui, o que tenho é…”. Numa apresentação, inventar um número é o único erro que não tem conserto — e a plateia de cirurgia é justamente a que confere."
 }
 
 };

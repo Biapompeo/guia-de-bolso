@@ -525,7 +525,7 @@ const START="2026-08-31", LAST="2026-10-20", PROVA="2026-10-21",
 
 /* Aparece na aba Aulas. Serve para saber, olhando o aparelho, se ele já
    pegou a versão nova — anda junto com o VERSAO do sw.js. */
-const VERSAO_APP="v22";
+const VERSAO_APP="v23";
 
 /* Feriados do cronograma: sem UBS e sem aula, mas o dia continua seu. */
 const FERIADOS={"2026-09-07":"Independência","2026-10-12":"Nossa Senhora Aparecida"};
@@ -998,7 +998,29 @@ const CORRECOES=[
     {data:"2026-10-13", rank:4, titulo:"Cirurgia — pré-operatório: risco, jejum e profilaxias"},
     {data:"2026-10-13", rank:5, titulo:"Cirurgia — pós-operatório: as complicações no tempo"},
     {data:"2026-10-14", rank:3, titulo:"Cirurgia — abdome agudo e as urgências mais comuns"},
-    {data:"2026-10-14", rank:4, titulo:"Cirurgia — o vocabulário do centro cirúrgico e do congresso"}]}
+    {data:"2026-10-14", rank:4, titulo:"Cirurgia — o vocabulário do centro cirúrgico e do congresso"}]},
+
+ {id:"apresentacao-dia-15",
+  diz:"a apresentação é dia 15, e a preparação do caso foi reorganizada para caber antes dela",
+  /* Trabalho 15909, apresentação oral, tema Hérnias e Parede Abdominal:
+     "Terapia por Pressão Negativa no Manejo do Abdome Aberto e na Fístula
+     Enteroatmosférica". É no dia 15, o segundo dia de congresso.
+
+     Isso muda a ordem: o ensaio tem de ser na véspera, já no Rio, e o
+     assunto do caso precisa de um bloco próprio antes da viagem. As duas
+     tarefas gerais de cirurgia descem para os dias de congresso, onde
+     servem de contexto para as mesas; o desafogar acomoda o resto. */
+  compromissos:{
+    "2026-10-15":[{h:"no congresso",txt:"Apresentação oral — TPN no abdome aberto e na fístula enteroatmosférica",curto:"apresentação"}]},
+  adicionar:[
+    {data:"2026-10-13", rank:2, titulo:"Congresso — abdome aberto, TPN e fístula enteroatmosférica"},
+    {data:"2026-10-14", rank:2, titulo:"Congresso — as perguntas que a mesa vai fazer"}],
+  mover:[{comeca:"Congresso — ensaiar", para:"2026-10-14", rank:3},
+         /* rank 0 para que fiquem: lidas durante o congresso servem de
+            contexto para as mesas, e na volta não serviriam para nada */
+         {comeca:"Cirurgia — abdome agudo", para:"2026-10-16", rank:0},
+         {comeca:"Cirurgia — o vocabulário", para:"2026-10-17", rank:0}],
+  desafogar:{de:"2026-10-13", ate:"2026-10-19"}}
 ];
 
 /* A escala das práticas na UBS e os compromissos avulsos são dados de quem
@@ -1228,6 +1250,9 @@ salvar();
 /* ------------------------------------------------------------------ render */
 const painel=document.getElementById("painel");
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+/* Escapa tudo e devolve só o negrito. Os pontos de alguns resumos grifam uma
+   palavra, e um "< 200 mL" no meio do texto continua sendo texto. */
+const negrito=s=>esc(s).replace(/&lt;b&gt;/g,"<b>").replace(/&lt;\/b&gt;/g,"</b>");
 const C=2*Math.PI*31;
 
 function render(){
@@ -1495,7 +1520,7 @@ function painelAjuste(d,e){
 function painelResumo(r){
   if(!r) return "";
   return `<div class="resumo">
-    <ul class="resumo-pontos">${r.pontos.map(p=>`<li>${esc(p)}</li>`).join("")}</ul>
+    <ul class="resumo-pontos">${r.pontos.map(p=>`<li>${negrito(p)}</li>`).join("")}</ul>
     ${(r.tabelas||[]).map(t=>`<div class="quadro-rol"><table class="quadro">
       ${t.t?`<caption>${esc(t.t)}</caption>`:""}
       <thead><tr>${t.c.map(c=>`<th>${esc(c)}</th>`).join("")}</tr></thead>
@@ -2013,7 +2038,12 @@ function moverTarefas(lista){
   (lista||[]).forEach(m=>{
     S.tarefas.filter(x=>x.status!=="feita"
       &&(m.comeca?x.titulo.startsWith(m.comeca):x.titulo===m.titulo))
-      .forEach(x=>{ if(x.data!==m.para){ x.data=m.para; n++; } });
+      .forEach(x=>{
+        if(x.data!==m.para){ x.data=m.para; n++; }
+        /* a ordem dentro do dia é o que o desafogar usa para decidir quem
+           sai quando não cabe: quem tem de ficar vem com rank menor */
+        if(m.rank!==undefined) x.rank=m.rank;
+      });
   });
   return n;
 }
