@@ -525,7 +525,7 @@ const START="2026-08-31", LAST="2026-10-20", PROVA="2026-10-21",
 
 /* Aparece na aba Aulas. Serve para saber, olhando o aparelho, se ele já
    pegou a versão nova — anda junto com o VERSAO do sw.js. */
-const VERSAO_APP="v23";
+const VERSAO_APP="v24";
 
 /* Feriados do cronograma: sem UBS e sem aula, mas o dia continua seu. */
 const FERIADOS={"2026-09-07":"Independência","2026-10-12":"Nossa Senhora Aparecida"};
@@ -1020,7 +1020,22 @@ const CORRECOES=[
             contexto para as mesas, e na volta não serviriam para nada */
          {comeca:"Cirurgia — abdome agudo", para:"2026-10-16", rank:0},
          {comeca:"Cirurgia — o vocabulário", para:"2026-10-17", rank:0}],
-  desafogar:{de:"2026-10-13", ate:"2026-10-19"}}
+  desafogar:{de:"2026-10-13", ate:"2026-10-19"}},
+
+ {id:"semana5-duplas",
+  diz:"a terça 29 é da Juliana e da Luana, e a quarta 30 é sua com a Érika",
+  /* Na semana 5 ela só entra na quarta de manhã. A terça, que o cronograma
+     marcava como UBS, é da outra dupla: a manhã fica livre e o dia sai de
+     dois blocos para quatro, porque só a tarde continua ocupada, com a aula
+     de Saúde do Idoso. A tarde de quarta segue o cronograma.
+
+     Os dois blocos que a terça ganhou recebem a primeira tarefa do caso do
+     congresso. Reconstruir a história e os exames é o que descobre o que
+     falta no prontuário — o débito da fístula, o esquema do antibiótico —,
+     e descobrir isso hoje é diferente de descobrir no dia 12. */
+  escala:{"2026-09-29":{m:"livre", outras:"Juliana e Luana"},
+          "2026-09-30":{m:"ubs", com:"Érika"}},
+  mover:[{comeca:"Congresso — o caso: reconstruir", para:"2026-09-29"}]}
 ];
 
 /* A escala das práticas na UBS e os compromissos avulsos são dados de quem
