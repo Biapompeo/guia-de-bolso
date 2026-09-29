@@ -525,7 +525,7 @@ const START="2026-08-31", LAST="2026-10-20", PROVA="2026-10-21",
 
 /* Aparece na aba Aulas. Serve para saber, olhando o aparelho, se ele já
    pegou a versão nova — anda junto com o VERSAO do sw.js. */
-const VERSAO_APP="v26";
+const VERSAO_APP="v27";
 
 /* Feriados do cronograma: sem UBS e sem aula, mas o dia continua seu. */
 const FERIADOS={"2026-09-07":"Independência","2026-10-12":"Nossa Senhora Aparecida"};
@@ -867,7 +867,7 @@ const CRONOGRAMA={
    Serve para consertar o que já foi parar errado nos aparelhos. O caminho
    normal continua sendo o "ajustar este dia". */
 const CORRECOES=[
- {id:"s4-quarta-quinta",
+{id:"s4-quarta-quinta",
   diz:"quarta 23 sem UBS o dia todo, com a casa às 17h30, e quinta 24 na UBS com a Érika",
   escala:{
     "2026-09-23":{m:"livre",t:"livre"},
@@ -881,7 +881,7 @@ const CORRECOES=[
     {txt:"Casa: recolher e estender a roupa",escopo:"semana"},
     {txt:"Casa: trocar a roupa de cama",escopo:"semana"}]},
 
- {id:"tb-han-para-a-sexta",
+{id:"tb-han-para-a-sexta",
   diz:"tuberculose e hanseníase vieram do fim de outubro para a sexta 25 em diante",
   /* A aula do Prof. Tiago e os sete casos da coordenação foram na terça 22;
      o plano guardava os dois assuntos para os últimos dias antes da prova.
@@ -889,12 +889,12 @@ const CORRECOES=[
      na revisão espaçada de outubro. */
   puxar:{desde:"2026-09-25", eixos:["tb","han"]}},
 
- {id:"sexta25-e-nome-da-ubs",
+{id:"sexta25-e-nome-da-ubs",
   diz:"a sexta 25 ficou sem UBS, e a unidade passou a se chamar UBS Manaíra",
   ubs:"UBS Manaíra",
   escala:{"2026-09-25":{m:"livre",t:"livre"}}},
 
- {id:"medway-de-hoje-tb-han",
+{id:"medway-de-hoje-tb-han",
   diz:"a aula do Medway de hoje passou a ser a de tuberculose e hanseníase",
   /* O tema da semana no Medway é ginecologia, mas a aula do Prof. Tiago e os
      casos da coordenação foram de TB e hanseníase, e é isso que ela está
@@ -902,7 +902,7 @@ const CORRECOES=[
   trocar:[{data:"2026-09-24", comeca:"Medway — aulas",
            para:"Medway — aulas: Infectologia: TB e hanseníase"}]},
 
- {id:"sexta25-so-tb-e-hanseniase",
+{id:"sexta25-so-tb-e-hanseniase",
   diz:"a videoaula de ginecologia da sexta virou o primeiro tema de tuberculose",
   /* A sexta é o dia de hanseníase, com os três temas e os resumos; sobrava
      ali a videoaula de ginecologia, que é o tema da semana no Medway. No
@@ -914,7 +914,7 @@ const CORRECOES=[
   tirar:[{titulo:"Etiologia, transmissão, patogênese e história clínica",
           exceto:"2026-09-25"}]},
 
- {id:"semana5-ubs-so-terca-e-quarta",
+{id:"semana5-ubs-so-terca-e-quarta",
   diz:"na semana 5 a UBS ficou só na terça e na quarta",
   /* O cronograma da coordenação marca UBS também na tarde de segunda e na
      manhã de sexta; o grupo dela não tem prática nesses dois turnos. As
@@ -926,7 +926,7 @@ const CORRECOES=[
      vaga em vez de ficar sem hora nenhuma. */
   desafogar:{de:"2026-09-28", ate:"2026-10-02"}},
 
- {id:"congresso-rio-outubro",
+{id:"congresso-rio-outubro",
   diz:"o congresso no Rio entrou de 14 a 18 de outubro, e o conteúdo novo foi todo para antes da viagem",
   /* Ela viaja na noite de 13 ou no dia 14 e volta no 18 — e a prova é no
      21. Eram 21 tarefas naqueles seis dias, entre elas nove temas de
@@ -951,7 +951,7 @@ const CORRECOES=[
          ate:"2026-10-13"},
   desafogar:{de:"2026-10-13", ate:"2026-10-18"}},
 
- {id:"medway-questoes-sai-ate-a-viagem",
+{id:"medway-questoes-sai-ate-a-viagem",
   diz:"as questões do dia do Medway saíram dos dias até 13 de outubro, e a Saúde da Mulher coube antes da viagem",
   /* Escolha dela: das três formas de abrir espaço antes da viagem — cortar
      a rotina de questões, estudar um bloco a mais por dia, ou deixar a
@@ -980,7 +980,7 @@ const CORRECOES=[
          {desde:"2026-10-15", ate:"2026-10-20", tipos:["revisao"]}],
   desafogar:{de:"2026-10-13", ate:"2026-10-18"}},
 
- {id:"congresso-caso-e-cirurgia",
+{id:"congresso-caso-e-cirurgia",
   diz:"o caso do congresso e uma introdução de cirurgia entraram nos dias 12, 13 e 14",
   /* Duas frentes que não são da prova de Saúde Coletiva e por isso não
      entram na contagem do plano: o caso que ela vai apresentar e uma
@@ -1000,7 +1000,7 @@ const CORRECOES=[
     {data:"2026-10-14", rank:3, titulo:"Cirurgia — abdome agudo e as urgências mais comuns"},
     {data:"2026-10-14", rank:4, titulo:"Cirurgia — o vocabulário do centro cirúrgico e do congresso"}]},
 
- {id:"apresentacao-dia-15",
+{id:"apresentacao-dia-15",
   diz:"a apresentação é dia 15, e a preparação do caso foi reorganizada para caber antes dela",
   /* Trabalho 15909, apresentação oral, tema Hérnias e Parede Abdominal:
      "Terapia por Pressão Negativa no Manejo do Abdome Aberto e na Fístula
@@ -1022,7 +1022,7 @@ const CORRECOES=[
          {comeca:"Cirurgia — o vocabulário", para:"2026-10-17", rank:0}],
   desafogar:{de:"2026-10-13", ate:"2026-10-19"}},
 
- {id:"semana5-duplas",
+{id:"semana5-duplas",
   diz:"a terça 29 é da Juliana e da Luana, e a quarta 30 é sua com a Érika",
   /* Na semana 5 ela só entra na quarta de manhã. A terça, que o cronograma
      marcava como UBS, é da outra dupla: a manhã fica livre e o dia sai de
@@ -1037,7 +1037,7 @@ const CORRECOES=[
           "2026-09-30":{m:"ubs", com:"Érika"}},
   mover:[{comeca:"Congresso — o caso: reconstruir", para:"2026-09-29"}]},
 
- {id:"quarta30-tarde-sem-ubs",
+{id:"quarta30-tarde-sem-ubs",
   diz:"a quarta 30 ficou sem UBS à tarde, e o dia dobrou de tamanho",
   /* Só a manhã de quarta é dela. Com a tarde livre, o dia sai de dois
      blocos para quatro, e os dois que sobraram recebem a segunda metade da
@@ -1047,14 +1047,14 @@ const CORRECOES=[
   escala:{"2026-09-30":{m:"ubs", com:"Érika", t:"livre"}},
   mover:[{comeca:"Congresso — o caso: o que a literatura", para:"2026-09-30"}]},
 
- {id:"medway-29-hanseniase",
-  diz:"a aula do Medway de hoje passou a ser a de hanseníase, que a de obstetrícia não saiu",
-  /* O tema da semana no Medway é obstetrícia, mas a aula não estava
-     disponível. Ela começa hanseníase no lugar — o bloco fica onde está,
-     muda o assunto. Só o dia 29; os outros dias da semana seguem marcando
-     obstetrícia até ela dizer o contrário. */
+ {id:"medway-29-volta-a-obstetricia",
+  diz:"a terça 29 voltou a ser a aula de obstetrícia do Medway",
+  /* Desfaz a troca anterior. Ela some da lista, para quem nunca a aplicou
+     não aplicá-la; e esta entra para desfazê-la em quem já aplicou. Pôr o
+     título de volta é seguro nos dois casos: em quem nunca trocou, escreve
+     o que já estava escrito. */
   trocar:[{data:"2026-09-29", comeca:"Medway — aulas",
-           para:"Medway — aulas: Infectologia: TB e hanseníase"}]}
+           para:"Medway — aulas: Obstetrícia: pré-natal"}]}
 ];
 
 /* A escala das práticas na UBS e os compromissos avulsos são dados de quem

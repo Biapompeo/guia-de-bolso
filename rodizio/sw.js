@@ -3,7 +3,7 @@
    Guarda a página e os ícones para abrir sem internet.
    ================================================================= */
 
-const VERSAO = "v26";
+const VERSAO = "v27";
 const CACHE = "rodizio-" + VERSAO;
 
 const SHELL = [
