@@ -525,7 +525,7 @@ const START="2026-08-31", LAST="2026-10-20", PROVA="2026-10-21",
 
 /* Aparece na aba Aulas. Serve para saber, olhando o aparelho, se ele já
    pegou a versão nova — anda junto com o VERSAO do sw.js. */
-const VERSAO_APP="v27";
+const VERSAO_APP="v28";
 
 /* Feriados do cronograma: sem UBS e sem aula, mas o dia continua seu. */
 const FERIADOS={"2026-09-07":"Independência","2026-10-12":"Nossa Senhora Aparecida"};
@@ -1054,7 +1054,19 @@ const CORRECOES=[
      título de volta é seguro nos dois casos: em quem nunca trocou, escreve
      o que já estava escrito. */
   trocar:[{data:"2026-09-29", comeca:"Medway — aulas",
-           para:"Medway — aulas: Obstetrícia: pré-natal"}]}
+           para:"Medway — aulas: Obstetrícia: pré-natal"}]},
+
+ {id:"terca29-trilhas-de-questoes",
+  diz:"a aula de obstetrícia saiu da terça e deu lugar às trilhas de questões atrasadas",
+  /* A aula de obstetrícia do Medway não saiu, e ela tem trilhas de questões
+     pendentes. O bloco das 08h00 passa a ser delas. O de 20h45, que estava
+     vago porque a terça tem quatro blocos e só três tarefas, recebe a
+     segunda parte — não é tarefa nova no plano, é o mesmo atraso dividido
+     em dois horários, que é como ele se paga. Só a terça 29. */
+  trocar:[{data:"2026-09-29", comeca:"Medway — aulas",
+           para:"Medway — trilhas de questões atrasadas"}],
+  adicionar:[{data:"2026-09-29", tipo:"medway", rank:6,
+              titulo:"Medway — trilhas de questões atrasadas: seguir de onde parou"}]}
 ];
 
 /* A escala das práticas na UBS e os compromissos avulsos são dados de quem
@@ -1158,8 +1170,9 @@ function metodoDe(x){
   if(t.startsWith("Cirurgia — ")) return "eixo";
   if(t.startsWith("Simulado geral")||t==="Medway — simulado da semana") return "simulado";
   if(t.startsWith("Folha de última hora")) return "folha";
-  if(t==="Medway — questões do dia") return "questoes";
   if(t.startsWith("Medway — aulas")) return "videoaulas";
+  /* depois das aulas, porque "Revisão dirigida e questões" é aula */
+  if(/quest(ões|ão)/i.test(t)||/trilha/i.test(t)) return "questoes";
   if(x.tipo==="revisao") return "revisao";
   if(x.tipo==="eixo") return "eixo";
   return null;
