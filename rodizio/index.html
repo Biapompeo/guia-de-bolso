@@ -525,7 +525,7 @@ const START="2026-08-31", LAST="2026-10-20", PROVA="2026-10-21",
 
 /* Aparece na aba Aulas. Serve para saber, olhando o aparelho, se ele já
    pegou a versão nova — anda junto com o VERSAO do sw.js. */
-const VERSAO_APP="v28";
+const VERSAO_APP="v29";
 
 /* Feriados do cronograma: sem UBS e sem aula, mas o dia continua seu. */
 const FERIADOS={"2026-09-07":"Independência","2026-10-12":"Nossa Senhora Aparecida"};
@@ -1066,7 +1066,25 @@ const CORRECOES=[
   trocar:[{data:"2026-09-29", comeca:"Medway — aulas",
            para:"Medway — trilhas de questões atrasadas"}],
   adicionar:[{data:"2026-09-29", tipo:"medway", rank:6,
-              titulo:"Medway — trilhas de questões atrasadas: seguir de onde parou"}]}
+              titulo:"Medway — trilhas de questões atrasadas: seguir de onde parou"}]},
+
+ {id:"semana5-medway-sem-obstetricia",
+  diz:"as aulas de obstetrícia da semana deram lugar a módulos que casam com o que ela está estudando",
+  /* Obstetrícia fica para mais adiante. No lugar, o módulo do Medway que
+     conversa com o conteúdo do próprio dia — que é o que faz a videoaula
+     render, em vez de ser mais uma coisa na lista:
+
+     30/09, notificação compulsória e vigilância → Preventiva, SUS e
+     atenção primária;
+     01/10, estudos e inquéritos epidemiológicos, e 02/10, tabela 2×2,
+     valor preditivo e razão de verossimilhança → Bioestatística e
+     epidemiologia, que é exatamente essa matéria. */
+  trocar:[{data:"2026-09-30", comeca:"Medway — aulas",
+           para:"Medway — aulas: Preventiva: SUS e atenção primária"},
+          {data:"2026-10-01", comeca:"Medway — aulas",
+           para:"Medway — aulas: Bioestatística e epidemiologia"},
+          {data:"2026-10-02", comeca:"Medway — aulas",
+           para:"Medway — aulas: Bioestatística e epidemiologia"}]}
 ];
 
 /* A escala das práticas na UBS e os compromissos avulsos são dados de quem
