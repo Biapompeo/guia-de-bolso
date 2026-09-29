@@ -525,7 +525,7 @@ const START="2026-08-31", LAST="2026-10-20", PROVA="2026-10-21",
 
 /* Aparece na aba Aulas. Serve para saber, olhando o aparelho, se ele já
    pegou a versão nova — anda junto com o VERSAO do sw.js. */
-const VERSAO_APP="v25";
+const VERSAO_APP="v26";
 
 /* Feriados do cronograma: sem UBS e sem aula, mas o dia continua seu. */
 const FERIADOS={"2026-09-07":"Independência","2026-10-12":"Nossa Senhora Aparecida"};
@@ -1045,7 +1045,16 @@ const CORRECOES=[
      história, no dia seguinte, que é quando as lacunas ainda estão na
      cabeça. Isso deixa o dia 12, véspera da viagem, com folga. */
   escala:{"2026-09-30":{m:"ubs", com:"Érika", t:"livre"}},
-  mover:[{comeca:"Congresso — o caso: o que a literatura", para:"2026-09-30"}]}
+  mover:[{comeca:"Congresso — o caso: o que a literatura", para:"2026-09-30"}]},
+
+ {id:"medway-29-hanseniase",
+  diz:"a aula do Medway de hoje passou a ser a de hanseníase, que a de obstetrícia não saiu",
+  /* O tema da semana no Medway é obstetrícia, mas a aula não estava
+     disponível. Ela começa hanseníase no lugar — o bloco fica onde está,
+     muda o assunto. Só o dia 29; os outros dias da semana seguem marcando
+     obstetrícia até ela dizer o contrário. */
+  trocar:[{data:"2026-09-29", comeca:"Medway — aulas",
+           para:"Medway — aulas: Infectologia: TB e hanseníase"}]}
 ];
 
 /* A escala das práticas na UBS e os compromissos avulsos são dados de quem
