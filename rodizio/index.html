@@ -525,7 +525,7 @@ const START="2026-08-31", LAST="2026-10-20", PROVA="2026-10-21",
 
 /* Aparece na aba Aulas. Serve para saber, olhando o aparelho, se ele já
    pegou a versão nova — anda junto com o VERSAO do sw.js. */
-const VERSAO_APP="v29";
+const VERSAO_APP="v30";
 
 /* Feriados do cronograma: sem UBS e sem aula, mas o dia continua seu. */
 const FERIADOS={"2026-09-07":"Independência","2026-10-12":"Nossa Senhora Aparecida"};
@@ -1084,7 +1084,27 @@ const CORRECOES=[
           {data:"2026-10-01", comeca:"Medway — aulas",
            para:"Medway — aulas: Bioestatística e epidemiologia"},
           {data:"2026-10-02", comeca:"Medway — aulas",
-           para:"Medway — aulas: Bioestatística e epidemiologia"}]}
+           para:"Medway — aulas: Bioestatística e epidemiologia"}]},
+
+ {id:"notificacao-termina-quinta",
+  diz:"a notificação compulsória passou para quinta, para ser terminada",
+  /* Ela começou a notificação compulsória na quarta e não terminou. O botão
+     "não deu — remarcar" a mandaria para 10 de outubro, que é a próxima
+     vaga livre — onze dias depois e já do outro lado de toda a
+     epidemiologia. Tema começado não espera onze dias: vai para quinta, com
+     o título dizendo que é para terminar.
+
+     Para caber, a aula de Bioestatística da quinta vai para o dia 12, que
+     tem quatro vagas e é o último dia inteiro antes da viagem — e o mesmo
+     módulo continua marcado na sexta, então nada se perde. */
+  /* trocar corre antes de mover, então o título muda primeiro, onde quer que
+     a tarefa esteja, e o mover a leva já com o nome novo. Sem data: o título
+     é único no plano, e daqui eu não sei em que dia ele caiu no aparelho. */
+  trocar:[{de:"Notificação compulsória e preenchimento da ficha",
+           para:"Notificação compulsória e preenchimento da ficha — terminar"}],
+  mover:[{titulo:"Notificação compulsória e preenchimento da ficha — terminar",
+          para:"2026-10-01"},
+         {data:"2026-10-01", comeca:"Medway — aulas", para:"2026-10-12"}]}
 ];
 
 /* A escala das práticas na UBS e os compromissos avulsos são dados de quem
@@ -2047,8 +2067,11 @@ function aplicarPacote(novo){
 function trocarTitulos(lista){
   let n=0;
   (lista||[]).forEach(t=>{
-    S.tarefas.filter(x=>x.data===t.data&&x.status!=="feita"
-        &&(t.comeca?x.titulo.startsWith(t.comeca):x.titulo===t.de))
+    S.tarefas.filter(x=>x.status!=="feita"
+        &&(t.comeca?x.titulo.startsWith(t.comeca):x.titulo===t.de)
+        /* sem data, vale em qualquer dia: serve para título que é único no
+           plano e cuja data eu não sei daqui de fora */
+        &&(t.data?x.data===t.data:true))
       .forEach(x=>{
         x.titulo=t.para;
         if(t.tipo) x.tipo=t.tipo;
@@ -2102,7 +2125,11 @@ function moverTarefas(lista){
   let n=0;
   (lista||[]).forEach(m=>{
     S.tarefas.filter(x=>x.status!=="feita"
-      &&(m.comeca?x.titulo.startsWith(m.comeca):x.titulo===m.titulo))
+      &&(m.comeca?x.titulo.startsWith(m.comeca):x.titulo===m.titulo)
+      /* sem recorte de data, um "comeca" apanharia o título em todos os dias
+         em que ele aparece — e "Medway — aulas" aparece em quase todos */
+      &&(m.data?x.data===m.data:true)
+      &&(m.de?x.data>=m.de:true)&&(m.ate?x.data<=m.ate:true))
       .forEach(x=>{
         if(x.data!==m.para){ x.data=m.para; n++; }
         /* a ordem dentro do dia é o que o desafogar usa para decidir quem
