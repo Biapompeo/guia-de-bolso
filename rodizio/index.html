@@ -525,7 +525,7 @@ const START="2026-08-31", LAST="2026-10-20", PROVA="2026-10-21",
 
 /* Aparece na aba Aulas. Serve para saber, olhando o aparelho, se ele já
    pegou a versão nova — anda junto com o VERSAO do sw.js. */
-const VERSAO_APP="v30";
+const VERSAO_APP="v31";
 
 /* Feriados do cronograma: sem UBS e sem aula, mas o dia continua seu. */
 const FERIADOS={"2026-09-07":"Independência","2026-10-12":"Nossa Senhora Aparecida"};
@@ -1104,7 +1104,23 @@ const CORRECOES=[
            para:"Notificação compulsória e preenchimento da ficha — terminar"}],
   mover:[{titulo:"Notificação compulsória e preenchimento da ficha — terminar",
           para:"2026-10-01"},
-         {data:"2026-10-01", comeca:"Medway — aulas", para:"2026-10-12"}]}
+         {data:"2026-10-01", comeca:"Medway — aulas", para:"2026-10-12"}]},
+
+ {id:"parede-abdominal-dia-12",
+  diz:"parede abdominal e reconstrução entraram no dia 12, antes da viagem",
+  /* A sessão em que ela apresenta é "Hérnias e Parede Abdominal", e o caso
+     termina exatamente aí: abdome granulado, colostomia funcionante, parede
+     por reconstruir. Era a parte em que ela não tinha nada.
+
+     O dia 12 tem vagas desde que a preparação do caso foi para o fim de
+     setembro; não precisou sair bloco de questões nenhum. Fica na véspera
+     da véspera, e emenda com o dia 13, que já é todo de cirurgia. */
+  adicionar:[
+    {data:"2026-10-12", rank:3,
+     titulo:"Cirurgia — parede abdominal: hérnia incisional, perda de domínio e compartimental"},
+    {data:"2026-10-12", rank:4,
+     titulo:"Cirurgia — reconstrução da parede: telas, separação de componentes e o tempo certo"}],
+  desafogar:{de:"2026-10-12", ate:"2026-10-13"}}
 ];
 
 /* A escala das práticas na UBS e os compromissos avulsos são dados de quem
@@ -1722,6 +1738,15 @@ function viewLembretes(){
 
   if(S.lembretes.some(x=>x.feito))
     h+=`<button class="btn-fantasma" onclick="limparFeitos()">Tirar da lista os já feitos</button>`;
+
+  h+=`<section class="rodape" style="margin-top:26px">
+    <h2 class="sec">Nos dois aparelhos</h2>
+    <p class="nota">Esta lista vive só neste aparelho — o celular e o iPad guardam cada um a sua,
+    e no iPhone o aplicativo da tela de início guarda separado do Safari. Copie daqui e cole no
+    outro, em Aulas → <b>colar uma escala</b>: vai a lista inteira, com o que está marcado, e o
+    que não estiver nela sai de lá.</p>
+    <button class="btn-larga" onclick="copiarLembretes()">copiar os lembretes</button>
+  </section>`;
   return h;
 }
 
@@ -2032,15 +2057,29 @@ function aplicarPacote(novo){
   const puxadas=[].concat(novo.puxar||[]).reduce((n,p)=>n+puxarTarefas(p),0)
                  +moverTarefas(novo.mover);
   const remarcadas=novo.desafogar?desafogar(novo.desafogar):0;
-  /* lembrete só entra se ainda não existir com esse texto: aplicar o mesmo
-     pacote duas vezes, ou nos dois aparelhos, não duplica a lista */
+  /* Lembrete que já existe com o mesmo texto não entra de novo: aplicar o
+     mesmo pacote duas vezes, ou nos dois aparelhos, não duplica a lista.
+     O que já existe tem escopo e "feito" atualizados quando o pacote os
+     traz — é o que faz valer a pena levar a lista de um aparelho ao outro.
+     E um pacote marcado como lista inteira apaga daqui o que não vier
+     nele: é uma cópia, não um acréscimo. */
   let novosLembretes=0;
+  const chave=t=>(t||"").trim().toLowerCase();
   (novo.lembretes||[]).forEach((l,i)=>{
     const txt=(l.txt||"").trim(); if(!txt) return;
-    if(S.lembretes.some(x=>x.txt.trim().toLowerCase()===txt.toLowerCase())) return;
-    S.lembretes.push({id:Date.now()+i, txt, escopo:l.escopo||"semana", feito:false});
+    const jaTem=S.lembretes.find(x=>chave(x.txt)===chave(txt));
+    if(jaTem){
+      if(l.escopo) jaTem.escopo=l.escopo;
+      if(l.feito!==undefined) jaTem.feito=!!l.feito;
+      return;
+    }
+    S.lembretes.push({id:Date.now()+i, txt, escopo:l.escopo||"semana", feito:!!l.feito});
     novosLembretes++;
   });
+  if(novo.lembretesInteiros&&Array.isArray(novo.lembretes)){
+    const vindos=novo.lembretes.map(l=>chave(l.txt));
+    S.lembretes=S.lembretes.filter(x=>vindos.includes(chave(x.txt)));
+  }
   S.escala=ESCALA; S.compromissos=COMPROMISSOS;
   salvar();
   const partes=[];
@@ -2209,6 +2248,22 @@ function colarEscala(){
   render();
 }
 function abrirColarEscala(){ colandoEscala=!colandoEscala; render(); }
+
+/* Leva a lista de lembretes para o outro aparelho. Vai como pacote de
+   escala, que é o caminho que já existe para entrar — e marcada como lista
+   inteira, para que apagar aqui apague lá também. */
+function copiarLembretes(){
+  const pacote={nome:"Lembretes", lembretesInteiros:true,
+    lembretes:S.lembretes.map(l=>({txt:l.txt, escopo:l.escopo, feito:!!l.feito}))};
+  const json=JSON.stringify(pacote);
+  const b64=btoa(String.fromCharCode(...new TextEncoder().encode(json)))
+    .replace(/\+/g,"-").replace(/\//g,"_");
+  const txt="#escala="+b64;
+  const feito=()=>{recado="Lembretes copiados. No outro aparelho: Aulas → colar uma escala.";render()};
+  if(navigator.clipboard&&navigator.clipboard.writeText)
+    navigator.clipboard.writeText(txt).then(feito,()=>mostrarDados(txt));
+  else mostrarDados(txt);
+}
 
 /* vindas no código, sozinhas: cada correção entra uma vez só por aparelho */
 (function(){

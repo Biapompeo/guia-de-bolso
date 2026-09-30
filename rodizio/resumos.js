@@ -1409,6 +1409,64 @@ const RESUMOS = {
     "<b>“O que este caso acrescenta?”</b> — É a pergunta mais importante e a que mais desarma quem não a preparou. A resposta do próprio resumo: a individualização, mais que a técnica isolada, definiu o desfecho — inclusive a decisão de suspender a terapia que estava indicada."
   ],
   pega: "Quando não souber, diga que não sabe e devolva o que você sabe: “não tenho esse dado aqui, o que tenho é…”. Numa apresentação, inventar um número é o único erro que não tem conserto — e a plateia de cirurgia é justamente a que confere."
+},
+
+/* =================================================================
+   Parede abdominal — o tema da sessão em que ela apresenta.
+
+   O caso dela termina exatamente aqui: abdome granulado, colostomia
+   funcionante, parede por reconstruir. É de onde as perguntas têm
+   mais chance de vir, e era a parte em que ela não tinha nada.
+
+   Escritos do que é consenso nos textos e nas diretrizes de hérnia
+   (European Hernia Society, Ventral Hernia Working Group, WSACS para
+   a pressão intra-abdominal). Número, medida e prazo valem ser
+   conferidos na fonte antes de ir para o microfone.
+   ================================================================= */
+
+"Cirurgia — parede abdominal: hérnia incisional, perda de domínio e compartimental": {
+  fonte: "Diretrizes da European Hernia Society e da WSACS, e os textos de referência em parede abdominal",
+  pontos: [
+    "A parede tem planos, e é neles que a reconstrução trabalha: pele, subcutâneo, os três músculos laterais (oblíquo externo, oblíquo interno, transverso), o reto na sua bainha, a fáscia transversalis e o peritônio.",
+    "<b>A linha arqueada</b> (semicircular de Douglas) é o divisor: acima dela a bainha do reto tem folheto anterior e posterior; abaixo, toda a aponeurose passa à frente do reto e atrás só há fáscia transversalis. Isso decide onde cabe uma tela retromuscular.",
+    "Hérnia incisional aparece em torno de <b>10 a 20% das laparotomias</b>, e muito mais quando houve infecção de ferida, deiscência, obesidade, tabagismo, desnutrição, diabetes ou cirurgia de emergência — a lista do caso dela quase inteira.",
+    "Depois de um abdome aberto, a hérnia não é acidente: é <b>hérnia ventral planejada</b>. Aceita-se a hérnia para fechar a pele e granular, e reconstrói-se depois, com o paciente recuperado.",
+    "A classificação da European Hernia Society usa a posição — linha média M1 a M5, lateral L1 a L4 — e a <b>largura</b>: W1 abaixo de 4 cm, W2 de 4 a 10 cm, W3 acima de 10 cm. Largura é o que mais prevê dificuldade.",
+    "<b>Perda de domínio</b> é quando o conteúdo herniado já não cabe na cavidade. Mede-se por volumetria na tomografia, comparando o volume do saco com o da cavidade; acima de cerca de 20 a 25% a perda é significativa e muda o planejamento.",
+    "Empurrar à força o conteúdo de volta eleva a pressão intra-abdominal e produz <b>síndrome compartimental</b> — o erro que fecha a parede e mata o paciente.",
+    "Pressão intra-abdominal normal fica em torno de 5 a 7 mmHg; hipertensão intra-abdominal a partir de 12; <b>síndrome compartimental é pressão acima de 20 com disfunção orgânica nova</b>. Mede-se pela pressão vesical, e a pressão de perfusão abdominal é a média arterial menos a intra-abdominal.",
+    "Fechar bem previne: a técnica de <b>small bites</b> — pontos a 5 a 8 mm da borda, a cada 5 mm, contínuo com fio de absorção lenta e razão fio-ferida de 4 para 1 — reduz hérnia incisional em relação aos pontos largos."
+  ],
+  numeros: [
+    "Hérnia incisional: cerca de 10 a 20% das laparotomias",
+    "Largura EHS: W1 < 4 cm · W2 4–10 cm · W3 > 10 cm",
+    "Perda de domínio significativa: saco acima de ~20–25% do volume da cavidade",
+    "PIA normal 5–7 mmHg · hipertensão ≥ 12 · compartimental > 20 com disfunção",
+    "Small bites: 5–8 mm da borda, a cada 5 mm, fio:ferida 4:1"
+  ],
+  pega: "Hipertensão intra-abdominal e síndrome compartimental não são a mesma coisa: a primeira é um número, a segunda é o número <b>mais</b> disfunção de órgão. Confundir as duas é o erro mais comum quando o assunto aparece em prova e em mesa."
+},
+
+"Cirurgia — reconstrução da parede: telas, separação de componentes e o tempo certo": {
+  fonte: "Ventral Hernia Working Group, diretrizes da European Hernia Society e a literatura de separação de componentes (Ramirez, 1990; Novitsky, 2012)",
+  pontos: [
+    "<b>O tempo certo primeiro</b>: abdome limpo, sem fístula ativa, nutrição recuperada, tabagismo cessado e peso otimizado. Em geral 6 a 12 meses depois do abdome aberto — e a pressa é o que traz recidiva e infecção de tela.",
+    "O objetivo é <b>restaurar a linha média sem tensão</b>, com reforço de tela. Fechar sob tensão recidiva; e só pôr tela em ponte, sem aproximar a fáscia, recidiva mais ainda.",
+    "<b>Separação de componentes anterior</b> (Ramirez): secciona-se a aponeurose do oblíquo externo e avança-se o complexo reto–oblíquo interno para a linha média. Ganha-se mais ou menos 3 a 5 cm por lado, conforme a altura — mais na região umbilical, menos nas pontas.",
+    "<b>Separação posterior com TAR</b> (liberação do transverso do abdome, Novitsky): abre-se a bainha posterior do reto e secciona-se o transverso, criando um plano retromuscular amplo para uma tela grande. Poupa as perfurantes da pele e tem menos complicação de ferida que a anterior.",
+    "Planos da tela, do pior para o melhor: <b>inlay</b> (em ponte, a que mais recidiva), <b>onlay</b> (sobre a aponeurose, mais seroma e infecção), <b>IPOM</b> (intraperitoneal, exige tela com barreira antiaderente) e <b>sublay retromuscular</b> — a de Rives-Stoppa, que é o padrão de referência.",
+    "Tela de polipropileno macroporosa é a mais usada em campo limpo. Em campo contaminado discutem-se as biológicas e biossintéticas, com evidência limitada e custo alto — a decisão é caso a caso, não protocolo.",
+    "A classificação do <b>Ventral Hernia Working Group</b> gradua o risco da ferida: grau 1 baixo risco, 2 comorbidade, 3 contaminado ou com ostomia, 4 infectado. <b>Colostomia põe o caso no grau 3</b>, e isso pesa na escolha da tela e do tempo.",
+    "Para perda de domínio grande há dois recursos pré-operatórios: <b>toxina botulínica</b> na parede lateral, que relaxa e alonga os músculos, e <b>pneumoperitônio progressivo</b>, que amplia a cavidade antes da cirurgia.",
+    "Recidiva é menor com tela em sublay e maior com ponte, infecção, obesidade e tabagismo — os três últimos são modificáveis, e é por isso que o preparo vale mais que a técnica."
+  ],
+  numeros: [
+    "Reconstrução definitiva: em geral 6 a 12 meses depois",
+    "Separação anterior: ganho aproximado de 3 a 5 cm por lado",
+    "VHWG: grau 1 baixo · 2 comorbidade · 3 contaminado ou ostomia · 4 infectado",
+    "Plano preferido da tela: sublay retromuscular (Rives-Stoppa)"
+  ],
+  pega: "No caso da sua paciente a colostomia é o detalhe que muda tudo nesta parte: campo grau 3, escolha de tela em discussão, e a pergunta de mesa quase certa — reconstruir a parede e o trânsito no mesmo tempo cirúrgico ou em tempos separados. Não há resposta única; o que se espera é que você saiba que a pergunta existe."
 }
 
 };
