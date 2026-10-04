@@ -525,7 +525,7 @@ const START="2026-08-31", LAST="2026-10-20", PROVA="2026-10-21",
 
 /* Aparece na aba Aulas. Serve para saber, olhando o aparelho, se ele já
    pegou a versão nova — anda junto com o VERSAO do sw.js. */
-const VERSAO_APP="v31";
+const VERSAO_APP="v32";
 
 /* Feriados do cronograma: sem UBS e sem aula, mas o dia continua seu. */
 const FERIADOS={"2026-09-07":"Independência","2026-10-12":"Nossa Senhora Aparecida"};
@@ -554,6 +554,7 @@ const EIXOS={
    então o "quando" de cada aula é anotado dentro do app. */
 const AULAS=[
  {id:"epi", tema:"Epidemiologia em Saúde", eixos:["epi"],
+  quando:"Parte 1 · quarta, 07/10, 8h · Parte 2 · quinta, 08/10, 8h · Univag, sala a definir",
   quem:[["Hugo Dias Hoffmann Santos","professor"]], conteudo:[
   "Testes diagnósticos",
   "Sensibilidade e especificidade",
@@ -597,7 +598,7 @@ const AULAS=[
   "Consultas subsequentes: condutas e orientações"]},
 
  {id:"ido", tema:"Atenção ao Idoso", eixos:["ido"],
-  quando:"Duas aulas · terça, 29/09, 16h · Univag, sala a definir",
+  quando:"Duas aulas · terça, 29/09, 16h · e mais duas · terça, 06/10, 14h, sala T403",
   quem:[["Glória Maria de Campos Gomes","professor"]], conteudo:[
   "Atribuições dos profissionais da atenção básica no atendimento à pessoa idosa",
   "Avaliação global: alimentação e nutrição, acuidade visual e auditiva, incontinência urinária, sexualidade e vacinação",
@@ -847,7 +848,14 @@ const CRONOGRAMA={
   "2026-09-30":{m:"ubs",t:"ubs"},
   "2026-10-01":{m:"aula",mTxt:"Saúde indígena, parte 1 · Prof. Daniel · Univag, sala a definir · 10h",
                 t:"aula",tTxt:"Saúde indígena, parte 2 · Prof. Daniel · Univag, sala a definir · 13h"},
-  "2026-10-02":{m:"ubs",t:"folga"}
+  "2026-10-02":{m:"ubs",t:"folga"},
+
+  /* Semana 6 — 5 a 9 de outubro */
+  "2026-10-05":{m:"ubs",t:"ubs"},
+  "2026-10-06":{m:"ubs",t:"aula",tTxt:"Saúde do Idoso, duas aulas · Profª Glória · Univag, sala T403 · 14h"},
+  "2026-10-07":{m:"aula",mTxt:"Epidemiologia, parte 1 · Prof. Hugo · Univag, sala a definir · 8h",t:"ubs"},
+  "2026-10-08":{m:"aula",mTxt:"Epidemiologia, parte 2 · Prof. Hugo · Univag, sala a definir · 8h",t:"folga"},
+  "2026-10-09":{m:"ubs",t:"ubs"}
 };
 
 /* ------------------------------------------- correções que viajam no código
