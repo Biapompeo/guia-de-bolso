@@ -525,7 +525,7 @@ const START="2026-08-31", LAST="2026-10-20", PROVA="2026-10-21",
 
 /* Aparece na aba Aulas. Serve para saber, olhando o aparelho, se ele já
    pegou a versão nova — anda junto com o VERSAO do sw.js. */
-const VERSAO_APP="v32";
+const VERSAO_APP="v33";
 
 /* Feriados do cronograma: sem UBS e sem aula, mas o dia continua seu. */
 const FERIADOS={"2026-09-07":"Independência","2026-10-12":"Nossa Senhora Aparecida"};
@@ -1128,7 +1128,20 @@ const CORRECOES=[
      titulo:"Cirurgia — parede abdominal: hérnia incisional, perda de domínio e compartimental"},
     {data:"2026-10-12", rank:4,
      titulo:"Cirurgia — reconstrução da parede: telas, separação de componentes e o tempo certo"}],
-  desafogar:{de:"2026-10-12", ate:"2026-10-13"}}
+  desafogar:{de:"2026-10-12", ate:"2026-10-13"}},
+
+ {id:"semana6-terca-e-quarta",
+  diz:"na semana 6 a terça de manhã é sua com a Érika, e a quarta à tarde é da Juliana e da Luana",
+  /* Invertendo a semana 5, em que a terça era da Juliana e da Luana e a
+     quarta era dela: agora a terça de manhã é dela com a Érika, e o turno
+     de UBS da quarta — que nesta semana é o da tarde — é da outra dupla.
+
+     Só os dois dias que a inversão determina. Segunda e sexta o cronograma
+     marca UBS nos dois turnos, e a semana 5 não dá precedente: lá esses
+     turnos simplesmente não tiveram prática. Ficam como a coordenação
+     publicou até ela dizer. */
+  escala:{"2026-10-06":{m:"ubs", com:"Érika"},
+          "2026-10-07":{t:"livre", outras:"Juliana e Luana"}}}
 ];
 
 /* A escala das práticas na UBS e os compromissos avulsos são dados de quem
