@@ -302,6 +302,18 @@ table.ex td.s{ text-align: right; color: var(--apagado); white-space: nowrap; fo
         font-size: 20px; line-height: 1; padding: 0 2px }
 
 /* ---------- resumo dentro da tarefa ---------- */
+/* ---------- o que ficou para trás ---------- */
+.atrasadas{ list-style: none; margin: 0; padding: 0 }
+.atrasadas li{
+  background: var(--carta); border: 1px dashed var(--linha); border-radius: var(--r-m);
+  padding: 13px 15px; margin-bottom: 10px;
+}
+.atr-topo{ display: flex; align-items: center; gap: 9px; margin-bottom: 7px }
+.atr-dia{
+  font-size: 12px; font-weight: 700; color: var(--alerta);
+  font-variant-numeric: tabular-nums;
+}
+
 .resumo{ margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--linha-fina) }
 .resumo-pontos{ margin: 0; padding-left: 18px; font-size: 14px; line-height: 1.55; color: var(--tinta-2) }
 .resumo-pontos li{ margin-bottom: 9px }
@@ -525,7 +537,7 @@ const START="2026-08-31", LAST="2026-10-20", PROVA="2026-10-21",
 
 /* Aparece na aba Aulas. Serve para saber, olhando o aparelho, se ele já
    pegou a versão nova — anda junto com o VERSAO do sw.js. */
-const VERSAO_APP="v34";
+const VERSAO_APP="v35";
 
 /* Feriados do cronograma: sem UBS e sem aula, mas o dia continua seu. */
 const FERIADOS={"2026-09-07":"Independência","2026-10-12":"Nossa Senhora Aparecida"};
@@ -1157,7 +1169,17 @@ const CORRECOES=[
   escala:{"2026-10-14":{m:"livre", t:"livre"}},
   compromissos:{
     "2026-10-13":[],
-    "2026-10-14":[{h:"18h00",txt:"Viagem para o Rio — voo no fim do dia",curto:"viagem"}]}}
+    "2026-10-14":[{h:"18h00",txt:"Viagem para o Rio — voo no fim do dia",curto:"viagem"}]}},
+
+ {id:"semana6-segunda-e-sexta-sem-ubs",
+  diz:"segunda 5 e sexta 9 ficaram sem UBS, e a semana voltou a ter vinte blocos",
+  /* O cronograma marcava UBS nos dois turnos de segunda e de sexta, e o
+     grupo dela não tem prática em nenhum dos quatro. Isso devolve seis
+     blocos: a semana sai de 14 para 20, e as 21 tarefas desses cinco dias
+     passam a caber quase todas. */
+  escala:{"2026-10-05":{m:"livre", t:"livre"},
+          "2026-10-09":{m:"livre", t:"livre"}},
+  desafogar:{de:"2026-10-05", ate:"2026-10-09"}}
 ];
 
 /* A escala das práticas na UBS e os compromissos avulsos são dados de quem
@@ -1553,7 +1575,7 @@ function viewDia(){
   const slots=slotsDe(d,modo);
   if(!lista.length){
     return h+`<div class="vazio"><p>Nenhuma tarefa neste dia. Use as setas para ver os próximos —
-      ou remarque algo de um dia cheio para cá.</p></div>`;
+      ou remarque algo de um dia cheio para cá.</p></div>`+atrasadas(d);
   }
   h+=`<ol class="lista">`;
   lista.forEach((x,i)=>{
@@ -1580,7 +1602,36 @@ function viewDia(){
       ${resumoAberto===x.id?painelResumo(TEMRESUMO[x.titulo]):""}
       </li>`;
   });
-  return h+`</ol>`;
+  return h+`</ol>`+atrasadas(d);
+}
+
+/* O que ficou para trás. Só aparece no dia de hoje, e só quando há algo:
+   tarefa de dia que já passou e que não foi marcada como feita. Sem isso ela
+   some do caminho — o dia que passou ninguém mais abre — e só reaparece
+   quando alguém lembra de procurar. */
+function atrasadas(d){
+  if(d!==hoje()) return "";
+  const velhas=S.tarefas.filter(x=>x.data<d&&x.status!=="feita")
+    .sort((a,b)=>a.data<b.data?-1:a.data>b.data?1:a.rank-b.rank);
+  if(!velhas.length) return "";
+  return `<h2 class="sec" style="margin-top:26px">Ficou para trás</h2>
+    <p class="nota">${velhas.length===1?"Uma tarefa de um dia que já passou"
+      :velhas.length+" tarefas de dias que já passaram"}, sem marca de feita.
+    Traga para hoje o que ainda vale, e marque o resto como feito.</p>
+    <ul class="atrasadas">${velhas.map(x=>`
+      <li>
+        <div class="atr-topo">
+          <span class="atr-dia">${curto(x.data)}</span>
+          ${x.eixo?`<span class="chip" style="--c:${EIXOS[x.eixo].c}">${EIXOS[x.eixo].n}</span>`:""}
+          ${x.tipo==="congresso"?'<span class="chip" style="--c:var(--alerta)">congresso</span>':""}
+          ${x.tipo==="medway"?'<span class="chip neutro">Medway</span>':""}
+        </div>
+        <p class="t-tit">${esc(x.titulo)}</p>
+        <div class="t-acoes">
+          <button class="fazer" onclick="trazerParaHoje(${x.id})">trazer para hoje</button>
+          <button class="adiar" onclick="concluir(${x.id})">já fiz</button>
+        </div>
+      </li>`).join("")}</ul>`;
 }
 
 function marcaEscala(d){
@@ -1916,6 +1967,11 @@ function viewAulas(){
 /* ------------------------------------------------------------------ ações */
 function mover(n){const d=addDays(diaAtivo,n); if(d>=START&&d<=FIM){diaAtivo=d;render()}}
 function abrirDia(d){diaAtivo=d;aba="dia";render()}
+function trazerParaHoje(id){
+  const t=S.tarefas.find(x=>x.id===id);
+  t.data=hoje(); t.adiada=(t.adiada||0)+1;
+  recado=`“${t.titulo}” veio para hoje.`; salvar(); render();
+}
 function setModo(m){S.modos[diaAtivo]=m;salvar();render()}
 function concluir(id){
   const t=S.tarefas.find(x=>x.id===id);
@@ -2313,7 +2369,12 @@ function copiarLembretes(){
   });
   if(feitas.length){
     salvar();
-    recado="Corrigido sozinho neste aparelho: "+feitas.join("; ")+".";
+    /* num aparelho novo entram todas de uma vez, e a lista inteira vira um
+       paredão de texto: acima de três, conta quantas e nomeia as duas
+       últimas, que são as que mudaram alguma coisa agora */
+    recado="Corrigido sozinho neste aparelho: "+(feitas.length>3
+      ? feitas.length+" ajustes, sendo os últimos: "+feitas.slice(-2).join("; ")
+      : feitas.join("; "))+".";
   }
 })();
 
