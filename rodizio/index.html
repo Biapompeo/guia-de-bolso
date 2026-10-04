@@ -537,7 +537,7 @@ const START="2026-08-31", LAST="2026-10-20", PROVA="2026-10-21",
 
 /* Aparece na aba Aulas. Serve para saber, olhando o aparelho, se ele já
    pegou a versão nova — anda junto com o VERSAO do sw.js. */
-const VERSAO_APP="v35";
+const VERSAO_APP="v36";
 
 /* Feriados do cronograma: sem UBS e sem aula, mas o dia continua seu. */
 const FERIADOS={"2026-09-07":"Independência","2026-10-12":"Nossa Senhora Aparecida"};
@@ -1179,7 +1179,20 @@ const CORRECOES=[
      passam a caber quase todas. */
   escala:{"2026-10-05":{m:"livre", t:"livre"},
           "2026-10-09":{m:"livre", t:"livre"}},
-  desafogar:{de:"2026-10-05", ate:"2026-10-09"}}
+  desafogar:{de:"2026-10-05", ate:"2026-10-09"}},
+
+ {id:"semana6-duplas-confirmadas",
+  diz:"na semana 6 a prática é só segunda de manhã, da Juliana e da Luana, e terça de manhã, sua com a Érika",
+  /* A escala fechada da semana tem dois turnos, e nenhum outro. A segunda
+     de manhã é da outra dupla, então o dia continua inteiro de estudo para
+     ela, mas a agenda passa a dizer quem está na unidade.
+
+     E a tarde de quarta deixa de dizer que a Juliana e a Luana estão lá: eu
+     tinha suposto isso quando só sabia da inversão, e a escala fechada
+     mostra que naquele turno não há prática do grupo. O dia não muda de
+     tamanho; o que muda é parar de afirmar o que não foi dito. */
+  escala:{"2026-10-05":{m:"livre", t:"livre", outras:"Juliana e Luana"},
+          "2026-10-07":{t:"livre"}}}
 ];
 
 /* A escala das práticas na UBS e os compromissos avulsos são dados de quem
