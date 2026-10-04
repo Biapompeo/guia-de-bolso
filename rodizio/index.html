@@ -537,7 +537,7 @@ const START="2026-08-31", LAST="2026-10-20", PROVA="2026-10-21",
 
 /* Aparece na aba Aulas. Serve para saber, olhando o aparelho, se ele já
    pegou a versão nova — anda junto com o VERSAO do sw.js. */
-const VERSAO_APP="v36";
+const VERSAO_APP="v37";
 
 /* Feriados do cronograma: sem UBS e sem aula, mas o dia continua seu. */
 const FERIADOS={"2026-09-07":"Independência","2026-10-12":"Nossa Senhora Aparecida"};
@@ -1192,7 +1192,23 @@ const CORRECOES=[
      mostra que naquele turno não há prática do grupo. O dia não muda de
      tamanho; o que muda é parar de afirmar o que não foi dito. */
   escala:{"2026-10-05":{m:"livre", t:"livre", outras:"Juliana e Luana"},
-          "2026-10-07":{t:"livre"}}}
+          "2026-10-07":{t:"livre"}}},
+
+ {id:"arrumar-ate-a-viagem",
+  diz:"os dias vazios e as aulas repetidas foram arrumados",
+  /* Defeito meu, e de dois tipos. Puxar conteúdo para a frente abre buraco
+     atrás, porque a vaga anda sempre para diante e não volta: a sexta 2 e o
+     sábado 3 ficaram sem nada enquanto a segunda 5 tinha cinco tarefas. E
+     empurrar tarefa para o próximo dia com vaga pôs aula do Medway em dia
+     que já tinha uma igual — segunda 5 com "Ginecologia" duas vezes, sexta
+     9 com "Infectologia" duas vezes.
+
+     arrumar() tira a repetição e enche as vagas de hoje até o dia 11 com
+     conteúdo de dias posteriores — conteúdo é a única coisa do plano sem
+     dia próprio. Para no dia 11 de propósito: 12, 13 e 14 têm a preparação
+     do caso e a cirurgia em lugares escolhidos. O que ficou para trás não
+     entra: esse já aparece sozinho na seção do dia de hoje. */
+  arrumar:{ate:"2026-10-11"}}
 ];
 
 /* A escala das práticas na UBS e os compromissos avulsos são dados de quem
@@ -1414,7 +1430,11 @@ salvar();
   const hj=hoje();
   const atr=S.tarefas.filter(t=>t.status==="pendente"&&t.data<hj).sort((a,b)=>a.data<b.data?-1:1);
   atr.forEach(t=>{
-    const dest=proximoLivre(S.tarefas,S.modos,addDays(hj,-1));
+    /* pula o dia que já tem uma tarefa com este título: senão a mesma
+       videoaula ou o mesmo bloco de questões aparece duas vezes no dia */
+    let dest=proximoLivre(S.tarefas,S.modos,addDays(hj,-1)), guarda=0;
+    while(dest<LAST&&S.tarefas.some(x=>x!==t&&x.data===dest&&x.titulo===t.titulo)&&guarda++<60)
+      dest=proximoLivre(S.tarefas,S.modos,dest);
     t.data=dest; t.adiada=(t.adiada||0)+1;
   });
   if(atr.length){recado=atr.length+(atr.length>1?" tarefas atrasadas foram remarcadas":" tarefa atrasada foi remarcada")+" para os próximos dias livres."; salvar();}
@@ -2162,7 +2182,8 @@ function aplicarPacote(novo){
   const novas=adicionarTarefas(novo.adicionar);
   const puxadas=[].concat(novo.puxar||[]).reduce((n,p)=>n+puxarTarefas(p),0)
                  +moverTarefas(novo.mover);
-  const remarcadas=novo.desafogar?desafogar(novo.desafogar):0;
+  const remarcadas=(novo.desafogar?desafogar(novo.desafogar):0)
+                  +(novo.arrumar?arrumar(novo.arrumar):0);
   /* Lembrete que já existe com o mesmo texto não entra de novo: aplicar o
      mesmo pacote duas vezes, ou nos dois aparelhos, não duplica a lista.
      O que já existe tem escopo e "feito" atualizados quando o pacote os
@@ -2285,6 +2306,31 @@ function moverTarefas(lista){
   return n;
 }
 
+/* Arruma a janela: tira repetição e preenche vaga.
+
+   Dois defeitos que o remanejamento repetido produz. Puxar conteúdo para a
+   frente abre buraco atrás, porque a vaga anda sempre para diante e não
+   volta — e o dia esvaziado não é reabastecido por ninguém. E empurrar
+   tarefa para o próximo dia com vaga pode pô-la num dia que já tem uma
+   igual, e aí o mesmo título aparece duas vezes no mesmo dia.
+
+   Conserta os dois sem desmanchar nada do que está no lugar certo: tira a
+   repetição e depois enche as vagas com conteúdo de dias posteriores, que é
+   a única coisa do plano que não tem dia próprio — videoaula, simulado e
+   revisão têm. Um dia que já está cheio não é tocado. */
+function arrumar(p){
+  const de=p.de||hoje(), ate=p.ate||LAST;
+  const porOrdem=(a,b)=>a.data<b.data?-1:a.data>b.data?1:(a.rank-b.rank||a.id-b.id);
+  let n=0;
+  const vistos={};
+  S.tarefas.slice().sort(porOrdem).forEach(t=>{
+    const k=t.data+"|"+t.titulo;
+    if(vistos[k]&&t.status!=="feita"){ S.tarefas=S.tarefas.filter(x=>x!==t); n++; }
+    else vistos[k]=true;
+  });
+  return n+puxarTarefas({desde:de, ate:ate, tipos:["eixo"]});
+}
+
 /* Tira do dia o que não cabe nele. Quando a escala de uma semana muda e os
    dias encolhem — dois turnos ocupados deixam só a noite —, as tarefas que
    já estavam ali passam a sobrar, e o app as mostra como "encaixar no dia",
@@ -2325,7 +2371,10 @@ function puxarTarefas(p){
   const vindas=S.tarefas.filter(x=>alvo(x)&&x.data>desde).sort(porData);
 
   const limite=p.ate||LAST;      /* não adianta adiantar para depois da viagem */
-  let vaga=desde, movidas=0;
+  /* nem para antes de hoje: o dia que passou está vazio porque o app varre
+     as atrasadas para a frente ao abrir, e pôr tarefa lá é escondê-la —
+     some da tela e volta a ser remarcada na abertura seguinte */
+  let vaga=desde<hoje()?hoje():desde, movidas=0;
   for(const t of vindas){
     while(vaga<=limite&&cheio(vaga)) vaga=addDays(vaga,1);
     const livre=(vaga<=limite&&vaga<t.data)?vaga:null;
