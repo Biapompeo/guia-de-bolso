@@ -537,7 +537,7 @@ const START="2026-08-31", LAST="2026-10-20", PROVA="2026-10-21",
 
 /* Aparece na aba Aulas. Serve para saber, olhando o aparelho, se ele já
    pegou a versão nova — anda junto com o VERSAO do sw.js. */
-const VERSAO_APP="v37";
+const VERSAO_APP="v38";
 
 /* Feriados do cronograma: sem UBS e sem aula, mas o dia continua seu. */
 const FERIADOS={"2026-09-07":"Independência","2026-10-12":"Nossa Senhora Aparecida"};
@@ -1208,7 +1208,45 @@ const CORRECOES=[
      dia próprio. Para no dia 11 de propósito: 12, 13 e 14 têm a preparação
      do caso e a cirurgia em lugares escolhidos. O que ficou para trás não
      entra: esse já aparece sozinho na seção do dia de hoje. */
-  arrumar:{ate:"2026-10-11"}}
+  arrumar:{ate:"2026-10-11"}},
+
+ {id:"simulado-no-domingo-4",
+  diz:"o simulado que ficou para trás veio para o domingo 4",
+  /* O simulado do sábado 3 não foi feito, e a varredura o levou para a
+     frente. Ela quer fazê-lo hoje, no domingo, que tem o bloco longo da
+     manhã — o tamanho de um simulado.
+
+     Não dá para dizer a data dele: cada aparelho remanejou do seu jeito,
+     conforme o que ela marcou como feito. Então o pedido é pelo que se sabe
+     e não muda: um só (limite), e dos remarcados (adiada), o que deixa em
+     paz o simulado do sábado 10, que está no dia que o plano lhe deu.
+
+     E como o domingo só tem dois blocos, o desafogar manda adiante a última
+     da lista, que é uma revisão: o simulado entra com rank 0 porque é o que
+     ela pediu para hoje. */
+  mover:[{titulo:"Medway — simulado da semana", adiada:true, limite:1,
+          de:"2026-10-05", para:"2026-10-04", rank:0}],
+  desafogar:{de:"2026-10-04", ate:"2026-10-04"}},
+
+ {id:"desempilhar-a-vespera",
+  diz:"a véspera da prova voltou a caber num dia",
+  /* Até aqui, quando a vaga acabava, a varredura punha a tarefa atrasada no
+     último dia — sempre nele. Duas semanas de atraso viraram uma pilha de
+     dezenove tarefas em 20 de outubro, num dia de quatro blocos, com a
+     folha de última hora enterrada no meio. O código novo espalha; esta
+     correção desfaz a pilha que o antigo já deixou no aparelho.
+
+     A folha vai para o primeiro bloco antes de tudo: é a véspera da prova e
+     ela é a razão do dia. Rank 0 não bastava — a ordem desempata pelo id, e
+     os blocos do Medway nasceram antes dela —, então entra com -1, que é
+     sempre o primeiro, e o desafogar nunca a alcança. Os dois simulados
+     gerais do dia 19 ganham rank 0 pelo mesmo motivo: são a preparação
+     desenhada para a véspera, e tinham caído para o fim da fila.
+     O resto se distribui pelos dias que ainda faltam. */
+  mover:[{titulo:"Folha de última hora: números que mais caem",
+          para:"2026-10-20", rank:-1},
+         {comeca:"Simulado geral — ", para:"2026-10-19", rank:0}],
+  desafogar:{de:"2026-10-19", ate:"2026-10-20"}}
 ];
 
 /* A escala das práticas na UBS e os compromissos avulsos são dados de quem
@@ -1400,6 +1438,41 @@ function proximoLivre(T,modos,depois){
   return LAST;
 }
 
+const lotado=(T,modos,d)=>T.filter(x=>x.data===d).length>=slotsDe(d,modos[d]||"manha").length;
+
+/* Quando não sobra vaga em dia nenhum — e num plano atrasado, perto do fim,
+   nunca sobra — proximoLivre devolve o último dia. Aí tudo o que não couber
+   desaba sobre a véspera da prova: aqui dentro já vi 31 tarefas num dia de
+   4 blocos, com a folha de última hora enterrada no meio da pilha. Um dia
+   assim não se cumpre e não se lê.
+
+   Então o que transborda não vai todo para o mesmo lugar: vai para o dia
+   que está menos apertado entre os que faltam — contado em quanto passa da
+   conta, para um dia de cinco blocos receber antes de um de dois. O excesso
+   se espalha de um em um em vez de virar um muro, e continua visível: a
+   tarefa sem bloco aparece no dia com "encaixar no dia" em lugar da hora.
+   Pula o dia que já tem este título, que repetido no mesmo dia não serve.
+
+   Dia fora de casa fica para o fim da fila: nos dias do congresso o que
+   estiver marcado é para poder ser pulado, e carregar atraso para lá é
+   fingir que ela vai estudar entre as mesas. Só recebe se não houver mais
+   nenhum dia — e aí é melhor do que a véspera da prova. */
+function diaMenosCheio(T,modos,desde,titulo){
+  const escolher=viajando=>{
+    let melhor=null, menos=Infinity;
+    for(const d of range(desde,LAST)){
+      const e=diaEscala(d);
+      if(!!(e&&e.fora)!==viajando) continue;
+      const doDia=T.filter(x=>x.data===d);
+      if(titulo&&doDia.some(x=>x.titulo===titulo)) continue;
+      const passa=doDia.length-slotsDe(d,modos[d]||"manha").length;
+      if(passa<menos){ menos=passa; melhor=d; }
+    }
+    return melhor;
+  };
+  return escolher(false)||escolher(true)||LAST;
+}
+
 /* ------------------------------------------------------------ persistência */
 let mem=null;
 function salvar(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){mem=S}}
@@ -1435,6 +1508,10 @@ salvar();
     let dest=proximoLivre(S.tarefas,S.modos,addDays(hj,-1)), guarda=0;
     while(dest<LAST&&S.tarefas.some(x=>x!==t&&x.data===dest&&x.titulo===t.titulo)&&guarda++<60)
       dest=proximoLivre(S.tarefas,S.modos,dest);
+    /* chegou ao último dia só porque a vaga acabou: espalha em vez de
+       empilhar na véspera da prova */
+    if(hj<LAST&&dest===LAST&&lotado(S.tarefas,S.modos,LAST))
+      dest=diaMenosCheio(S.tarefas,S.modos,addDays(hj,1),t.titulo);
     t.data=dest; t.adiada=(t.adiada||0)+1;
   });
   if(atr.length){recado=atr.length+(atr.length>1?" tarefas atrasadas foram remarcadas":" tarefa atrasada foi remarcada")+" para os próximos dias livres."; salvar();}
@@ -2290,13 +2367,21 @@ function adicionarTarefas(lista){
 function moverTarefas(lista){
   let n=0;
   (lista||[]).forEach(m=>{
-    S.tarefas.filter(x=>x.status!=="feita"
+    let alvos=S.tarefas.filter(x=>x.status!=="feita"
       &&(m.comeca?x.titulo.startsWith(m.comeca):x.titulo===m.titulo)
       /* sem recorte de data, um "comeca" apanharia o título em todos os dias
          em que ele aparece — e "Medway — aulas" aparece em quase todos */
       &&(m.data?x.data===m.data:true)
-      &&(m.de?x.data>=m.de:true)&&(m.ate?x.data<=m.ate:true))
-      .forEach(x=>{
+      &&(m.de?x.data>=m.de:true)&&(m.ate?x.data<=m.ate:true)
+      /* adiada separa o bloco que a varredura já empurrou do que ainda está
+         no dia que o plano lhe deu: daqui de fora eu não sei a data de um,
+         mas sei que só um dos dois foi remarcado */
+      &&(m.adiada===undefined?true:!!x.adiada===!!m.adiada));
+    /* limite é para o título que o plano repete e do qual só um bloco muda
+       de dia: pega os primeiros em ordem de data, e deixa o resto onde está */
+    if(m.limite!==undefined)
+      alvos=alvos.sort((a,b)=>a.data<b.data?-1:a.data>b.data?1:a.id-b.id).slice(0,m.limite);
+    alvos.forEach(x=>{
         if(x.data!==m.para){ x.data=m.para; n++; }
         /* a ordem dentro do dia é o que o desafogar usa para decidir quem
            sai quando não cabe: quem tem de ficar vem com rank menor */
@@ -2345,7 +2430,12 @@ function desafogar(p){
     const doDia=S.tarefas.filter(x=>x.data===d).sort((a,b)=>a.rank-b.rank||a.id-b.id);
     for(const t of doDia.slice(cabem)){
       if(t.status==="feita") continue;
-      const dest=proximoLivre(S.tarefas,S.modos,d);
+      let dest=proximoLivre(S.tarefas,S.modos,d);
+      /* nada livre depois deste dia — e no último dia nunca há. Aí o
+         excesso vai para trás, para o dia menos apertado que ainda falta:
+         é como se desempilha a véspera da prova, onde a varredura das
+         versões antigas deixou a sobra de duas semanas. */
+      if(dest===d) dest=diaMenosCheio(S.tarefas,S.modos,addDays(hoje(),1),t.titulo);
       if(dest===d) break;
       t.data=dest; n++;
     }
