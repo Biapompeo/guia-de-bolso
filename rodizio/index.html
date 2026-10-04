@@ -525,7 +525,7 @@ const START="2026-08-31", LAST="2026-10-20", PROVA="2026-10-21",
 
 /* Aparece na aba Aulas. Serve para saber, olhando o aparelho, se ele já
    pegou a versão nova — anda junto com o VERSAO do sw.js. */
-const VERSAO_APP="v33";
+const VERSAO_APP="v34";
 
 /* Feriados do cronograma: sem UBS e sem aula, mas o dia continua seu. */
 const FERIADOS={"2026-09-07":"Independência","2026-10-12":"Nossa Senhora Aparecida"};
@@ -1141,7 +1141,23 @@ const CORRECOES=[
      turnos simplesmente não tiveram prática. Ficam como a coordenação
      publicou até ela dizer. */
   escala:{"2026-10-06":{m:"ubs", com:"Érika"},
-          "2026-10-07":{t:"livre", outras:"Juliana e Luana"}}}
+          "2026-10-07":{t:"livre", outras:"Juliana e Luana"}}},
+
+ {id:"viagem-dia-14-fim-do-dia",
+  diz:"a viagem é dia 14 no fim do dia, então o 14 volta a ser um dia inteiro aqui",
+  /* Estava montado para a viagem ser na noite de 13 ou na manhã de 14: o
+     dia 13 tinha o aviso de voo e o 14 era dia de congresso, com só os dois
+     blocos da noite. Com o voo no fim do dia 14, é o contrário — o dia é
+     dela, em Cuiabá, e a noite é que some.
+
+     O 14 deixa de ser "fora": volta a ser dia livre, com cinco blocos e com
+     a academia de volta, e ganha o aviso do voo no fim da tarde. O ensaio
+     da apresentação, que ia cair às 20h45 num avião, passa a caber de dia.
+     O aviso de viagem sai do dia 13, que volta a ser um dia comum. */
+  escala:{"2026-10-14":{m:"livre", t:"livre"}},
+  compromissos:{
+    "2026-10-13":[],
+    "2026-10-14":[{h:"18h00",txt:"Viagem para o Rio — voo no fim do dia",curto:"viagem"}]}}
 ];
 
 /* A escala das práticas na UBS e os compromissos avulsos são dados de quem
