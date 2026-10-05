@@ -537,7 +537,7 @@ const START="2026-08-31", LAST="2026-10-20", PROVA="2026-10-21",
 
 /* Aparece na aba Aulas. Serve para saber, olhando o aparelho, se ele já
    pegou a versão nova — anda junto com o VERSAO do sw.js. */
-const VERSAO_APP="v38";
+const VERSAO_APP="v39";
 
 /* Feriados do cronograma: sem UBS e sem aula, mas o dia continua seu. */
 const FERIADOS={"2026-09-07":"Independência","2026-10-12":"Nossa Senhora Aparecida"};
@@ -728,7 +728,7 @@ const METODOS={
   ],
   tempo:"Num bloco de duas horas com quatro temas: cerca de 15 minutos de tentativa e conferência por tema, e o resto em questões.",
   trava:"Se num tema você travar por completo, não force os 15 minutos. Marque a tarefa como pendente e trate o tema como conteúdo novo no próximo bloco livre — revisão espaçada só funciona sobre o que já foi aprendido uma primeira vez.",
-  nota:"O espaçamento já está montado no plano: o eixo que você viu na semana volta no domingo seguinte, volta nos dois simulados gerais e volta na revisão final, de 15 a 20 de outubro. Os intervalos crescem de propósito — lembrar depois de ter quase esquecido é o que consolida."
+  nota:"O espaçamento já está montado no plano: o eixo volta depois de estudado, volta nos dois simulados gerais e volta na revisão final, de 15 a 20 de outubro. Os intervalos crescem de propósito — lembrar depois de ter quase esquecido é o que consolida. E a revisão nunca vem antes da matéria: se um bloco do eixo ainda está pendente, o app empurra a revisão para depois dele a cada vez que abre, porque revisar o que você não estudou não é revisão, é conteúdo novo com o método errado."
  },
 
  questoes:{
@@ -1456,11 +1456,17 @@ const lotado=(T,modos,d)=>T.filter(x=>x.data===d).length>=slotsDe(d,modos[d]||"m
    Dia fora de casa fica para o fim da fila: nos dias do congresso o que
    estiver marcado é para poder ser pulado, e carregar atraso para lá é
    fingir que ela vai estudar entre as mesas. Só recebe se não houver mais
-   nenhum dia — e aí é melhor do que a véspera da prova. */
-function diaMenosCheio(T,modos,desde,titulo){
-  const escolher=viajando=>{
+   nenhum dia — e aí é melhor do que a véspera da prova.
+
+   E conteúdo não atravessa a viagem. O plano foi desenhado para fechar a
+   matéria antes do Rio: o que for de eixo procura dia até a véspera da
+   partida e só passa disso se não houver mais nenhum. Sem isso um bloco de
+   Idoso ia para o dia 19 e arrastava a revisão de Idoso para o dia 20 —
+   atrás do congresso inteiro. */
+function diaMenosCheio(T,modos,desde,titulo,ate){
+  const escolher=(viajando,limite)=>{
     let melhor=null, menos=Infinity;
-    for(const d of range(desde,LAST)){
+    for(const d of range(desde,limite||LAST)){
       const e=diaEscala(d);
       if(!!(e&&e.fora)!==viajando) continue;
       const doDia=T.filter(x=>x.data===d);
@@ -1470,7 +1476,69 @@ function diaMenosCheio(T,modos,desde,titulo){
     }
     return melhor;
   };
-  return escolher(false)||escolher(true)||LAST;
+  return (ate&&ate>=desde&&escolher(false,ate))||escolher(false)||escolher(true)||LAST;
+}
+
+/* A véspera da partida: o último dia antes do primeiro dia marcado como
+   "fora". É até aí que o conteúdo tem de caber. Sem viagem marcada não há
+   limite nenhum, e a função devolve vazio. */
+function vesperaDaViagem(desde){
+  for(const d of range(desde,LAST)){
+    const e=diaEscala(d);
+    if(e&&e.fora) return d>desde?addDays(d,-1):null;
+  }
+  return null;
+}
+
+/* O conteúdo que ficou do outro lado da viagem volta para antes dela.
+
+   A regra de cima evita que novo atraso atravesse a partida, mas não desfaz
+   o que as versões anteriores já mandaram para lá — e um bloco de Idoso
+   parado no dia 19 arrasta a revisão de Idoso para o dia 20, atrás do
+   congresso inteiro. Então, a cada abertura, bloco de eixo marcado a partir
+   do primeiro dia fora volta para o dia menos apertado antes da partida.
+
+   Só conteúdo: o que foi posto depois da viagem de propósito — cirurgia,
+   congresso, revisão, simulado — tem outro tipo e não é tocado. */
+function conteudoAntesDaViagem(){
+  const hj=hoje(), vesp=vesperaDaViagem(hj);
+  if(!vesp||vesp<=hj) return 0;
+  const partida=addDays(vesp,1);
+  let n=0;
+  for(const t of S.tarefas.filter(x=>x.tipo==="eixo"&&x.status!=="feita"&&x.data>=partida)){
+    const d=diaMenosCheio(S.tarefas,S.modos,addDays(hj,1),t.titulo,vesp);
+    if(d<=vesp&&d<t.data){ t.data=d; n++; }
+  }
+  return n;
+}
+
+/* Revisão espaçada não existe antes do conteúdo.
+
+   Ela perguntou o óbvio que eu não tinha visto: como revisar Adolescente se
+   os três blocos do eixo ainda estão por vir? O plano distribui as dez
+   revisões pelos domingos e pela semana da prova, na ordem dos eixos, e isso
+   só fecha enquanto o conteúdo está no dia em que nasceu. Com atraso o
+   conteúdo anda para a frente e a revisão fica onde estava — e vira revisão
+   de aula que ainda não houve, que não é revisão nenhuma.
+
+   Então, a cada abertura, a revisão pendente vai para depois do último bloco
+   pendente do seu eixo. Nunca anda para trás: se o conteúdo já saiu, ou já
+   está todo marcado como feito, ela fica onde está. */
+function revisaoDepoisDoConteudo(){
+  let n=0;
+  for(const r of S.tarefas.filter(x=>x.tipo==="revisao"&&x.eixo&&x.status!=="feita")){
+    const pend=S.tarefas.filter(x=>x.tipo==="eixo"&&x.eixo===r.eixo&&x.status!=="feita");
+    if(!pend.length) continue;
+    const ultimo=pend.reduce((m,x)=>x.data>m?x.data:m,"");
+    if(r.data>ultimo||ultimo>=LAST) continue;
+    let d=proximoLivre(S.tarefas,S.modos,ultimo);
+    /* proximoLivre devolve o último dia quando não acha vaga: aí vale mais o
+       dia menos apertado depois do conteúdo que empilhar na véspera */
+    if(d===LAST&&lotado(S.tarefas,S.modos,LAST))
+      d=diaMenosCheio(S.tarefas,S.modos,addDays(ultimo,1),r.titulo);
+    if(d>r.data){ r.data=d; n++; }
+  }
+  return n;
 }
 
 /* ------------------------------------------------------------ persistência */
@@ -1511,7 +1579,8 @@ salvar();
     /* chegou ao último dia só porque a vaga acabou: espalha em vez de
        empilhar na véspera da prova */
     if(hj<LAST&&dest===LAST&&lotado(S.tarefas,S.modos,LAST))
-      dest=diaMenosCheio(S.tarefas,S.modos,addDays(hj,1),t.titulo);
+      dest=diaMenosCheio(S.tarefas,S.modos,addDays(hj,1),t.titulo,
+                         t.tipo==="eixo"?vesperaDaViagem(hj):null);
     t.data=dest; t.adiada=(t.adiada||0)+1;
   });
   if(atr.length){recado=atr.length+(atr.length>1?" tarefas atrasadas foram remarcadas":" tarefa atrasada foi remarcada")+" para os próximos dias livres."; salvar();}
@@ -2435,7 +2504,8 @@ function desafogar(p){
          excesso vai para trás, para o dia menos apertado que ainda falta:
          é como se desempilha a véspera da prova, onde a varredura das
          versões antigas deixou a sobra de duas semanas. */
-      if(dest===d) dest=diaMenosCheio(S.tarefas,S.modos,addDays(hoje(),1),t.titulo);
+      if(dest===d) dest=diaMenosCheio(S.tarefas,S.modos,addDays(hoje(),1),t.titulo,
+                                      t.tipo==="eixo"?vesperaDaViagem(hoje()):null);
       if(dest===d) break;
       t.data=dest; n++;
     }
@@ -2528,6 +2598,22 @@ function copiarLembretes(){
       ? feitas.length+" ajustes, sendo os últimos: "+feitas.slice(-2).join("; ")
       : feitas.join("; "))+".";
   }
+})();
+
+/* Por último, porque depende de onde o conteúdo ficou: a varredura das
+   atrasadas e as correções acabaram de mexer nisso. */
+(function(){
+  const v=conteudoAntesDaViagem();          /* primeiro o conteúdo, que manda */
+  const n=revisaoDepoisDoConteudo();        /* e só então a revisão, que o segue */
+  if(!v&&!n) return;
+  salvar();
+  const partes=[];
+  if(v) partes.push(v===1?"Um bloco de conteúdo voltou para antes da viagem."
+                        :v+" blocos de conteúdo voltaram para antes da viagem.");
+  if(n) partes.push((n===1?"Uma revisão espaçada foi para depois do conteúdo dela."
+                          :n+" revisões espaçadas foram para depois do conteúdo delas.")
+                    +" Revisão antes da matéria não revisa nada.");
+  recado=(recado?recado+" ":"")+partes.join(" ");
 })();
 
 /* vindo pelo endereço, que entra por cima da correção do código */
