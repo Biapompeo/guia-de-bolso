@@ -537,7 +537,7 @@ const START="2026-08-31", LAST="2026-10-20", PROVA="2026-10-21",
 
 /* Aparece na aba Aulas. Serve para saber, olhando o aparelho, se ele já
    pegou a versão nova — anda junto com o VERSAO do sw.js. */
-const VERSAO_APP="v39";
+const VERSAO_APP="v40";
 
 /* Feriados do cronograma: sem UBS e sem aula, mas o dia continua seu. */
 const FERIADOS={"2026-09-07":"Independência","2026-10-12":"Nossa Senhora Aparecida"};
@@ -1406,6 +1406,28 @@ function montarPlano(){
     const vagas=Math.min(cap.sexta, Math.max(0, slotsDe(d,"manha").length-2));
     for(let k=0;k<vagas&&i<CONTEUDO.length;k++){
       const[e,t]=CONTEUDO[i++];
+      T.push({id:id++,tipo:"eixo",rank:1,data:d,eixo:e,titulo:t,status:"pendente"});
+    }
+  }
+  /* Num aparelho que instala o app com o rodízio já em curso não há dia para
+     todos os 29 temas: o laço acima para quando os dias acabam e o resto
+     ficava de fora — num plano montado em 5 de outubro entravam 18, e
+     adolescente, mulher, idoso, hanseníase, tuberculose e saúde indígena
+     simplesmente não existiam. Matéria de prova desaparecendo sem aviso, e o
+     app parecendo em ordem.
+
+     O que sobra se reparte pelos dias que há, um em cada, do primeiro ao
+     último e de volta ao começo. Fora os dias fora de casa, e sem passar da
+     véspera da viagem enquanto houver onde. O dia fica apertado, e apertado
+     aparece com "encaixar no dia" — que é melhor do que não existir. */
+  if(i<CONTEUDO.length){
+    const emCasa=d=>{const e=diaEscala(d); return !(e&&e.fora)};
+    const vesp=vesperaDaViagem(dias[0]);
+    let pool=dias.filter(d=>emCasa(d)&&(!vesp||d<=vesp));
+    if(!pool.length) pool=dias.filter(emCasa);
+    if(!pool.length) pool=dias.slice();
+    for(let v=0;i<CONTEUDO.length&&pool.length;v++){
+      const d=pool[v%pool.length], [e,t]=CONTEUDO[i++];
       T.push({id:id++,tipo:"eixo",rank:1,data:d,eixo:e,titulo:t,status:"pendente"});
     }
   }
