@@ -537,7 +537,7 @@ const START="2026-08-31", LAST="2026-10-20", PROVA="2026-10-21",
 
 /* Aparece na aba Aulas. Serve para saber, olhando o aparelho, se ele já
    pegou a versão nova — anda junto com o VERSAO do sw.js. */
-const VERSAO_APP="v40";
+const VERSAO_APP="v41";
 
 /* Feriados do cronograma: sem UBS e sem aula, mas o dia continua seu. */
 const FERIADOS={"2026-09-07":"Independência","2026-10-12":"Nossa Senhora Aparecida"};
@@ -1246,7 +1246,35 @@ const CORRECOES=[
   mover:[{titulo:"Folha de última hora: números que mais caem",
           para:"2026-10-20", rank:-1},
          {comeca:"Simulado geral — ", para:"2026-10-19", rank:0}],
-  desafogar:{de:"2026-10-19", ate:"2026-10-20"}}
+  desafogar:{de:"2026-10-19", ate:"2026-10-20"}},
+
+ {id:"epidemiologia-do-hugo-no-dia-8",
+  diz:"a matéria das duas aulas do prof. Hugo entrou no dia 8",
+  /* Prof. Hugo deu Epidemiologia parte 1 na quarta e parte 2 na quinta, e o
+     conteúdo programático dessas duas aulas é exatamente testes
+     diagnósticos, sensibilidade e especificidade, valor preditivo e razão
+     de verossimilhança. Ela quer estudar isso no dia 8, com a aula fresca,
+     no lugar da videoaula de infectologia e do bloco de questões.
+
+     Os dois blocos estavam no dia 14 — o dia da viagem, onde não serviam
+     para nada. Vêm por "mover", não por trocar e tirar: mover leva a tarefa
+     que existe, então não há como duplicar título nem perder tema se o
+     aparelho dela estiver num arranjo diferente do meu. Rank 0 para terem
+     hora, e não "encaixar no dia".
+
+     A infectologia do dia 8 sai sem perda: a mesma videoaula está marcada
+     nos dias 9 a 13. O bloco de questões do dia também: ele nasce todo dia.
+     As trilhas de questões atrasadas eu não toco — essas ela quer fazer.
+
+     Os outros dois temas do Hugo, razão de verossimilhança e curva ROC,
+     ficam onde estão, dias 10 e 11, já na ordem certa. */
+  tirar:[{comeca:"Medway — aulas: Infectologia", data:"2026-10-08"},
+         {comeca:"Medway — questões do dia", data:"2026-10-08"}],
+  mover:[{titulo:"Tabela 2×2 · sensibilidade e especificidade", limite:1,
+          para:"2026-10-08", rank:0},
+         {titulo:"Valor preditivo positivo e negativo · efeito da prevalência",
+          limite:1, para:"2026-10-08", rank:0}],
+  desafogar:{de:"2026-10-08", ate:"2026-10-08"}}
 ];
 
 /* A escala das práticas na UBS e os compromissos avulsos são dados de quem
