@@ -537,7 +537,7 @@ const START="2026-08-31", LAST="2026-10-20", PROVA="2026-10-21",
 
 /* Aparece na aba Aulas. Serve para saber, olhando o aparelho, se ele já
    pegou a versão nova — anda junto com o VERSAO do sw.js. */
-const VERSAO_APP="v41";
+const VERSAO_APP="v42";
 
 /* Feriados do cronograma: sem UBS e sem aula, mas o dia continua seu. */
 const FERIADOS={"2026-09-07":"Independência","2026-10-12":"Nossa Senhora Aparecida"};
@@ -1274,7 +1274,59 @@ const CORRECOES=[
           para:"2026-10-08", rank:0},
          {titulo:"Valor preditivo positivo e negativo · efeito da prevalência",
           limite:1, para:"2026-10-08", rank:0}],
-  desafogar:{de:"2026-10-08", ate:"2026-10-08"}}
+  desafogar:{de:"2026-10-08", ate:"2026-10-08"}},
+
+ {id:"so-a-prova-e-o-congresso",
+  diz:"a trilha do Medway saiu do caminho: até a prova, só o que cai nela e o congresso",
+  /* A doze dias da prova e cinco da apresentação, o plano estava com 73
+     tarefas em 39 blocos — trinta e quatro sem hora. E o pior era quem
+     tinha hora: na véspera da prova, três dos quatro blocos eram videoaula
+     do Medway, enquanto a revisão de Adolescente e o bloco do caso do
+     congresso ficavam em "encaixar no dia".
+
+     Ela pediu foco no que cai na prova e no trabalho do congresso, e a
+     trilha do Medway não é nem um nem outro: é preparação para prova de
+     residência, com ementa muito maior que a do rodízio. Sai inteira daqui
+     até o dia 20 — videoaulas, questões do dia, trilhas atrasadas e o
+     simulado da semana. Ficam os 23 temas do plano de ensino, as revisões
+     espaçadas, os dois simulados gerais dos dez eixos, a folha de última
+     hora e os onze blocos do congresso e de cirurgia.
+
+     O que cai na prova por outra fonte não se perde: TB e hanseníase,
+     bioestatística, preventiva e os rastreamentos são eixos do plano de
+     ensino e já têm bloco próprio, com resumo escrito para a ementa dela.
+     E questão continua tendo lugar: os simulados gerais do dia 19, a curva
+     ROC com vinte questões e o fecho de cada revisão espaçada.
+
+     Isto é reversível de propósito: uma correção devolve a trilha se ela
+     quiser, e nada do Medway precisa do app para existir. */
+  tirar:[{comeca:"Medway — ", de:"2026-10-09"}],
+
+  /* E com o espaço que sobrou, o congresso ganha uma ordem que termina antes
+     de ela subir na mesa. O ensaio em voz alta estava no dia 19 — quatro
+     dias DEPOIS da apresentação, empurrado para lá pelo remanejamento, o
+     que é inútil. Os cinco blocos da preparação passam a ocupar o primeiro
+     horário de cada dia, de sábado à véspera do voo:
+
+       10/10  o caso: abdome aberto, TPN e fístula
+       11/10  o que a literatura diz, e o que a contraria
+       12/10  reconstruir a história e os exames
+       13/10  as perguntas que a mesa vai fazer
+       14/10  ensaiar em voz alta, cronometrada — o voo é às 18h
+
+     Os blocos de cirurgia geral dos dias 16 a 18 ficam onde estão: aqueles
+     são para acompanhar o congresso, não para preparar a apresentação. */
+  mover:[{titulo:"Congresso — abdome aberto, TPN e fístula enteroatmosférica",
+          para:"2026-10-10", rank:0},
+         {titulo:"Congresso — o caso: o que a literatura diz, e o que a contraria",
+          para:"2026-10-11", rank:0},
+         {titulo:"Congresso — o caso: reconstruir a história e os exames",
+          para:"2026-10-12", rank:0},
+         {titulo:"Congresso — as perguntas que a mesa vai fazer",
+          para:"2026-10-13", rank:0},
+         {titulo:"Congresso — ensaiar a apresentação em voz alta, cronometrada",
+          para:"2026-10-14", rank:0}],
+  desafogar:{de:"2026-10-09", ate:"2026-10-20"}}
 ];
 
 /* A escala das práticas na UBS e os compromissos avulsos são dados de quem
