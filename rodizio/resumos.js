@@ -790,6 +790,8 @@ const RESUMOS = {
     "As alterações funcionais benignas — dor, nodularidade, cistos — são a queixa mais comum do ambulatório e não aumentam o risco de câncer. Dizer isso à paciente já é metade da consulta.",
     "Mastalgia cíclica: bilateral, difusa, ligada ao ciclo. Responde a orientação, sutiã com boa sustentação e analgesia simples. Mastalgia acíclica, unilateral e localizada merece investigação.",
     "Fibroadenoma: nódulo móvel, contorno regular, fibroelástico, típico da mulher jovem. Cisto: aparece e some com o ciclo, confirmado por ultrassom.",
+    "Qual imagem para quem, diante de <b>queixa</b>: abaixo dos 40 anos a mama é densa e a <b>ultrassonografia</b> é o método de escolha; dos 40 em diante, mamografia, complementada por ultrassom quando preciso. A ultrassonografia também é o que diferencia <b>cisto de nódulo sólido</b> — e é o que a prova chama de \"excelente indicação para mamas de mulheres jovens\".",
+    "<b>Microcalcificação só a mamografia vê.</b> Ultrassonografia não serve para isso, e essa troca é alternativa errada recorrente.",
     "Descarga papilar fisiológica: bilateral, multiductal, provocada, leitosa ou esverdeada. Suspeita: espontânea, unilateral, uniductal, sanguinolenta ou 'água de rocha'.",
     "Exame clínico das mamas: inspeção estática e dinâmica (braços ao longo do corpo, elevados, mãos na cintura), palpação em toda a mama e das cadeias axilar, supra e infraclavicular, e expressão papilar.",
     "Para rastreamento, o INCA registra AUSÊNCIA de recomendação quanto ao exame clínico — diferente de recomendar contra. Ele segue indicado na investigação de queixa.",
@@ -817,6 +819,7 @@ const RESUMOS = {
     "Alto risco sai do rastreamento populacional e entra em acompanhamento individualizado: parente de primeiro grau com câncer de mama antes dos 50 anos, câncer bilateral ou de ovário em qualquer idade, parente masculino com câncer de mama, mutação BRCA conhecida.",
     "Rastrear tem dano: falso-positivo, ansiedade, biópsia desnecessária e sobrediagnóstico — tratar tumor que jamais daria sintoma. É por isso que a faixa etária é restrita.",
     "Diante de queixa, não é rastreamento e sim diagnóstico: aí a idade não limita a investigação.",
+    "Cuidado com a armadilha das duas leituras: a ultrassonografia é recomendada <b>contra</b> como método de <b>rastreamento</b> e é o método <b>de escolha</b> para investigar a mama <b>jovem</b>. A prova cobra as duas coisas, em questões diferentes — e <b>mamografia não é exame de rotina abaixo dos 40 anos</b>.",
     "Os dez sinais de referência urgente para o serviço de mastologia devem estar na cabeça de quem atende na UBS."
   ],
   tabelas: [
@@ -854,6 +857,8 @@ const RESUMOS = {
     "Encerrar aos 64 anos exige dois exames negativos consecutivos nos últimos 5 anos.",
     "Nomenclatura: LSIL = NIC 1; HSIL = NIC 2 e 3. ASC-US é atipia de significado indeterminado possivelmente não neoplásica; ASC-H é atipia em que não se pode excluir alto grau; AGC é atipia glandular.",
     "A partir da portaria de 2025, o exame primário passa a ser o teste de DNA-HPV — mudança grande, que convive com a citologia durante a transição. Confira qual das duas a sua prova cobra.",
+    "<b>Ectopia</b> é a mucosa de revestimento <b>glandular</b> deslocada <b>para fora</b> do canal cervical, exposta ao pH vaginal; é achado comum e fisiológico na jovem, não é doença. A <b>JEC</b> é onde o epitélio escamoso encontra o glandular, e a <b>metaplasia</b> escamosa é a transformação do glandular exposto em escamoso. A zona de transformação é onde nasce quase toda lesão precursora — e é dela que a coleta tem de trazer célula.",
+    "<b>Teste de Schiller</b>: pinta o colo com lugol. O epitélio escamoso normal tem glicogênio e fica marrom; área que <b>não</b> cora é <b>iodo-negativa</b>, Schiller positivo, e pede colposcopia. Verruga genital de HPV de baixo grau trata-se com <b>ácido tricloroacético</b> ou criocauterização — e cauterizar não trata lesão de alto grau, que vai para colposcopia e biópsia.",
     "Situações particulares: gestante rastreia normalmente e adia conduta para depois do parto, salvo suspeita de invasão; mulher vivendo com HIV rastreia semestral no primeiro ano e depois anual; histerectomia total por doença benigna dispensa; sem atividade sexual não rastreia."
   ],
   tabelas: [{
@@ -936,7 +941,7 @@ const RESUMOS = {
   pontos: [
     "Bacteriúria assintomática na gestante SE TRATA sempre, mesmo sem sintoma, com urocultura de controle depois — fora da gestação, não se trata.",
     "Sífilis: penicilina benzatina é o único tratamento que trata o feto. Tratar a parceria, acompanhar com VDRL mensal, e lembrar que alergia à penicilina se maneja com dessensibilização, não com troca de esquema.",
-    "Toxoplasmose: IgG e IgM negativos = suscetível, orientar prevenção e repetir a cada trimestre. IgM positivo pede teste de avidez, útil sobretudo antes das 16 semanas — avidez alta indica infecção antiga.",
+    "Toxoplasmose, as três combinações: <b>IgG− e IgM−</b> = suscetível, orientar prevenção e repetir a cada trimestre. <b>IgG+ e IgM−</b> = <b>imune</b>, infecção antiga, não repete e não trata — é a que mais cai. <b>IgM+</b> pede teste de avidez, útil sobretudo antes das 16 semanas: avidez alta indica infecção antiga.",
     "Diabetes na gestação: glicemia de jejum ≥ 126 mg/dL ou HbA1c ≥ 6,5% é diabetes prévio; jejum entre 92 e 125 no primeiro trimestre já fecha diabetes gestacional.",
     "TOTG 75 g entre 24 e 28 semanas: um valor alterado basta para o diagnóstico.",
     "Rh negativo exige Coombs indireto; se negativo, repetir mensalmente a partir da 24ª semana, e imunoglobulina anti-D conforme protocolo.",
