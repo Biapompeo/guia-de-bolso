@@ -1467,6 +1467,99 @@ const RESUMOS = {
     "Plano preferido da tela: sublay retromuscular (Rives-Stoppa)"
   ],
   pega: "No caso da sua paciente a colostomia é o detalhe que muda tudo nesta parte: campo grau 3, escolha de tela em discussão, e a pergunta de mesa quase certa — reconstruir a parede e o trânsito no mesmo tempo cirúrgico ou em tempos separados. Não há resposta única; o que se espera é que você saiba que a pergunta existe."
+},
+
+/* ------------------------------- O que as provas antigas mostram ------ */
+
+"Inferência: valor p, IC 95%, risco e os erros do teste": {
+  fonte: "Fletcher, Epidemiologia Clínica · aula de Epidemiologia em Saúde, prof. Hugo",
+  pontos: [
+    "A <b>hipótese nula</b> é a de que não há diferença. O valor p é a probabilidade de observar um efeito ao menos tão extremo quanto o observado <b>se a nula fosse verdadeira</b> — não é a probabilidade de a nula ser verdadeira, e não mede o tamanho do efeito.",
+    "<b>Erro tipo I (α)</b>: rejeitar a nula sendo ela verdadeira — afirmar uma diferença que não existe. É o <b>falso-positivo</b>. É o que a prova pergunta, com essas palavras, há anos.",
+    "<b>Erro tipo II (β)</b>: não rejeitar a nula sendo ela falsa — perder uma diferença real. É o <b>falso-negativo</b>. Poder do estudo = 1 − β; amostra pequena é a causa habitual.",
+    "<b>IC 95%</b> é a faixa de valores compatíveis com os dados. Quando o artigo não traz o p exato, é o IC que diz se a nula caiu: em medida de <b>razão</b> (RR, OR, HR) basta o intervalo <b>não conter o 1</b>; em medida de <b>diferença</b> (risco absoluto, diferença de médias), não conter o <b>0</b>.",
+    "<b>RR</b> = incidência nos expostos ÷ incidência nos não expostos. RR = 1 não há associação, > 1 risco, < 1 proteção. <b>RA</b> é a diferença entre as duas incidências, e é dela que sai o <b>NNT = 1 ÷ redução absoluta de risco</b>.",
+    "<b>Erro aleatório</b> diminui com amostra maior e aparece como intervalo largo. <b>Viés</b> é erro sistemático: não melhora com amostra maior, só com desenho melhor. Confundir os dois é a pegadinha mais comum do eixo."
+  ],
+  tabelas: [
+    { t: "Os quatro vieses que a prova nomeia",
+      c: ["Viés", "A definição que aparece no enunciado"],
+      l: [
+        ["Confusão", "Um terceiro fator ligado à exposição <b>e</b> ao desfecho, <b>sem</b> estar na cadeia causal entre eles"],
+        ["Aferição", "A medida é feita de modo diferente entre os grupos"],
+        ["Seleção", "Quem entrou no estudo não representa a população de interesse"],
+        ["Causalidade reversa", "O desfecho é que veio antes e produziu a exposição"]
+      ]},
+    { t: "p ou IC: o que cada um responde",
+      c: ["Pergunta", "Olhe para"],
+      l: [
+        ["A diferença é estatisticamente significativa?", "p < 0,05, ou IC que exclui 1 (razão) ou 0 (diferença)"],
+        ["De que tamanho é o efeito?", "a própria medida: RR, RA, diferença de médias"],
+        ["Quão preciso é o estudo?", "a largura do IC — estreito é preciso"],
+        ["O estudo tinha tamanho para achar?", "poder, 1 − β"]
+      ]}
+  ],
+  numeros: ["Significância: p < 0,05 · IC 95% que não cruza 1 (RR, OR, HR) ou 0 (RA). Poder = 1 − β. NNT = 1 ÷ RAR."],
+  pega: "A prova sempre oferece \"erro tipo I ou falso-negativo\" e \"erro tipo II ou falso-positivo\" entre as opções. Erro tipo I é falso-<b>positivo</b>: afirmei o que não existe. E quando ela pede a medida que permite dizer que a nula foi rejeitada sem o p exato, a resposta é o IC 95% — não o RR nem o RA, que medem efeito e não significância."
+},
+
+"Provas antigas: as questões que repetem": {
+  fonte: "Duas provas do Internato em Saúde Coletiva I, com gabarito — 16/07/2020 e 05/11/2020 — na pasta PROVAS do seu Drive",
+  pontos: [
+    "As duas provas têm <b>20 questões de a a d</b> e repetem entre si: treze enunciados aparecem nas duas, alguns palavra por palavra. A dica da turma anterior — \"só cai esse doc, as questões são repetidas\" — se confirma nos gabaritos.",
+    "<b>Hanseníase e tuberculose juntas valem cerca de um quarto da prova</b>, sempre em caso clínico com conduta. Vigilância e saúde indígena vêm em seguida, em texto de lei. Epidemiologia clínica são três questões fixas: erro tipo I, IC 95% e viés de confusão.",
+    "O que a prova cobra de <b>mulher</b> é clínico, não rastreamento populacional: BI-RADS, conduta diante de nódulo, mastalgia, ectopia, HSIL e qual estrogênio o anticoncepcional usa.",
+    "De <b>criança e idoso</b> repetem os mesmos quatro: velocidade de crescimento, os dez passos da alimentação, aleitamento, e queda do idoso — com a dupla paroxetina + benzodiazepínico.",
+    "Estudar por aqui é bom para a véspera, mas o melhor uso do seu tempo é <b>responder as provas inteiras</b> na pasta do Drive e só depois conferir. Ler resposta pronta não treina a escolha entre quatro alternativas parecidas."
+  ],
+  tabelas: [
+    { t: "Hanseníase e tuberculose — o que repete e a resposta do gabarito",
+      c: ["O caso", "Resposta"],
+      l: [
+        ["Mácula única hipocrômica, perda <b>só</b> da sensibilidade térmica, nenhum nervo espessado", "Hanseníase <b>indeterminada</b>, inicia <b>PQT/PB</b>"],
+        ["Seis lesões hipocrômicas, sensibilidade alterada em algumas, sem espessamento neural", "<b>Multibacilar</b> (mais de cinco lesões), inicia <b>PQT/MB</b>"],
+        ["5ª cartela de PQT/MB, edema doloroso da mão e nervo radial espessado e doloroso", "Reação <b>tipo 1</b> / reversa — <b>corticoide</b>. Talidomida é da tipo 2"],
+        ["Sogro em tratamento de hanseníase há 2 meses vai visitar a casa com crianças", "<b>Não há risco</b>: a transmissão cessa nas primeiras doses"],
+        ["Tosse há mais de um mês e meio, visita presídio regularmente", "<b>Sintomático respiratório</b>: baciloscopia de escarro + radiografia de tórax"],
+        ["Moradora de rua, tosse 43 dias — o que é <b>indispensável</b>", "Baciloscopia de escarro + radiografia de tórax, e só"],
+        ["Dispepsia no 12º dia de tratamento, parou a medicação", "Efeito adverso <b>menor</b>: tomar com uma refeição"],
+        ["Pergunta geral sobre efeitos adversos", "Nos <b>maiores</b>, suspender ou trocar a droga responsável"],
+        ["Dois meses de tratamento, segue com tosse, sem ganho de peso", "<b>Não aderência</b> ao tratamento"]
+      ]},
+    { t: "Vigilância, SUS e saúde indígena",
+      c: ["A pergunta", "Resposta"],
+      l: [
+        ["Notificação compulsória é de casos…", "<b>Suspeitos</b>"],
+        ["Além da coleta, são funções da vigilância epidemiológica", "Processamento, análise dos dados e <b>promoção das ações de controle</b>"],
+        ["As ações de Vigilância em Saúde voltam-se para…", "Vigilância da <b>situação de saúde</b> da população, com análises que subsidiem o planejamento"],
+        ["Quem executa as ações de saúde indígena e a que se vincula", "<b>SESAI / Ministério da Saúde</b>"],
+        ["A Lei Arouca e o subsistema", "A SESAI implementa um subsistema <b>integrado ao SUS</b>, observando as medicinas tradicionais"],
+        ["Para que serve a CASAI", "Referência para o indígena que precisa de <b>exame ou consulta especializada</b>"],
+        ["Contato com indígenas isolados ou de recente contato", "Identificar o <b>tronco linguístico</b> e capacitar a equipe multidisciplinar"]
+      ]},
+    { t: "Mulher, criança e idoso",
+      c: ["A pergunta", "Resposta"],
+      l: [
+        ["BI-RADS 0 na mamografia", "Exame <b>não satisfatório</b>: complementar com outros métodos de imagem"],
+        ["Mulher jovem, rotina das mamas", "Mamografia <b>não</b> é rotina abaixo de 40 anos; nessa faixa o método é a ultrassonografia"],
+        ["Ultrassonografia das mamas tem excelente indicação para…", "Mamas de <b>mulheres jovens</b>"],
+        ["Mastalgia e alterações fibrocísticas", "A <b>orientação verbal</b> resolve a maioria dos casos"],
+        ["HSIL em paciente de 26 anos", "<b>Colposcopia</b>"],
+        ["O termo ectopia significa", "Mucosa glandular deslocada <b>para fora</b> do canal cervical"],
+        ["Estrogênio mais usado em anticoncepcional oral", "<b>Etinilestradol</b>"],
+        ["Método com maior demora no retorno à fertilidade", "<b>Medroxiprogesterona injetável</b> (trimestral)"],
+        ["Toxoplasmose na gestante: IgG positiva, IgM negativa", "<b>Imune</b>"],
+        ["Criança menor de 2 anos, os dez passos", "Estimular a criança <b>doente</b> a comer o habitual e o preferido, respeitando a aceitação"],
+        ["Adolescente que cresceu menos que os colegas", "<b>Velocidade de crescimento</b>"],
+        ["Benefício do aleitamento materno", "<b>Reduz hospitalizações</b>"],
+        ["Quem tem maior risco de queda", "Idoso <b>com história de queda anterior</b>"],
+        ["Idosa em paroxetina e lorazepam, com quedas", "<b>Suspender o lorazepam</b>"],
+        ["Promoção da saúde do idoso", "Mexer no <b>ambiente domiciliar</b>: iluminação, tapete fixo, barra de apoio"],
+        ["Cuidadora esgotada, suspeita de maus-tratos, pede sonífero", "Comunicar à <b>assistente social</b> e remarcar, dando apoio ao cuidador"]
+      ]}
+  ],
+  numeros: ["Hanseníase: até 5 lesões é paucibacilar, mais de 5 é multibacilar. Reação tipo 1 → corticoide; tipo 2 → talidomida. Tosse por 3 semanas ou mais já é sintomático respiratório."],
+  pega: "Duas ressalvas honestas. Primeira: a ordem das alternativas muda entre as versões do formulário, então decore o <b>conteúdo</b> da resposta e nunca a letra. Segunda: na questão da gestante com glicemia de jejum de 100 mg/dL com quinze semanas, o gabarito de 2020 pede solicitar o teste de tolerância; pelos critérios em vigor hoje uma glicemia de jejum de 92 mg/dL ou mais na gestação já fecha diabetes gestacional. Se cair, é a divergência que vale discutir na vista de prova."
 }
 
 };

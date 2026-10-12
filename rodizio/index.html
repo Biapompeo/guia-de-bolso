@@ -537,7 +537,7 @@ const START="2026-08-31", LAST="2026-10-20", PROVA="2026-10-21",
 
 /* Aparece na aba Aulas. Serve para saber, olhando o aparelho, se ele já
    pegou a versão nova — anda junto com o VERSAO do sw.js. */
-const VERSAO_APP="v42";
+const VERSAO_APP="v43";
 
 /* Feriados do cronograma: sem UBS e sem aula, mas o dia continua seu. */
 const FERIADOS={"2026-09-07":"Independência","2026-10-12":"Nossa Senhora Aparecida"};
@@ -1326,7 +1326,89 @@ const CORRECOES=[
           para:"2026-10-13", rank:0},
          {titulo:"Congresso — ensaiar a apresentação em voz alta, cronometrada",
           para:"2026-10-14", rank:0}],
-  desafogar:{de:"2026-10-09", ate:"2026-10-20"}}
+  desafogar:{de:"2026-10-09", ate:"2026-10-20"}},
+
+ {id:"provas-antigas-do-drive",
+  diz:"as provas antigas entraram no plano, e a ordem do dia passou a seguir o que elas cobram",
+  /* Li as provas de MFC da pasta do Drive dela. Duas vêm com gabarito —
+     16/07/2020 e 05/11/2020 — e repetem treze enunciados entre si, alguns
+     palavra por palavra; conferi cada resposta do gabarito contra a medicina
+     e todas fecham. Isso muda duas coisas no plano.
+
+     A primeira é um buraco de conteúdo. Três das vinte questões são de
+     inferência — erro tipo I, IC 95% sem o valor p, viés de confusão — e é
+     exatamente o que o prof. Hugo deu no quadro, sem slide. Os resumos do app
+     cobriam 2×2, valor preditivo, verossimilhança e ROC, e não cobriam p, IC,
+     RR nem os erros do teste. Entra um bloco novo para isso, hoje, no
+     primeiro horário.
+
+     A segunda é a ordem. O que a prova cobra sem falhar — hanseníase e
+     tuberculose em caso clínico, notificação de caso suspeito, SESAI, as
+     questões clínicas de mama e colo, queda do idoso, velocidade de
+     crescimento — sobe para rank 0 e ganha hora de verdade. O detalhe de
+     portaria desce para 2: continua no plano, mas não ocupa mais o melhor
+     bloco do dia, porque nas duas provas com gabarito nenhuma questão pediu
+     número de portaria. É re-priorização, não corte: nada sai.
+
+     E o banco das questões que repetem entra como bloco próprio amanhã, com
+     método de questões. O resumo dele diz o que eu diria aqui: ler resposta
+     pronta não treina escolher entre quatro alternativas parecidas, então o
+     melhor uso do tempo é responder as duas provas inteiras na pasta do Drive
+     e só depois conferir. */
+  adicionar:[
+    {data:"2026-10-12", rank:-1, tipo:"eixo", eixo:"epi",
+     titulo:"Inferência: valor p, IC 95%, risco e os erros do teste"},
+    {data:"2026-10-13", rank:-1, tipo:"eixo", eixo:"epi",
+     titulo:"Provas antigas: as questões que repetem"}],
+  trocar:[
+    /* sobe: o que as duas provas com gabarito cobraram */
+    {de:"Definição de caso, epidemiologia e transmissão", rank:0},
+    {de:"Clínica dermatológica e neurológica · diagnóstico", rank:0},
+    {de:"PQT-U, critério de alta, incapacidades e contatos", rank:0},
+    {de:"Etiologia, transmissão, patogênese e história clínica", rank:0},
+    {de:"Baciloscopia, TRM-TB, cultura e prova tuberculínica", rank:0},
+    {de:"Esquema básico, DOTS/TDO e reações adversas", rank:0},
+    {de:"Contatos, BCG, tratamento da ILTB e notificação", rank:0},
+    {de:"Rastreamento de mama e condutas pela mamografia", rank:0},
+    {de:"Doenças benignas da mama e exame clínico", rank:0},
+    {de:"Colo do útero: lesões precursoras e rastreamento", rank:0},
+    {de:"Planejamento reprodutivo e métodos contraceptivos", rank:0},
+    {de:"Crescimento: curvas da OMS e escore-z", rank:0},
+    {de:"Alimentação por faixa, obesidade e violência contra a criança", rank:0},
+    {de:"Cognição, funcionalidade (AVD e AIVD), quedas e mobilidade", rank:0},
+    {de:"Suporte familiar, violência intrafamiliar e assistência domiciliar", rank:0},
+    {comeca:"Notificação compulsória e preenchimento da ficha", rank:0},
+    {de:"Sistema Nacional de Vigilância Epidemiológica: origem e conceitos", rank:0},
+    {de:"SESAI, subsistema no SUS, DSEI e organização da rede", rank:0},
+    /* desce: o número da portaria, que nenhum gabarito pediu */
+    {de:"NOAS 2001 e 2002", rank:2},
+    {de:"Pacto pela Saúde — Portaria 399/2006", rank:2},
+    {de:"Portarias 3.252/2009, 1.378/2013 e 204/2016 · Resolução 588/2017", rank:2},
+    {de:"PNASPI, legislação, financiamento e principais desafios", rank:2}],
+
+  /* O remanejamento tinha deixado dois blocos da apresentação no dia 20 —
+     cinco dias depois de ela subir na mesa. Preparação para falar dia 15 tem
+     de acontecer antes do dia 15, então os dois voltam para a véspera e a
+     antevéspera do voo, na frente de tudo: rank -2, que é o primeiro horário.
+
+     E saem os três blocos de cirurgia geral que ficaram presos no dia 19. Eles
+     existiam para ela acompanhar o congresso; depois da volta não servem mais
+     a isso, e não caem na prova de Saúde Coletiva. Os dois que estão nas
+     noites do Rio, abdome agudo e o vocabulário do centro cirúrgico, ficam. */
+  mover:[{titulo:"Congresso — abdome aberto, TPN e fístula enteroatmosférica",
+          para:"2026-10-13", rank:-3},
+         {titulo:"Congresso — as perguntas que a mesa vai fazer",
+          para:"2026-10-13", rank:-2},
+         {titulo:"Congresso — o caso: o que a literatura diz, e o que a contraria",
+          para:"2026-10-14", rank:-3},
+         {titulo:"Congresso — ensaiar a apresentação em voz alta, cronometrada",
+          para:"2026-10-14", rank:-2}],
+  /* Sem recorte de data, de propósito: o desafogar roda depois do tirar, e com
+     filtro de dia estes três escapavam no dia 13 e reapareciam no 19. */
+  tirar:[{titulo:"Cirurgia — pré-operatório: risco, jejum e profilaxias"},
+         {titulo:"Cirurgia — pós-operatório: as complicações no tempo"},
+         {titulo:"Cirurgia — parede abdominal: hérnia incisional, perda de domínio e compartimental"}],
+  desafogar:{de:"2026-10-12", ate:"2026-10-20"}}
 ];
 
 /* A escala das práticas na UBS e os compromissos avulsos são dados de quem
@@ -1584,6 +1666,17 @@ function diaMenosCheio(T,modos,desde,titulo,ate){
 /* A véspera da partida: o último dia antes do primeiro dia marcado como
    "fora". É até aí que o conteúdo tem de caber. Sem viagem marcada não há
    limite nenhum, e a função devolve vazio. */
+/* Até onde o conteúdo pode ir. Antes da viagem, se houver viagem marcada; e
+   nunca na véspera da prova, que é dia de revisão e da folha de última hora.
+   Sem este segundo limite, o desafogar punha tema novo no dia 20 e a revisão
+   daquele eixo, marcada para o dia 19, passava a vir antes da matéria — e o
+   passe que conserta isso não tem para onde empurrar a revisão no último dia. */
+function limiteDoConteudo(desde){
+  const v=vesperaDaViagem(desde), ultimoUtil=addDays(LAST,-1);
+  if(v&&v<ultimoUtil) return v;
+  return ultimoUtil>desde?ultimoUtil:null;
+}
+
 function vesperaDaViagem(desde){
   for(const d of range(desde,LAST)){
     const e=diaEscala(d);
@@ -1609,7 +1702,12 @@ function conteudoAntesDaViagem(){
   let n=0;
   for(const t of S.tarefas.filter(x=>x.tipo==="eixo"&&x.status!=="feita"&&x.data>=partida)){
     const d=diaMenosCheio(S.tarefas,S.modos,addDays(hj,1),t.titulo,vesp);
-    if(d<=vesp&&d<t.data){ t.data=d; n++; }
+    /* só volta enquanto couber. A dois dias do voo, forçar todo o conteúdo
+       para antes da partida punha vinte e cinco temas em catorze blocos e
+       esvaziava as noites do Rio e a semana da prova: tarefa demais num dia é
+       tarefa escondida, não antecipada. Quando o dia menos apertado antes da
+       viagem já está cheio, o tema fica onde está. */
+    if(d<=vesp&&d<t.data&&!lotado(S.tarefas,S.modos,d)){ t.data=d; n++; }
   }
   return n;
 }
@@ -1657,6 +1755,12 @@ let rascunho="", escopoNovo="semana", ajustando=null, colando=false, aulaAberta=
 let colandoEscala=false;
 let resumoAberto=null, metodoAberto=null, metodoNaAba=null;
 const TEMRESUMO=(typeof RESUMOS!=="undefined"&&RESUMOS)||{};
+/* Uma correção pode acrescentar um aviso ao título — "… — terminar", quando o
+   tema foi começado e não acabou. O resumo é indexado pelo título do plano, e
+   com o aviso colado nele a tarefa ficava sem o botão "estudar por aqui":
+   desde 5 de outubro a notificação compulsória estava assim. Então a busca
+   também tenta o título sem o aviso. */
+const resumoDe=t=>TEMRESUMO[t]||TEMRESUMO[String(t||"").replace(/ — (terminar|continuar|seguir de onde parou)$/,"")]||null;
 const TEMCASO=(typeof CASOS!=="undefined"&&CASOS)||{};
 let casoAberto=null;
 
@@ -1682,7 +1786,7 @@ salvar();
        empilhar na véspera da prova */
     if(hj<LAST&&dest===LAST&&lotado(S.tarefas,S.modos,LAST))
       dest=diaMenosCheio(S.tarefas,S.modos,addDays(hj,1),t.titulo,
-                         t.tipo==="eixo"?vesperaDaViagem(hj):null);
+                         t.tipo==="eixo"?limiteDoConteudo(hj):null);
     t.data=dest; t.adiada=(t.adiada||0)+1;
   });
   if(atr.length){recado=atr.length+(atr.length>1?" tarefas atrasadas foram remarcadas":" tarefa atrasada foi remarcada")+" para os próximos dias livres."; salvar();}
@@ -1875,12 +1979,12 @@ function viewDia(){
         <button class="${feita?"desfazer":"fazer"}" onclick="concluir(${x.id})">${feita?"✓ feita":"marcar feita"}</button>
         ${feita?"":`<button class="adiar" onclick="adiar(${x.id})">não deu — remarcar</button>`}
       </div>
-      ${TEMRESUMO[x.titulo]?`<button class="btn-ajustar" style="margin:12px 0 0"
+      ${resumoDe(x.titulo)?`<button class="btn-ajustar" style="margin:12px 0 0"
         onclick="verResumo(${x.id})">${resumoAberto===x.id?"fechar o resumo":"estudar por aqui"}</button>`:""}
-      ${metodoDe(x)?`<button class="btn-ajustar" style="margin:${TEMRESUMO[x.titulo]?6:12}px 0 0"
+      ${metodoDe(x)?`<button class="btn-ajustar" style="margin:${resumoDe(x.titulo)?6:12}px 0 0"
         onclick="verMetodo(${x.id})">${metodoAberto===x.id?"fechar":"como fazer esta tarefa"}</button>`:""}
       ${metodoAberto===x.id?painelMetodo(metodoDe(x)):""}
-      ${resumoAberto===x.id?painelResumo(TEMRESUMO[x.titulo]):""}
+      ${resumoAberto===x.id?painelResumo(resumoDe(x.titulo)):""}
       </li>`;
   });
   return h+`</ol>`+atrasadas(d);
@@ -2487,9 +2591,14 @@ function trocarTitulos(lista){
            plano e cuja data eu não sei daqui de fora */
         &&(t.data?x.data===t.data:true))
       .forEach(x=>{
-        x.titulo=t.para;
+        /* para é opcional: sem ele, trocar serve para mudar só a ordem do dia.
+           É assim que se promove ao primeiro horário o que a prova cobra, e se
+           manda para o fim da fila o detalhe de portaria, sem mover nada de
+           dia nem precisar saber em que dia a tarefa caiu neste aparelho. */
+        if(t.para) x.titulo=t.para;
         if(t.tipo) x.tipo=t.tipo;
         if(t.eixo!==undefined) x.eixo=t.eixo;
+        if(t.rank!==undefined) x.rank=t.rank;
         n++;
       });
   });
@@ -2601,13 +2710,18 @@ function desafogar(p){
     const doDia=S.tarefas.filter(x=>x.data===d).sort((a,b)=>a.rank-b.rank||a.id-b.id);
     for(const t of doDia.slice(cabem)){
       if(t.status==="feita") continue;
+      const limite=t.tipo==="eixo"?limiteDoConteudo(hoje()):null;
       let dest=proximoLivre(S.tarefas,S.modos,d);
       /* nada livre depois deste dia — e no último dia nunca há. Aí o
          excesso vai para trás, para o dia menos apertado que ainda falta:
          é como se desempilha a véspera da prova, onde a varredura das
-         versões antigas deixou a sobra de duas semanas. */
-      if(dest===d) dest=diaMenosCheio(S.tarefas,S.modos,addDays(hoje(),1),t.titulo,
-                                      t.tipo==="eixo"?vesperaDaViagem(hoje()):null);
+         versões antigas deixou a sobra de duas semanas.
+
+         Conteúdo também vem para trás quando a única vaga à frente está
+         depois do limite dele: a vaga da véspera da prova não serve a tema
+         novo, e ocupá-la deixaria a revisão daquele eixo antes da matéria. */
+      if(dest===d||(limite&&dest>limite))
+        dest=diaMenosCheio(S.tarefas,S.modos,addDays(hoje(),1),t.titulo,limite);
       if(dest===d) break;
       t.data=dest; n++;
     }
