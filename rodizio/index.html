@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Rodízio · Saúde Coletiva</title>
-<meta name="description" content="Plano do rodízio de Saúde Coletiva e Medicina de Família do Internato I: o dia, a semana, os treinos e o quanto já saiu de cada eixo da prova.">
+<title>Rodízio · GO</title>
+<meta name="description" content="Plano do rodízio de Ginecologia e Obstetrícia do Internato I: o dia, a semana, os treinos e o quanto já saiu de cada eixo da prova.">
 <meta name="theme-color" content="#EDE8E0">
 <meta name="color-scheme" content="light">
 <meta name="author" content="Beatriz Pompeo">
@@ -19,7 +19,7 @@
 
 <style>
 /* =================================================================
-   Rodízio de Saúde Coletiva — folha de estilo
+   Rodízio de Ginecologia e Obstetrícia — folha de estilo
    Mesmo papel quente e mesma serifada editorial do guia de bolso;
    o acento aqui é verde-sálvia, e cada eixo tem a sua cor.
    ================================================================= */
@@ -475,16 +475,14 @@ table.padrao tr:last-child th, table.padrao tr:last-child td{ border-bottom: non
      Onde o arquivo não estiver, o app abre em branco e nada se quebra. -->
 <script src="./meus-dados.js"></script>
 
-<!-- Os resumos de estudo, um por tema do plano de ensino. -->
-<script src="./resumos.js"></script>
-
-<!-- Casos clínicos entregues pela coordenação. -->
-<script src="./casos.js"></script>
+<!-- Sem resumos e sem casos neste rodízio: o app é só o cronograma. O
+     código que os mostra continua aqui; basta um resumos.js de GO ao lado
+     para o botão "estudar por aqui" voltar a aparecer. -->
 
 <div class="folha">
   <header class="capa">
     <div class="capa-txt">
-      <p class="sobrescrito">Internato I · Saúde Coletiva e MFC</p>
+      <p class="sobrescrito">Internato I · Saúde da Mulher I · GO</p>
       <h1 id="contagem">—</h1>
       <p class="capa-sub" id="capa-sub">—</p>
     </div>
@@ -529,186 +527,145 @@ table.padrao tr:last-child th, table.padrao tr:last-child td{ border-bottom: non
 
 <script>
 /* ------------------------------------------------------------- constantes */
-/* Calendário do plano de ensino: 8 semanas, de 31 de agosto a 23 de outubro.
-   LAST é o último dia que recebe tarefa de estudo; depois dele vêm a prova,
-   a vista de prova e o último dia do rodízio. */
-const START="2026-08-31", LAST="2026-10-20", PROVA="2026-10-21",
-      VISTA="2026-10-22", FIM="2026-10-23", KEY="rodizio-sc-v1";
+/* Calendário do Grupo B: 8 semanas, de 26 de outubro a 20 de dezembro.
+   LAST é o último dia que recebe tarefa de estudo. São duas provas: o OSCE
+   no sábado 5 de dezembro, de manhã, e a teórica na quinta 10, à tarde. */
+const START="2026-10-26", LAST="2026-12-09", OSCE="2026-12-05",
+      PROVA="2026-12-10", FIM="2026-12-20", KEY="rodizio-go-v1";
 
 /* Aparece na aba Aulas. Serve para saber, olhando o aparelho, se ele já
    pegou a versão nova — anda junto com o VERSAO do sw.js. */
-const VERSAO_APP="v44";
+const VERSAO_APP="v45";
 
-/* Feriados do cronograma: sem UBS e sem aula, mas o dia continua seu. */
-const FERIADOS={"2026-09-07":"Independência","2026-10-12":"Nossa Senhora Aparecida"};
+/* Os dois feriados que o calendário do grupo marca com ressalva. Onde o
+   cronograma já diz o que acontece no dia, é o cronograma que vale. */
+const FERIADOS={"2026-11-02":"Finados — confirmar se mantém",
+                "2026-11-20":"Consciência Negra — confirmar"};
 
-/* A semana padrão do plano, para consulta — o que vale mesmo é a escala do
-   grupo, que ela ajusta dia a dia. */
+/* A semana padrão, para consulta. As semanas 1 a 4 e 5 a 8 têm formatos
+   diferentes; o que vale mesmo é o cronograma, dia a dia. */
 const SEMANA_PADRAO=[
-  ["segunda","UBS","UBS"],
-  ["terça","aula teórica ou UBS","UBS"],
-  ["quarta","aula teórica ou UBS","UBS"],
-  ["quinta","UBS","descanso semanal"],
-  ["sexta","UBS","UBS"]
+  ["segunda","plantão HSH","estudo dirigido, 4h"],
+  ["terça","amb. ginecologia","livre"],
+  ["quarta","enfermaria HSH","livre"],
+  ["quinta","plantão HSH","teoria, 14h–18h"],
+  ["sexta","amb. pré-natal","plantão HSH"]
 ];
 
 const EIXOS={
-  vig1:{n:"Vigilância I",c:"#14615A"}, vig2:{n:"Vigilância II",c:"#2C5F86"},
-  epi:{n:"Epidemiologia",c:"#8A6512"}, cri:{n:"Criança",c:"#A2561A"},
-  ado:{n:"Adolescente",c:"#A83C2A"},   mul:{n:"Mulher",c:"#8B3A6F"},
-  ido:{n:"Idoso",c:"#57499B"},         han:{n:"Hanseníase",c:"#4C7327"},
-  tb:{n:"Tuberculose",c:"#0F6070"},    ind:{n:"Saúde indígena",c:"#7A5526"}
+  cic:{n:"Ciclo e ginecologia geral",c:"#8B3A6F"},
+  rast:{n:"Rastreios e mama",c:"#A2561A"},
+  cont:{n:"Contracepção",c:"#2C5F86"},
+  clim:{n:"Climatério e osteoporose",c:"#57499B"},
+  pn:{n:"Pré-natal",c:"#14615A"},
+  int:{n:"Intercorrências da gestação",c:"#A83C2A"},
+  parto:{n:"Parto e puerpério",c:"#4C7327"},
+  osce:{n:"OSCE",c:"#8A6512"}
 };
 
-/* As aulas teóricas, como estão no plano de ensino: tema, quem dá e o
-   conteúdo programático de cada uma. O plano não fixa data nem hora — diz
-   só que são pela manhã, nas terças e quartas que o cronograma marcar —,
-   então o "quando" de cada aula é anotado dentro do app. */
+/* As aulas teóricas do calendário do grupo: todas nas quintas, 14h–18h, e o
+   conteúdo de cada uma é o da lista de conteúdos da disciplina. */
 const AULAS=[
- {id:"epi", tema:"Epidemiologia em Saúde", eixos:["epi"],
-  quando:"Parte 1 · quarta, 07/10, 8h · Parte 2 · quinta, 08/10, 8h · Univag, sala a definir",
-  quem:[["Hugo Dias Hoffmann Santos","professor"]], conteudo:[
-  "Testes diagnósticos",
-  "Sensibilidade e especificidade",
-  "Valor preditivo positivo e negativo",
-  "Razão de verossimilhança"]},
+ {id:"t1", tema:"Consulta ambulatorial em GO · Assistência pré-natal", eixos:["cic","pn"],
+  quando:"Quinta, 29/10, 14h–18h",
+  quem:[["Renata","professora"]], conteudo:[
+  "Consulta ambulatorial em ginecologia: anamnese, exame físico e coleta citopatológica",
+  "Assistência pré-natal: primeira consulta, exames por trimestre e vacinas",
+  "Modificações fisiológicas da gravidez"]},
 
- {id:"vig", tema:"Vigilância em Saúde e Vigilância Epidemiológica", eixos:["vig1","vig2"],
-  quem:[["Lauren Cristiane Leite Ocampos","professor"]], conteudo:[
-  "Relembrando o SUS: NOBs 91, 92, 93 e 96; NOAS 2001 e 2002",
-  "Pacto pela Saúde, Portaria 399/2006 — fortalecimento das ações de vigilância em saúde",
-  "Portarias 3.252/2009, 1.378/2013 e 204/2016",
-  "Resolução 588/2017 e Portaria de Consolidação 04 de 2017",
-  "Procedimentos técnicos e avaliação de sistemas de vigilância epidemiológica",
-  "Sistema Nacional de Vigilância Epidemiológica do Brasil: origem e conceitos",
-  "Notificação compulsória e instruções para o preenchimento da ficha",
-  "Estudos, inquéritos e levantamentos epidemiológicos",
-  "Sistemas sentinela, investigação de surtos e epidemias"]},
+ {id:"t2", tema:"Assistência ao trabalho de parto · Hemorragia pós-parto", eixos:["parto"],
+  quando:"Quinta, 05/11, 14h–18h",
+  quem:[["Renata","professora"]], conteudo:[
+  "Períodos clínicos do parto e assistência a cada um",
+  "Partograma e condução da fase ativa",
+  "Distócias e manobras",
+  "Dequitação e retenção placentária",
+  "Hemorragia pós-parto: os 4 T, índice de choque e conduta"]},
 
- {id:"cri", tema:"Atenção à criança e ao adolescente", eixos:["cri","ado"],
-  quem:[], nota:"Tema discutido com os preceptores na UBS", conteudo:[
-  "A primeira consulta do recém-nascido: anamnese e exame físico",
-  "Cuidados com o recém-nascido e prevenção de acidentes",
-  "Calendário de imunizações e importância do aleitamento materno exclusivo",
-  "Monitorização do crescimento e acompanhamento do desenvolvimento",
-  "Alimentação de 6 meses a 2 anos, de 2 a 6 e de 7 a 10 anos; prevenção da obesidade",
-  "Proteção e cuidados a crianças e famílias em situação de violência",
-  "Atenção ao adolescente na atenção primária: a relação com a equipe e o roteiro de avaliação na UBS",
-  "Consulta clínica: maturação sexual, avaliação nutricional, encaminhamento e caderneta",
-  "Imunizações e avaliação do cartão de vacina",
-  "Saúde sexual e reprodutiva: prevenção da gravidez e IST/Aids"]},
+ {id:"t3", tema:"Climatério + terapia hormonal · Osteoporose", eixos:["clim"],
+  quando:"Quinta, 12/11, 14h–18h",
+  quem:[["Renata","professora"]], conteudo:[
+  "Climatério e menopausa: diagnóstico e sintomas",
+  "Terapia hormonal: esquemas, vias e janela de oportunidade",
+  "Contraindicações e alternativas não hormonais",
+  "Osteoporose: densitometria, T-score e tratamento"]},
 
- {id:"mul", tema:"Atenção à Mulher", eixos:["mul"],
-  quando:"Planejamento Familiar e Doenças das Mamas · segunda, 21/09, 8h, sala T400 · Colo uterino e rastreamento do câncer de colo · segunda, 28/09, 9h",
-  quem:[["Zuleide Aparecida Felix Cabral","professor"],
-        ["Ronald Benedito dos Anjos","preceptor"]], conteudo:[
-  "Planejamento da vida sexual e reprodutiva: assistência à anticoncepção e métodos contraceptivos",
-  "Doenças benignas da mama e rastreamento do câncer de mama: detecção precoce, exame clínico e condutas pela mamografia",
-  "Doenças do colo uterino, lesões precursoras e rastreamento: detecção precoce e recomendações prévias para a coleta do colpocitológico",
-  "Pré-natal de baixo risco: primeira consulta, com anamnese, exame físico e suplementação de ácido fólico",
-  "Exames preconizados no pré-natal: interpretação e condutas",
-  "Consultas subsequentes: condutas e orientações"]},
+ {id:"t4", tema:"Contracepção + planejamento familiar", eixos:["cont"],
+  quando:"Quinta, 19/11, 14h–18h",
+  quem:[["Renata","professora"]], conteudo:[
+  "Métodos contraceptivos: mecanismo, eficácia e retorno da fertilidade",
+  "Critérios de elegibilidade da OMS",
+  "Contracepção de emergência",
+  "Planejamento familiar e laqueadura tubária"]},
 
- {id:"ido", tema:"Atenção ao Idoso", eixos:["ido"],
-  quando:"Duas aulas · terça, 29/09, 16h · e mais duas · terça, 06/10, 14h, sala T403",
-  quem:[["Glória Maria de Campos Gomes","professor"]], conteudo:[
-  "Atribuições dos profissionais da atenção básica no atendimento à pessoa idosa",
-  "Avaliação global: alimentação e nutrição, acuidade visual e auditiva, incontinência urinária, sexualidade e vacinação",
-  "Avaliação cognitiva e funcional, e mobilidade",
-  "Suporte familiar e social e avaliação da funcionalidade familiar",
-  "Violência intrafamiliar e maus-tratos à pessoa idosa",
-  "Assistência domiciliar à pessoa idosa na atenção básica"]},
+ {id:"t5", tema:"Síndromes hipertensivas na gestação · Isoimunização Rh", eixos:["int","pn"],
+  quando:"Quinta, 26/11, 14h–18h",
+  quem:[["Rafael","professor"]], conteudo:[
+  "Classificação das síndromes hipertensivas",
+  "Pré-eclâmpsia, iminência de eclâmpsia e eclâmpsia",
+  "Síndrome HELLP",
+  "Sulfato de magnésio e anti-hipertensivos na crise",
+  "Isoimunização Rh: Coombs, Doppler de ACM e transfusão intrauterina"]},
 
- {id:"han", tema:"Hanseníase", eixos:["han"],
-  quando:"Casos clínicos, com tuberculose · terça, 22/09, 13h · Univag, sala T401, bloco D",
-  quem:[["Tiago Rodrigues Viana","professor"]], conteudo:[
-  "Definição de caso",
-  "Aspectos epidemiológicos: agente etiológico e modo de transmissão",
-  "Aspectos clínicos: sinais e sintomas dermatológicos e neurológicos",
-  "Diagnóstico clínico e laboratorial",
-  "Tratamento quimioterápico, duração e critério de alta",
-  "Efeitos colaterais dos medicamentos e prevenção de incapacidades físicas",
-  "Vigilância epidemiológica: descoberta de casos e sistema de informação",
-  "Atribuições dos profissionais: planejamento, execução e acompanhamento do cuidado",
-  "Atividades desenvolvidas na unidade de saúde"]},
-
- {id:"tb", tema:"Tuberculose", eixos:["tb"],
-  quando:"Casos clínicos, com hanseníase · terça, 22/09, 13h · Univag, sala T401, bloco D",
-  quem:[["Tiago Rodrigues Viana","professor"]], conteudo:[
-  "Atribuições das unidades básicas de saúde no controle da tuberculose",
-  "Etiologia, transmissão e patogênese",
-  "Diagnóstico da TB pulmonar: história clínica, exame bacteriológico e prova tuberculínica",
-  "Notificação do caso",
-  "Tratamento: princípios básicos, adesão e o papel da estratégia DOTS/TDO",
-  "Esquemas de tratamento e posologia; os casos que devem ser tratados na UBS",
-  "Acompanhamento do tratamento e reações adversas às drogas antituberculose",
-  "Prevenção: investigação e acompanhamento dos contatos, vacinação BCG e quimioprofilaxia",
-  "Sistema de informação"]},
-
- {id:"ind", tema:"Saúde Indígena", eixos:["ind"],
-  quando:"Parte 1 · quinta, 01/10, 10h · Parte 2 · quinta, 01/10, 13h · Univag, sala a definir",
-  quem:[["Daniel Ignacchiti Lacerda","professor"]], conteudo:[
-  "Histórico e institucionalização da Secretaria Especial de Saúde Indígena",
-  "O SUS e o Subsistema de Atenção à Saúde Indígena",
-  "Caracterização dos povos indígenas, distribuição geográfica e regiões de fronteira",
-  "Distritos Sanitários Especiais Indígenas e o modelo de organização do subsistema",
-  "Logística de atendimento, fluxo e sistemas de informação",
-  "Plano de contingência para contato com povos isolados e intervenção em surtos",
-  "Assistência farmacêutica e uso adequado e racional de medicamentos",
-  "Integração com a medicina tradicional e controle social",
-  "Gestão de pessoas, saneamento e edificações",
-  "Política Nacional de Atenção à Saúde dos Povos Indígenas: responsabilidades, financiamento e legislação",
-  "Avanços, situação atual e principais desafios"]}
+ {id:"t6", tema:"TPP · RPMO · Diabetes gestacional", eixos:["int","pn"],
+  quando:"Quinta, 03/12, 14h–18h",
+  quem:[["Renata","professora"]], conteudo:[
+  "Trabalho de parto prematuro: tocólise, corticoide e profilaxia para GBS",
+  "Colo curto e progesterona vaginal",
+  "RPMO: diagnóstico, conduta expectante e corioamnionite",
+  "Diabetes gestacional: diagnóstico, dieta e insulinoterapia"]}
 ];
 
+/* Os temas de estudo. A ordem é a do mapa das provas antigas: o que mais se
+   repetiu em dez provas vem primeiro, e o que nunca caiu vem por último —
+   mas vem, porque está na lista de conteúdos da disciplina. */
 const CONTEUDO=[
- ["vig1","Linha do tempo do SUS e as NOBs 91/92/93/96"],
- ["vig1","NOAS 2001 e 2002"],
- ["vig1","Pacto pela Saúde — Portaria 399/2006"],
- ["vig1","Portarias 3.252/2009, 1.378/2013 e 204/2016 · Resolução 588/2017"],
- ["vig2","Sistema Nacional de Vigilância Epidemiológica: origem e conceitos"],
- ["vig2","Notificação compulsória e preenchimento da ficha"],
- ["vig2","Estudos, inquéritos e levantamentos epidemiológicos"],
- ["vig2","Sistemas sentinela e investigação de surtos e epidemias"],
- ["epi","Tabela 2×2 · sensibilidade e especificidade"],
- ["epi","Valor preditivo positivo e negativo · efeito da prevalência"],
- ["epi","Razão de verossimilhança positiva e negativa"],
- ["epi","Curva ROC, ponto de corte e vieses + 20 questões"],
- ["cri","Primeira consulta do RN: anamnese e exame físico"],
- ["cri","Cuidados com o recém-nascido e prevenção de acidentes"],
- ["cri","Calendário vacinal de 0 a 10 anos"],
- ["cri","Crescimento: curvas da OMS e escore-z"],
- ["cri","Desenvolvimento: marcos por faixa etária"],
- ["cri","Alimentação por faixa, obesidade e violência contra a criança"],
- ["ado","Relação equipe–adolescente e roteiro de avaliação na UBS"],
- ["ado","Maturação sexual, avaliação nutricional e caderneta"],
- ["ado","Imunização, prevenção de gravidez e IST/Aids"],
- ["ido","Atribuições da atenção básica e avaliação global do idoso"],
- ["ido","Cognição, funcionalidade (AVD e AIVD), quedas e mobilidade"],
- ["ido","Suporte familiar, violência intrafamiliar e assistência domiciliar"],
- ["mul","Planejamento reprodutivo e métodos contraceptivos"],
- ["mul","Critérios de elegibilidade e contracepção de emergência"],
- ["mul","Doenças benignas da mama e exame clínico"],
- ["mul","Rastreamento de mama e condutas pela mamografia"],
- ["mul","Colo do útero: lesões precursoras e rastreamento"],
- ["mul","Coleta do colpocitológico e recomendações prévias"],
- ["mul","Pré-natal: primeira consulta e ácido fólico"],
- ["mul","Exames do pré-natal por trimestre: interpretação e conduta"],
- ["mul","Consultas subsequentes, vacinas e encaminhamento ao alto risco"],
- ["han","Definição de caso, epidemiologia e transmissão"],
- ["han","Clínica dermatológica e neurológica · diagnóstico"],
- ["han","PQT-U, critério de alta, incapacidades e contatos"],
- ["tb","Etiologia, transmissão, patogênese e história clínica"],
- ["tb","Baciloscopia, TRM-TB, cultura e prova tuberculínica"],
- ["tb","Esquema básico, DOTS/TDO e reações adversas"],
- ["tb","Contatos, BCG, tratamento da ILTB e notificação"],
- ["ind","SESAI, subsistema no SUS, DSEI e organização da rede"],
- ["ind","PNASPI, legislação, financiamento e principais desafios"]
+ ["parto","Hemorragia pós-parto: os 4 T, índice de choque e conduta"],
+ ["parto","Dequitação, retenção placentária e extração manual"],
+ ["int","RPMO: diagnóstico, conduta expectante e corioamnionite"],
+ ["pn","Diabetes na gestação: diagnóstico pelo jejum e pelo TOTG"],
+ ["pn","Diabetes na gestação: dieta, monitorização e insulinoterapia"],
+ ["pn","Isoimunização Rh: Coombs, Doppler de ACM e anemia fetal"],
+ ["clim","Climatério: terapia hormonal, esquemas e vias"],
+ ["clim","Janela de oportunidade, contraindicações e alternativas"],
+ ["pn","Sífilis na gestação: estadiamento e esquemas de penicilina"],
+ ["int","Hemorragias da 2ª metade: DPP, placenta prévia, rotura e vasa prévia"],
+ ["int","Síndromes hipertensivas: pré-eclâmpsia, iminência e eclâmpsia"],
+ ["int","Síndrome HELLP, sulfato de magnésio e crise hipertensiva"],
+ ["int","Trabalho de parto prematuro, colo curto e progesterona"],
+ ["parto","Assistência ao trabalho de parto, períodos clínicos e partograma"],
+ ["parto","Distócias, manobras de Leopold e índice de Bishop"],
+ ["int","Hemorragias da 1ª metade: abortamento, ectópica e doença trofoblástica"],
+ ["clim","Osteoporose: densitometria, bisfosfonatos e zoledrônico"],
+ ["cont","Métodos contraceptivos e critérios de elegibilidade da OMS"],
+ ["cont","Planejamento familiar, laqueadura e contracepção de emergência"],
+ ["rast","Alterações funcionais benignas das mamas, mastalgia e fibroadenoma"],
+ ["rast","Rastreio do câncer de mama, BI-RADS e condutas"],
+ ["cic","Fisiologia do ciclo menstrual: eixo, fases e feedback"],
+ ["pn","Pré-natal: primeira consulta, exames por trimestre e vacinas"],
+ ["pn","Modificações fisiológicas da gravidez"],
+ ["pn","Z-TORCHS: toxoplasmose, sífilis, HIV, hepatites, rubéola e CMV"],
+ ["int","Vitalidade fetal: cardiotocografia, Doppler e CIUR"],
+ ["cic","Bartholinite e afecções da vulva"],
+ ["rast","Rastreio do câncer de colo: idade, intervalo e condutas"],
+ ["cic","Consulta em ginecologia: anamnese, exame e coleta citopatológica"],
+ ["parto","Puerpério normal e patológico"],
+ ["cic","Sangramento uterino anormal e miomatose"],
+ ["cic","Síndrome dos ovários policísticos e hiperprolactinemia"],
+ ["cic","Leucorreias: vaginose, candidíase e tricomoníase"],
+ ["cic","Amenorreia primária e secundária"],
+ ["cic","Dor pélvica aguda e crônica"],
+ ["cic","Incontinência urinária"]
 ];
 
-const MEDWAY=["Preventiva: SUS e atenção primária","Bioestatística e epidemiologia",
- "Pediatria ambulatorial","Ginecologia e rastreamentos","Obstetrícia: pré-natal",
- "Infectologia: TB e hanseníase","Revisão dirigida e questões"];
+/* Os quatro blocos de OSCE que o calendário do grupo já marca, cada um no
+   dia em que a manhã ou a tarde está livre para ele. */
+const OSCES=[
+ {data:"2026-11-26", titulo:"Treino de OSCE — estações de ginecologia"},
+ {data:"2026-11-27", titulo:"Treino de OSCE — estações de obstetrícia"},
+ {data:"2026-12-03", titulo:"As prescrições que caem no OSCE"},
+ {data:"2026-12-04", titulo:"Ensaio cronometrado das estações"}
+];
 
 /* Como se faz cada tipo de tarefa. O plano diz o quê e quando; isto diz
    como, porque "revisão espaçada" e "questões" só funcionam de um jeito —
@@ -722,7 +679,7 @@ const METODOS={
   passos:[
    "Abra a apostila no eixo, mas <b>só nos títulos</b>. Cada eixo tem de três a cinco temas.",
    "Tema por tema, <b>feche o texto e fale em voz alta</b> — ou escreva numa folha — tudo o que você lembra. Dois minutos por tema. É desconfortável, e é aí que a memória se fixa.",
-   "<b>Só então confira</b> contra o resumo. Grife o que você <b>não</b> lembrou; ignore o que já saiu certo.",
+   "<b>Só então confira</b> contra o material. Grife o que você <b>não</b> lembrou; ignore o que já saiu certo.",
    "Releia apenas as duas caixas — <b>De cabeça</b> e <b>Onde se erra</b> — dos temas que falharam.",
    "<b>Feche com questões</b> daquele eixo no Medway. Questão é a melhor forma de recuperação que existe."
   ],
@@ -742,14 +699,14 @@ const METODOS={
    "Volte nas questões erradas <b>três ou quatro dias depois</b>, não no mesmo dia. No mesmo dia você lembra da resposta, não do raciocínio."
   ],
   tempo:"Num bloco de 90 minutos: cerca de 20 questões em 40 minutos e 50 minutos de comentário e anotação. Se a conta inverter, você está fazendo questão demais e aprendendo de menos.",
-  trava:"Abaixo de 60% de acerto num assunto, pare as questões dele: falta conteúdo, e questão não ensina do zero. Volte ao resumo do eixo primeiro."
+  trava:"Abaixo de 60% de acerto num assunto, pare as questões dele: falta conteúdo, e questão não ensina do zero. Volte ao conteúdo do eixo primeiro."
  },
 
  eixo:{
   n:"Conteúdo novo", curto:"primeira passada num tema",
   ideia:"Primeira passada num tema. O objetivo não é decorar — é entender bem o suficiente para conseguir recontar o tema no domingo, quando ele volta como revisão.",
   passos:[
-   "Leia o resumo do tema uma vez, inteiro, <b>sem grifar</b>. Grifar na primeira leitura marca o que parece importante, não o que é.",
+   "Leia o material do tema uma vez, inteiro, <b>sem grifar</b>. Grifar na primeira leitura marca o que parece importante, não o que é.",
    "Na segunda passada, grife e escreva na margem. Aqui a apostila em PDF serve para isso.",
    "<b>Feche e reconte</b> o tema em três ou quatro frases, de memória. Se não sair, a leitura não pegou: releia só a parte que faltou.",
    "Anote na folha de última hora qualquer <b>número, prazo ou portaria</b> que apareceu.",
@@ -786,32 +743,31 @@ const METODOS={
   trava:"Aula assistida em 2× sem pausa não é estudo, é entretenimento com tema médico. Se você não conseguiu anotar nada, refaça o trecho."
  },
 
- caso:{
-  n:"O caso do congresso", curto:"saber o seu caso melhor que a plateia",
-  ideia:"Quem apresenta um caso não está contando uma história: está defendendo uma decisão. A plateia vai perguntar por que você fez o que fez, não o que aconteceu depois.",
+ osce:{
+  n:"Treino de estação", curto:"em voz alta, com relógio",
+  ideia:"OSCE não se estuda lendo: se treina fazendo. O que derruba não é o diagnóstico, é a ordem — lavar a mão, se apresentar, pedir consentimento, posicionar, examinar, prescrever com dose e posologia, orientar o retorno.",
   passos:[
-   "Reconstrua o caso <b>da fonte</b> — prontuário, exames, laudos —, em ordem de relógio. Data de cada coisa, não “alguns dias depois”.",
-   "Escreva <b>a pergunta do caso</b> em uma frase: o que nele merece uma sala inteira. Se não couber numa frase, ainda não é um caso, é um relato.",
-   "Separe o que é <b>achado</b> do que é <b>interpretação</b>. Na apresentação, o achado vem primeiro e a interpretação depois — inverter é o erro que mais custa em arguição.",
-   "Procure <b>duas ou três referências</b> que sustentem a conduta, e uma que a contrarie. A que contraria é a que te salva na pergunta difícil.",
-   "Liste as <b>cinco perguntas</b> que você menos gostaria de ouvir, e escreva a resposta de cada uma. Quase sempre uma delas é feita.",
-   "<b>Ensaie em voz alta e cronometrado</b>, inteiro, sem parar para corrigir. Depois corrija e ensaie de novo. Ler em voz baixa não treina nada."
+   "Escreva o <b>roteiro da estação</b> em uma folha: apresentação, consentimento, anamnese dirigida, exame, hipótese, conduta, prescrição, orientação.",
+   "Treine <b>em voz alta e com cronômetro</b>, no tempo real da estação. Falar por dentro não vale: o avaliador pontua o que ouve.",
+   "Escreva a <b>prescrição por extenso</b> — nome, apresentação, dose, via, intervalo e duração. Receita sem posologia perde ponto inteiro.",
+   "Peça, pela idade da paciente, o que a idade pede: rastreio de mama, colo, densitometria.",
+   "Refaça a estação uma segunda vez, do zero, sem olhar o roteiro."
   ],
-  tempo:"Três blocos: um para reconstruir o caso, um para a literatura e as perguntas difíceis, e um inteiro só de ensaio em voz alta.",
-  trava:"Se um dado do caso não estiver na fonte, ele não entra — nem “de memória”, nem “mais ou menos”. Numa apresentação, o dado frouxo é justamente o que a plateia pega."
+  tempo:"Um bloco rende duas estações completas com o ensaio repetido de cada uma.",
+  trava:"Se você só conseguiu fazer lendo o roteiro, a estação não está treinada. Repita até sair sem a folha."
  },
 
  folha:{
   n:"Folha de última hora", curto:"uma folha, escrita à mão",
   ideia:"Uma folha só, escrita à mão, com o que não se deduz: números, prazos, portarias, doses e critérios. É o que se lê na véspera e nada mais.",
   passos:[
-   "Junte o que você anotou nas caixas <b>De cabeça</b> dos resumos e nas frases dos erros.",
+   "Junte o que você anotou ao longo do rodízio e as frases dos erros que repetiram.",
    "Escreva <b>à mão</b>, numa folha só, agrupado por eixo. Escrever à mão é parte do método, não capricho.",
    "Corte tudo que você acertou duas vezes seguidas: se já fixou, ocupa espaço.",
-   "Na véspera da prova, leia <b>só esta folha</b>. Não abra resumo novo, não comece assunto novo."
+   "Na véspera da prova, leia <b>só esta folha</b>. Não abra material novo, não comece assunto novo."
   ],
   tempo:"Montar leva um bloco. Reler leva dez minutos, e é a única coisa da véspera.",
-  trava:"Se a folha passar de uma página, ela deixou de ser folha de última hora e virou resumo. Corte até caber."
+  trava:"Se a folha passar de uma página, ela deixou de ser folha de última hora e virou apostila. Corte até caber."
  }
 };
 
@@ -836,39 +792,125 @@ const TREINOS=[
 ];
 
 const SLOTS={
- manha:["14h30–16h00","16h15–17h15","19h00–20h30","20h45–21h45"],
- tarde:["08h00–09h30","09h45–11h15","19h00–20h30","20h45–21h45"],
- sexta:["08h00–09h30","10h00–11h30","14h00–15h30","16h00–17h30","19h00–20h30"],
- integral:["19h00–20h30","20h45–21h45"],
- sabado:["08h00–11h00","15h00–16h30"],
+ manha:["14h30–16h00","16h15–17h45","19h30–21h00"],   /* manhã ocupada */
+ tarde:["08h00–09h30","09h45–11h15","20h00–21h30"],   /* tarde ocupada */
+ integral:["19h30–21h00"],                            /* os dois turnos */
+ livre:["08h00–09h30","10h00–11h30","14h00–15h30","16h00–17h30","19h30–21h00"],
+ sabado:["08h00–10h00","15h00–16h30"],
  domingo:["09h00–11h00","16h00–17h00"]
 };
-/* O que a coordenação publica a cada semana, igual para todos os grupos:
-   onde cada turno está e que aula acontece. A escala pessoal — com quem,
-   qual turno é o dela — entra por cima disto, pelo "ajustar este dia". */
+
+/* O calendário do Grupo B, dia a dia, como a coordenação publicou. É ele que
+   diz se a manhã e a tarde estão ocupadas, e portanto quantos blocos de
+   estudo cabem no dia. A escala pessoal — se um plantão mudou, se ela trocou
+   com alguém — entra por cima disto, pelo "ajustar este dia".
+
+   Nas segundas o estudo dirigido de 4 horas ocupa o turno que o plantão
+   deixa livre: por isso a segunda é dia de bloco à noite, e só. */
 const CRONOGRAMA={
-  /* Semana 4 — 21 a 25 de setembro */
-  "2026-09-21":{m:"aula",mTxt:"Planejamento Familiar e Doenças Benignas das Mamas · Univag, sala T400 · 8h",t:"ubs"},
-  "2026-09-22":{m:"ubs",t:"aula",tTxt:"Casos clínicos de tuberculose e hanseníase · Prof. Tiago · Univag, sala T401, bloco D · 13h"},
-  "2026-09-23":{m:"ubs",t:"ubs"},
-  "2026-09-24":{m:"ubs",t:"folga"},
-  "2026-09-25":{m:"ubs",t:"ubs"},
+  /* Semana 1 — 26 a 31 de outubro */
+  "2026-10-26":{m:"ubs",mTxt:"Plantão HSH · Centro Cirúrgico · 07h–13h",
+                t:"aula",tTxt:"Estudo dirigido · 4h · Fisiologia do ciclo menstrual e modificações da gravidez"},
+  "2026-10-27":{m:"ubs",mTxt:"Amb. Ginecologia · UNIVAG · 07h30–11h30 · Ana Paula"},
+  "2026-10-28":{m:"ubs",mTxt:"Enfermaria HSH · 07h–13h · Adilson Massoni"},
+  "2026-10-29":{m:"ubs",mTxt:"Plantão HSH · Sala de parto · 07h–13h",
+                t:"aula",tTxt:"Teoria: Consulta ambulatorial em GO · Assistência pré-natal · Profª Renata · 14h–18h"},
+  "2026-10-30":{m:"ubs",mTxt:"Amb. Pré-natal · UNIVAG · 07h30–11h30 · Laura Beraldi",
+                t:"ubs",tTxt:"Plantão HSH · Sala de parto · 13h–19h"},
 
-  /* Semana 5 — 28 de setembro a 2 de outubro */
-  "2026-09-28":{m:"aula",mTxt:"Doenças benignas do colo uterino e rastreamento do câncer de colo · Profª Zuleide · Univag, sala a definir · 9h",t:"ubs"},
-  "2026-09-29":{m:"ubs",t:"aula",tTxt:"Saúde do Idoso, duas aulas · Profª Glória · Univag, sala a definir · 16h"},
-  "2026-09-30":{m:"ubs",t:"ubs"},
-  "2026-10-01":{m:"aula",mTxt:"Saúde indígena, parte 1 · Prof. Daniel · Univag, sala a definir · 10h",
-                t:"aula",tTxt:"Saúde indígena, parte 2 · Prof. Daniel · Univag, sala a definir · 13h"},
-  "2026-10-02":{m:"ubs",t:"folga"},
+  /* Semana 2 — 2 a 7 de novembro */
+  "2026-11-02":{m:"ubs",mTxt:"Plantão HSH · Sala de parto · 07h–13h · feriado de Finados, confirmar se mantém",
+                t:"aula",tTxt:"Estudo dirigido · 4h · Alterações funcionais benignas das mamas e Z-TORCHS"},
+  "2026-11-03":{m:"ubs",mTxt:"Amb. Ginecologia · UNIVAG · 07h30–11h30 · Ana Paula"},
+  "2026-11-04":{m:"ubs",mTxt:"Enfermaria HSH · 07h–13h · Adilson Massoni"},
+  "2026-11-05":{m:"ubs",mTxt:"Plantão HSH · Sala de parto · 07h–13h",
+                t:"aula",tTxt:"Teoria: Assistência ao trabalho de parto · Hemorragia pós-parto · Profª Renata · 14h–18h"},
+  "2026-11-06":{m:"ubs",mTxt:"Amb. Pré-natal · UNIVAG · 07h30–11h30 · Laura Beraldi",
+                t:"ubs",tTxt:"Plantão HSH · Centro Cirúrgico · 13h–19h"},
 
-  /* Semana 6 — 5 a 9 de outubro */
-  "2026-10-05":{m:"ubs",t:"ubs"},
-  "2026-10-06":{m:"ubs",t:"aula",tTxt:"Saúde do Idoso, duas aulas · Profª Glória · Univag, sala T403 · 14h"},
-  "2026-10-07":{m:"aula",mTxt:"Epidemiologia, parte 1 · Prof. Hugo · Univag, sala a definir · 8h",t:"ubs"},
-  "2026-10-08":{m:"aula",mTxt:"Epidemiologia, parte 2 · Prof. Hugo · Univag, sala a definir · 8h",t:"folga"},
-  "2026-10-09":{m:"ubs",t:"ubs"}
+  /* Semana 3 — 9 a 14 de novembro */
+  "2026-11-09":{m:"ubs",mTxt:"Plantão HSH · Sala de parto · 07h–13h",
+                t:"aula",tTxt:"Estudo dirigido · 4h · Hemorragias da 1ª metade da gestação"},
+  "2026-11-10":{m:"ubs",mTxt:"Amb. Ginecologia · UNIVAG · 07h30–11h30 · Ana Paula"},
+  "2026-11-11":{m:"ubs",mTxt:"Enfermaria HSH · 07h–13h · Adilson Massoni"},
+  "2026-11-12":{m:"ubs",mTxt:"Plantão HSH · Sala de parto · 07h–13h",
+                t:"aula",tTxt:"Teoria: Climatério e terapia hormonal · Osteoporose · Profª Renata · 14h–18h"},
+  "2026-11-13":{m:"ubs",mTxt:"Amb. Pré-natal · UNIVAG · 07h30–11h30 · Laura Beraldi",
+                t:"ubs",tTxt:"Plantão HSH · Pronto Atendimento · 13h–19h"},
+
+  /* Semana 4 — 16 a 21 de novembro · a folha de nota prática sai nesta semana */
+  "2026-11-16":{m:"ubs",mTxt:"Plantão HSH · Sala de parto · 07h–13h",
+                t:"aula",tTxt:"Estudo dirigido · 4h · Hemorragias da 2ª metade da gestação"},
+  "2026-11-17":{m:"ubs",mTxt:"Amb. Ginecologia · UNIVAG · 07h30–11h30 · Ana Paula"},
+  "2026-11-18":{m:"ubs",mTxt:"Enfermaria HSH · 07h–13h · Adilson Massoni"},
+  "2026-11-19":{m:"ubs",mTxt:"Plantão HSH · Sala de parto · 07h–13h",
+                t:"aula",tTxt:"Teoria: Contracepção e planejamento familiar · Profª Renata · 14h–18h"},
+  "2026-11-20":{m:"ubs",mTxt:"Amb. Pré-natal · UNIVAG · 07h30–11h30 · feriado da Consciência Negra, confirmar",
+                t:"ubs",tTxt:"Plantão HSH · Centro Cirúrgico · 13h–19h"},
+
+  /* Semana 5 — 23 a 28 de novembro · o formato muda: plantão à tarde nas
+     segundas, ambulatório à tarde nas terças e quartas, quinta de manhã livre */
+  "2026-11-23":{m:"aula",mTxt:"Estudo dirigido · manhã, 4h · revisar temas",
+                t:"ubs",tTxt:"Plantão HSH · Sala de parto · 13h–19h"},
+  "2026-11-24":{m:"ubs",mTxt:"Plantão HSH · Sala de parto · 07h–13h",
+                t:"ubs",tTxt:"Amb. Ginecologia · UNIVAG · 14h–18h · Karla Almeida"},
+  "2026-11-25":{m:"ubs",mTxt:"Enfermaria HSH · 07h–13h · Adilson Massoni",
+                t:"ubs",tTxt:"Amb. Obstetrícia · UNIVAG · 13h30–17h30 · Suellen"},
+  "2026-11-26":{t:"aula",tTxt:"Teoria: Síndromes hipertensivas na gestação · Isoimunização Rh · Prof. Rafael · 14h–18h"},
+  "2026-11-27":{m:"ubs",mTxt:"Plantão HSH · Pronto Atendimento · 07h–13h"},
+
+  /* Semana 6 — 30 de novembro a 5 de dezembro · o OSCE fecha a semana */
+  "2026-11-30":{m:"aula",mTxt:"Estudo dirigido · manhã, 4h · revisar temas",
+                t:"ubs",tTxt:"Plantão HSH · Sala de parto · 13h–19h"},
+  "2026-12-01":{m:"ubs",mTxt:"Plantão HSH · Sala de parto · 07h–13h",
+                t:"ubs",tTxt:"Amb. Ginecologia · UNIVAG · 14h–18h · Karla Almeida"},
+  "2026-12-02":{m:"ubs",mTxt:"Enfermaria HSH · 07h–13h · Adilson Massoni",
+                t:"ubs",tTxt:"Amb. Obstetrícia · UNIVAG · 13h30–17h30 · Suellen"},
+  "2026-12-03":{t:"aula",tTxt:"Teoria: TPP · RPMO · Diabetes gestacional · Profª Renata · 14h–18h"},
+  "2026-12-04":{m:"ubs",mTxt:"Plantão HSH · Centro Cirúrgico · 07h–13h"},
+  "2026-12-05":{m:"aula",mTxt:"OSCE · prova prática, manhã · laboratórios práticos da UNIVAG"},
+
+  /* Semana 7 — 7 a 12 de dezembro · a teórica é na quinta, à tarde */
+  "2026-12-07":{m:"aula",mTxt:"Estudo dirigido · manhã, 4h · provas antigas de ginecologia",
+                t:"ubs",tTxt:"Plantão HSH · Sala de parto · 13h–19h"},
+  "2026-12-08":{m:"ubs",mTxt:"Plantão HSH · Sala de parto · 07h–13h",
+                t:"ubs",tTxt:"Amb. Ginecologia · UNIVAG · 14h–18h · Karla Almeida"},
+  "2026-12-09":{m:"ubs",mTxt:"Enfermaria HSH · 07h–13h · Adilson Massoni",
+                t:"ubs",tTxt:"Amb. Obstetrícia · UNIVAG · 13h30–17h30 · Suellen"},
+  "2026-12-10":{t:"aula",tTxt:"Prova teórica · peso 6 · à tarde · levar as folhas de nota das semanas 4 e 7"},
+  "2026-12-11":{m:"ubs",mTxt:"Plantão HSH · Pronto Atendimento · 07h–13h"},
+
+  /* Semana 8 — 14 a 20 de dezembro · depois da prova, só prática */
+  "2026-12-14":{m:"aula",mTxt:"Estudo dirigido · manhã, 4h",
+                t:"ubs",tTxt:"Plantão HSH · Sala de parto · 13h–19h"},
+  "2026-12-15":{m:"ubs",mTxt:"Plantão HSH · Sala de parto · 07h–13h",
+                t:"ubs",tTxt:"Amb. Ginecologia · UNIVAG · 14h–18h · Karla Almeida"},
+  "2026-12-16":{m:"ubs",mTxt:"Enfermaria HSH · 07h–13h · Adilson Massoni",
+                t:"ubs",tTxt:"Amb. Obstetrícia · UNIVAG · 13h30–17h30 · Suellen"},
+  "2026-12-18":{m:"ubs",mTxt:"Plantão HSH · Centro Cirúrgico · 07h–13h"}
 };
+
+/* Os compromissos com hora que valem para o grupo inteiro — não são dela,
+   são do rodízio. Ficam aqui, e não no meus-dados.js, porque o app que ela
+   abre no celular é o endereço público, que não carrega aquele arquivo. */
+const EVENTOS={
+  "2026-10-26":[{h:"18h00–20h00",
+    txt:"Aula inaugural · UNIVAG, com o 6º ano · presença obrigatória",
+    curto:"aula inaugural"}]
+};
+
+/* O que derruba nota sem ter nada a ver com estudar. Também é do rodízio
+   inteiro, e pelo mesmo motivo mora aqui. */
+const LEMBRETES=[
+  {txt:"Carimbar e assinar a lista de frequência ao fim de cada atividade",escopo:"sempre"},
+  {txt:"Jaleco, crachá, adorno zero — tolerância de 15 minutos",escopo:"sempre"},
+  {txt:"Semana 4: pegar a folha de nota prática carimbada e assinada, até 20/11",escopo:"mes"},
+  {txt:"Semana 7: pegar a segunda folha de nota prática, até 11/12",escopo:"mes"},
+  {txt:"Levar as duas folhas de nota prática na prova teórica, 10/12",escopo:"mes"},
+  {txt:"Lista de frequência completa em PDF para o líder — prazo 20/12 às 22h",escopo:"mes"},
+  {txt:"Confirmar se o feriado de 02/11 mantém o plantão",escopo:"semana"},
+  {txt:"Confirmar se o feriado de 20/11 mantém o ambulatório",escopo:"semana"}
+];
 
 /* ------------------------------------------- correções que viajam no código
 
@@ -881,548 +923,31 @@ const CRONOGRAMA={
    Uma correção daqui viaja dentro da própria página. Todo aparelho que abrir
    o rodízio aplica a que ainda não aplicou — o Safari e o aplicativo
    instalado, cada um no seu canto, o celular e o iPad —, uma única vez cada,
-   anotando o id para não repetir nem desfazer ajuste feito depois. Não
-   depende de tocar, colar ou digitar nada.
+   anotando o id para não repetir nem desfazer ajuste feito depois.
 
-   Serve para consertar o que já foi parar errado nos aparelhos. O caminho
-   normal continua sendo o "ajustar este dia". */
+   Começa vazia: o rodízio de GO guarda em chave própria, e cada aparelho
+   monta o plano do zero na primeira abertura. */
 const CORRECOES=[
-{id:"s4-quarta-quinta",
-  diz:"quarta 23 sem UBS o dia todo, com a casa às 17h30, e quinta 24 na UBS com a Érika",
-  escala:{
-    "2026-09-23":{m:"livre",t:"livre"},
-    "2026-09-24":{m:"ubs",com:"Érika"}},
-  compromissos:{
-    "2026-09-23":[{h:"17h30–19h00",txt:"Organização da casa",curto:"casa"}],
-    "2026-09-24":[]},
-  lembretes:[
-    {txt:"Casa: trocar os lixos",escopo:"semana"},
-    {txt:"Casa: lavar a louça",escopo:"semana"},
-    {txt:"Casa: recolher e estender a roupa",escopo:"semana"},
-    {txt:"Casa: trocar a roupa de cama",escopo:"semana"}]},
-
-{id:"tb-han-para-a-sexta",
-  diz:"tuberculose e hanseníase vieram do fim de outubro para a sexta 25 em diante",
-  /* A aula do Prof. Tiago e os sete casos da coordenação foram na terça 22;
-     o plano guardava os dois assuntos para os últimos dias antes da prova.
-     Estudar agora, com a aula fresca, vale mais — e eles voltam assim mesmo
-     na revisão espaçada de outubro. */
-  puxar:{desde:"2026-09-25", eixos:["tb","han"]}},
-
-{id:"sexta25-e-nome-da-ubs",
-  diz:"a sexta 25 ficou sem UBS, e a unidade passou a se chamar UBS Manaíra",
-  ubs:"UBS Manaíra",
-  escala:{"2026-09-25":{m:"livre",t:"livre"}}},
-
-{id:"medway-de-hoje-tb-han",
-  diz:"a aula do Medway de hoje passou a ser a de tuberculose e hanseníase",
-  /* O tema da semana no Medway é ginecologia, mas a aula do Prof. Tiago e os
-     casos da coordenação foram de TB e hanseníase, e é isso que ela está
-     estudando agora. O bloco fica onde está; muda o assunto. */
-  trocar:[{data:"2026-09-24", comeca:"Medway — aulas",
-           para:"Medway — aulas: Infectologia: TB e hanseníase"}]},
-
-{id:"sexta25-so-tb-e-hanseniase",
-  diz:"a videoaula de ginecologia da sexta virou o primeiro tema de tuberculose",
-  /* A sexta é o dia de hanseníase, com os três temas e os resumos; sobrava
-     ali a videoaula de ginecologia, que é o tema da semana no Medway. No
-     lugar dela entra a abertura de tuberculose, que estava no sábado — o dia
-     fica inteiro de TB e hanseníase, e o sábado fica com o simulado. */
-  trocar:[{data:"2026-09-25", comeca:"Medway — aulas",
-           para:"Etiologia, transmissão, patogênese e história clínica",
-           tipo:"eixo", eixo:"tb"}],
-  tirar:[{titulo:"Etiologia, transmissão, patogênese e história clínica",
-          exceto:"2026-09-25"}]},
-
-{id:"semana5-ubs-so-terca-e-quarta",
-  diz:"na semana 5 a UBS ficou só na terça e na quarta",
-  /* O cronograma da coordenação marca UBS também na tarde de segunda e na
-     manhã de sexta; o grupo dela não tem prática nesses dois turnos. As
-     aulas teóricas da semana vêm do cronograma e não se mexe nelas. */
-  escala:{"2026-09-28":{t:"livre"}, "2026-10-02":{m:"livre"}},
-  /* Com a UBS e as aulas ocupando os dois turnos de terça, quarta e quinta,
-     esses dias passam a ter só os dois blocos da noite, e o que o plano
-     tinha posto ali não cabe mais. O que sobra vai para o próximo dia com
-     vaga em vez de ficar sem hora nenhuma. */
-  desafogar:{de:"2026-09-28", ate:"2026-10-02"}},
-
-{id:"congresso-rio-outubro",
-  diz:"o congresso no Rio entrou de 14 a 18 de outubro, e o conteúdo novo foi todo para antes da viagem",
-  /* Ela viaja na noite de 13 ou no dia 14 e volta no 18 — e a prova é no
-     21. Eram 21 tarefas naqueles seis dias, entre elas nove temas de
-     conteúdo que ela veria pela primeira vez a cinco dias da prova.
-
-     Três coisas, nesta ordem. Os dias 14 a 18 viram dias "fora": sem UBS,
-     com o congresso escrito na agenda e só os dois blocos da noite, para o
-     que der. A rotina diária do Medway sai desses dias, que é o que se
-     larga primeiro numa semana de viagem. E o conteúdo novo é puxado para
-     antes do dia 13, onde há folga de sobra: são 29 temas para 53 blocos. */
-  escala:{
-    "2026-10-14":{fora:"Congresso no Rio de Janeiro"},
-    "2026-10-15":{fora:"Congresso no Rio de Janeiro"},
-    "2026-10-16":{fora:"Congresso no Rio de Janeiro"},
-    "2026-10-17":{fora:"Congresso no Rio de Janeiro"},
-    "2026-10-18":{fora:"Congresso no Rio de Janeiro — volta"}},
-  compromissos:{
-    "2026-10-13":[{h:"à noite",txt:"Viagem para o Rio — se não for amanhã cedo",curto:"viagem"}]},
-  tirar:[{comeca:"Medway — ", de:"2026-10-14", ate:"2026-10-18"}],
-  puxar:{desde:"2026-09-28",
-         eixos:["vig1","vig2","epi","cri","ado","mul","ido","han","tb","ind"],
-         ate:"2026-10-13"},
-  desafogar:{de:"2026-10-13", ate:"2026-10-18"}},
-
-{id:"medway-questoes-sai-ate-a-viagem",
-  diz:"as questões do dia do Medway saíram dos dias até 13 de outubro, e a Saúde da Mulher coube antes da viagem",
-  /* Escolha dela: das três formas de abrir espaço antes da viagem — cortar
-     a rotina de questões, estudar um bloco a mais por dia, ou deixar a
-     Saúde da Mulher para depois —, cortar o bloco separado de questões do
-     dia. As aulas do Medway ficam, e o método de conteúdo novo já manda
-     fazer de cinco a dez questões do tema no mesmo dia: questão ela continua
-     fazendo, só não num bloco à parte.
-
-     O que isso libera vai todo para o conteúdo; depois as revisões ocupam
-     o que ainda sobrar, inclusive esvaziando a pilha que o plano empilha no
-     último dia. */
-  tirar:[{titulo:"Medway — questões do dia", de:"2026-09-29", ate:"2026-10-13"},
-         /* nos dois últimos dias os simulados já são a prática de questões */
-         {titulo:"Medway — questões do dia", de:"2026-10-19", ate:"2026-10-20"}],
-  /* Os dois simulados tinham caído no dia 18, o da volta do Rio, e a véspera
-     da prova ficara só com Medway. Simulado no dia 19, já em casa; a folha de
-     última hora no dia 20, que é para o que ela é. */
-  mover:[{comeca:"Simulado geral", para:"2026-10-19"},
-         {comeca:"Folha de última hora", para:"2026-10-20"}],
-  puxar:[{desde:"2026-09-28", ate:"2026-10-13",
-          eixos:["vig1","vig2","epi","cri","ado","mul","ido","han","tb","ind"]},
-         /* as revisões só se espalham depois que todo o conteúdo já passou,
-            senão ela reveria um eixo antes de o ter estudado; a janela vai
-            do dia 15 ao 20 e serve para esvaziar a pilha que o plano empilha
-            no último dia */
-         {desde:"2026-10-15", ate:"2026-10-20", tipos:["revisao"]}],
-  desafogar:{de:"2026-10-13", ate:"2026-10-18"}},
-
-{id:"congresso-caso-e-cirurgia",
-  diz:"o caso do congresso e uma introdução de cirurgia entraram nos dias 12, 13 e 14",
-  /* Duas frentes que não são da prova de Saúde Coletiva e por isso não
-     entram na contagem do plano: o caso que ela vai apresentar e uma
-     orientação de cirurgia, que é o tema do congresso e a parte com que ela
-     teve menos contato na faculdade.
-
-     Cabem sem tirar nada: depois de o conteúdo todo terminar no dia 12,
-     sobraram exatamente sete vagas em 12, 13 e 14 — os dois dias antes da
-     viagem e o da ida. O caso fica primeiro, porque tem hora marcada; a
-     cirurgia vem depois, e o vocabulário fica para o dia do voo. */
-  adicionar:[
-    {data:"2026-10-12", rank:3, titulo:"Congresso — o caso: reconstruir a história e os exames"},
-    {data:"2026-10-12", rank:4, titulo:"Congresso — o caso: o que a literatura diz, e o que a contraria"},
-    {data:"2026-10-13", rank:3, titulo:"Congresso — ensaiar a apresentação em voz alta, cronometrada"},
-    {data:"2026-10-13", rank:4, titulo:"Cirurgia — pré-operatório: risco, jejum e profilaxias"},
-    {data:"2026-10-13", rank:5, titulo:"Cirurgia — pós-operatório: as complicações no tempo"},
-    {data:"2026-10-14", rank:3, titulo:"Cirurgia — abdome agudo e as urgências mais comuns"},
-    {data:"2026-10-14", rank:4, titulo:"Cirurgia — o vocabulário do centro cirúrgico e do congresso"}]},
-
-{id:"apresentacao-dia-15",
-  diz:"a apresentação é dia 15, e a preparação do caso foi reorganizada para caber antes dela",
-  /* Trabalho 15909, apresentação oral, tema Hérnias e Parede Abdominal:
-     "Terapia por Pressão Negativa no Manejo do Abdome Aberto e na Fístula
-     Enteroatmosférica". É no dia 15, o segundo dia de congresso.
-
-     Isso muda a ordem: o ensaio tem de ser na véspera, já no Rio, e o
-     assunto do caso precisa de um bloco próprio antes da viagem. As duas
-     tarefas gerais de cirurgia descem para os dias de congresso, onde
-     servem de contexto para as mesas; o desafogar acomoda o resto. */
-  compromissos:{
-    "2026-10-15":[{h:"no congresso",txt:"Apresentação oral — TPN no abdome aberto e na fístula enteroatmosférica",curto:"apresentação"}]},
-  adicionar:[
-    {data:"2026-10-13", rank:2, titulo:"Congresso — abdome aberto, TPN e fístula enteroatmosférica"},
-    {data:"2026-10-14", rank:2, titulo:"Congresso — as perguntas que a mesa vai fazer"}],
-  mover:[{comeca:"Congresso — ensaiar", para:"2026-10-14", rank:3},
-         /* rank 0 para que fiquem: lidas durante o congresso servem de
-            contexto para as mesas, e na volta não serviriam para nada */
-         {comeca:"Cirurgia — abdome agudo", para:"2026-10-16", rank:0},
-         {comeca:"Cirurgia — o vocabulário", para:"2026-10-17", rank:0}],
-  desafogar:{de:"2026-10-13", ate:"2026-10-19"}},
-
-{id:"semana5-duplas",
-  diz:"a terça 29 é da Juliana e da Luana, e a quarta 30 é sua com a Érika",
-  /* Na semana 5 ela só entra na quarta de manhã. A terça, que o cronograma
-     marcava como UBS, é da outra dupla: a manhã fica livre e o dia sai de
-     dois blocos para quatro, porque só a tarde continua ocupada, com a aula
-     de Saúde do Idoso. A tarde de quarta segue o cronograma.
-
-     Os dois blocos que a terça ganhou recebem a primeira tarefa do caso do
-     congresso. Reconstruir a história e os exames é o que descobre o que
-     falta no prontuário — o débito da fístula, o esquema do antibiótico —,
-     e descobrir isso hoje é diferente de descobrir no dia 12. */
-  escala:{"2026-09-29":{m:"livre", outras:"Juliana e Luana"},
-          "2026-09-30":{m:"ubs", com:"Érika"}},
-  mover:[{comeca:"Congresso — o caso: reconstruir", para:"2026-09-29"}]},
-
-{id:"quarta30-tarde-sem-ubs",
-  diz:"a quarta 30 ficou sem UBS à tarde, e o dia dobrou de tamanho",
-  /* Só a manhã de quarta é dela. Com a tarde livre, o dia sai de dois
-     blocos para quatro, e os dois que sobraram recebem a segunda metade da
-     preparação do caso: a literatura vem logo depois de reconstruir a
-     história, no dia seguinte, que é quando as lacunas ainda estão na
-     cabeça. Isso deixa o dia 12, véspera da viagem, com folga. */
-  escala:{"2026-09-30":{m:"ubs", com:"Érika", t:"livre"}},
-  mover:[{comeca:"Congresso — o caso: o que a literatura", para:"2026-09-30"}]},
-
- {id:"medway-29-volta-a-obstetricia",
-  diz:"a terça 29 voltou a ser a aula de obstetrícia do Medway",
-  /* Desfaz a troca anterior. Ela some da lista, para quem nunca a aplicou
-     não aplicá-la; e esta entra para desfazê-la em quem já aplicou. Pôr o
-     título de volta é seguro nos dois casos: em quem nunca trocou, escreve
-     o que já estava escrito. */
-  trocar:[{data:"2026-09-29", comeca:"Medway — aulas",
-           para:"Medway — aulas: Obstetrícia: pré-natal"}]},
-
- {id:"terca29-trilhas-de-questoes",
-  diz:"a aula de obstetrícia saiu da terça e deu lugar às trilhas de questões atrasadas",
-  /* A aula de obstetrícia do Medway não saiu, e ela tem trilhas de questões
-     pendentes. O bloco das 08h00 passa a ser delas. O de 20h45, que estava
-     vago porque a terça tem quatro blocos e só três tarefas, recebe a
-     segunda parte — não é tarefa nova no plano, é o mesmo atraso dividido
-     em dois horários, que é como ele se paga. Só a terça 29. */
-  trocar:[{data:"2026-09-29", comeca:"Medway — aulas",
-           para:"Medway — trilhas de questões atrasadas"}],
-  adicionar:[{data:"2026-09-29", tipo:"medway", rank:6,
-              titulo:"Medway — trilhas de questões atrasadas: seguir de onde parou"}]},
-
- {id:"semana5-medway-sem-obstetricia",
-  diz:"as aulas de obstetrícia da semana deram lugar a módulos que casam com o que ela está estudando",
-  /* Obstetrícia fica para mais adiante. No lugar, o módulo do Medway que
-     conversa com o conteúdo do próprio dia — que é o que faz a videoaula
-     render, em vez de ser mais uma coisa na lista:
-
-     30/09, notificação compulsória e vigilância → Preventiva, SUS e
-     atenção primária;
-     01/10, estudos e inquéritos epidemiológicos, e 02/10, tabela 2×2,
-     valor preditivo e razão de verossimilhança → Bioestatística e
-     epidemiologia, que é exatamente essa matéria. */
-  trocar:[{data:"2026-09-30", comeca:"Medway — aulas",
-           para:"Medway — aulas: Preventiva: SUS e atenção primária"},
-          {data:"2026-10-01", comeca:"Medway — aulas",
-           para:"Medway — aulas: Bioestatística e epidemiologia"},
-          {data:"2026-10-02", comeca:"Medway — aulas",
-           para:"Medway — aulas: Bioestatística e epidemiologia"}]},
-
- {id:"notificacao-termina-quinta",
-  diz:"a notificação compulsória passou para quinta, para ser terminada",
-  /* Ela começou a notificação compulsória na quarta e não terminou. O botão
-     "não deu — remarcar" a mandaria para 10 de outubro, que é a próxima
-     vaga livre — onze dias depois e já do outro lado de toda a
-     epidemiologia. Tema começado não espera onze dias: vai para quinta, com
-     o título dizendo que é para terminar.
-
-     Para caber, a aula de Bioestatística da quinta vai para o dia 12, que
-     tem quatro vagas e é o último dia inteiro antes da viagem — e o mesmo
-     módulo continua marcado na sexta, então nada se perde. */
-  /* trocar corre antes de mover, então o título muda primeiro, onde quer que
-     a tarefa esteja, e o mover a leva já com o nome novo. Sem data: o título
-     é único no plano, e daqui eu não sei em que dia ele caiu no aparelho. */
-  trocar:[{de:"Notificação compulsória e preenchimento da ficha",
-           para:"Notificação compulsória e preenchimento da ficha — terminar"}],
-  mover:[{titulo:"Notificação compulsória e preenchimento da ficha — terminar",
-          para:"2026-10-01"},
-         {data:"2026-10-01", comeca:"Medway — aulas", para:"2026-10-12"}]},
-
- {id:"parede-abdominal-dia-12",
-  diz:"parede abdominal e reconstrução entraram no dia 12, antes da viagem",
-  /* A sessão em que ela apresenta é "Hérnias e Parede Abdominal", e o caso
-     termina exatamente aí: abdome granulado, colostomia funcionante, parede
-     por reconstruir. Era a parte em que ela não tinha nada.
-
-     O dia 12 tem vagas desde que a preparação do caso foi para o fim de
-     setembro; não precisou sair bloco de questões nenhum. Fica na véspera
-     da véspera, e emenda com o dia 13, que já é todo de cirurgia. */
-  adicionar:[
-    {data:"2026-10-12", rank:3,
-     titulo:"Cirurgia — parede abdominal: hérnia incisional, perda de domínio e compartimental"},
-    {data:"2026-10-12", rank:4,
-     titulo:"Cirurgia — reconstrução da parede: telas, separação de componentes e o tempo certo"}],
-  desafogar:{de:"2026-10-12", ate:"2026-10-13"}},
-
- {id:"semana6-terca-e-quarta",
-  diz:"na semana 6 a terça de manhã é sua com a Érika, e a quarta à tarde é da Juliana e da Luana",
-  /* Invertendo a semana 5, em que a terça era da Juliana e da Luana e a
-     quarta era dela: agora a terça de manhã é dela com a Érika, e o turno
-     de UBS da quarta — que nesta semana é o da tarde — é da outra dupla.
-
-     Só os dois dias que a inversão determina. Segunda e sexta o cronograma
-     marca UBS nos dois turnos, e a semana 5 não dá precedente: lá esses
-     turnos simplesmente não tiveram prática. Ficam como a coordenação
-     publicou até ela dizer. */
-  escala:{"2026-10-06":{m:"ubs", com:"Érika"},
-          "2026-10-07":{t:"livre", outras:"Juliana e Luana"}}},
-
- {id:"viagem-dia-14-fim-do-dia",
-  diz:"a viagem é dia 14 no fim do dia, então o 14 volta a ser um dia inteiro aqui",
-  /* Estava montado para a viagem ser na noite de 13 ou na manhã de 14: o
-     dia 13 tinha o aviso de voo e o 14 era dia de congresso, com só os dois
-     blocos da noite. Com o voo no fim do dia 14, é o contrário — o dia é
-     dela, em Cuiabá, e a noite é que some.
-
-     O 14 deixa de ser "fora": volta a ser dia livre, com cinco blocos e com
-     a academia de volta, e ganha o aviso do voo no fim da tarde. O ensaio
-     da apresentação, que ia cair às 20h45 num avião, passa a caber de dia.
-     O aviso de viagem sai do dia 13, que volta a ser um dia comum. */
-  escala:{"2026-10-14":{m:"livre", t:"livre"}},
-  compromissos:{
-    "2026-10-13":[],
-    "2026-10-14":[{h:"18h00",txt:"Viagem para o Rio — voo no fim do dia",curto:"viagem"}]}},
-
- {id:"semana6-segunda-e-sexta-sem-ubs",
-  diz:"segunda 5 e sexta 9 ficaram sem UBS, e a semana voltou a ter vinte blocos",
-  /* O cronograma marcava UBS nos dois turnos de segunda e de sexta, e o
-     grupo dela não tem prática em nenhum dos quatro. Isso devolve seis
-     blocos: a semana sai de 14 para 20, e as 21 tarefas desses cinco dias
-     passam a caber quase todas. */
-  escala:{"2026-10-05":{m:"livre", t:"livre"},
-          "2026-10-09":{m:"livre", t:"livre"}},
-  desafogar:{de:"2026-10-05", ate:"2026-10-09"}},
-
- {id:"semana6-duplas-confirmadas",
-  diz:"na semana 6 a prática é só segunda de manhã, da Juliana e da Luana, e terça de manhã, sua com a Érika",
-  /* A escala fechada da semana tem dois turnos, e nenhum outro. A segunda
-     de manhã é da outra dupla, então o dia continua inteiro de estudo para
-     ela, mas a agenda passa a dizer quem está na unidade.
-
-     E a tarde de quarta deixa de dizer que a Juliana e a Luana estão lá: eu
-     tinha suposto isso quando só sabia da inversão, e a escala fechada
-     mostra que naquele turno não há prática do grupo. O dia não muda de
-     tamanho; o que muda é parar de afirmar o que não foi dito. */
-  escala:{"2026-10-05":{m:"livre", t:"livre", outras:"Juliana e Luana"},
-          "2026-10-07":{t:"livre"}}},
-
- {id:"arrumar-ate-a-viagem",
-  diz:"os dias vazios e as aulas repetidas foram arrumados",
-  /* Defeito meu, e de dois tipos. Puxar conteúdo para a frente abre buraco
-     atrás, porque a vaga anda sempre para diante e não volta: a sexta 2 e o
-     sábado 3 ficaram sem nada enquanto a segunda 5 tinha cinco tarefas. E
-     empurrar tarefa para o próximo dia com vaga pôs aula do Medway em dia
-     que já tinha uma igual — segunda 5 com "Ginecologia" duas vezes, sexta
-     9 com "Infectologia" duas vezes.
-
-     arrumar() tira a repetição e enche as vagas de hoje até o dia 11 com
-     conteúdo de dias posteriores — conteúdo é a única coisa do plano sem
-     dia próprio. Para no dia 11 de propósito: 12, 13 e 14 têm a preparação
-     do caso e a cirurgia em lugares escolhidos. O que ficou para trás não
-     entra: esse já aparece sozinho na seção do dia de hoje. */
-  arrumar:{ate:"2026-10-11"}},
-
- {id:"simulado-no-domingo-4",
-  diz:"o simulado que ficou para trás veio para o domingo 4",
-  /* O simulado do sábado 3 não foi feito, e a varredura o levou para a
-     frente. Ela quer fazê-lo hoje, no domingo, que tem o bloco longo da
-     manhã — o tamanho de um simulado.
-
-     Não dá para dizer a data dele: cada aparelho remanejou do seu jeito,
-     conforme o que ela marcou como feito. Então o pedido é pelo que se sabe
-     e não muda: um só (limite), e dos remarcados (adiada), o que deixa em
-     paz o simulado do sábado 10, que está no dia que o plano lhe deu.
-
-     E como o domingo só tem dois blocos, o desafogar manda adiante a última
-     da lista, que é uma revisão: o simulado entra com rank 0 porque é o que
-     ela pediu para hoje. */
-  mover:[{titulo:"Medway — simulado da semana", adiada:true, limite:1,
-          de:"2026-10-05", para:"2026-10-04", rank:0}],
-  desafogar:{de:"2026-10-04", ate:"2026-10-04"}},
-
- {id:"desempilhar-a-vespera",
-  diz:"a véspera da prova voltou a caber num dia",
-  /* Até aqui, quando a vaga acabava, a varredura punha a tarefa atrasada no
-     último dia — sempre nele. Duas semanas de atraso viraram uma pilha de
-     dezenove tarefas em 20 de outubro, num dia de quatro blocos, com a
-     folha de última hora enterrada no meio. O código novo espalha; esta
-     correção desfaz a pilha que o antigo já deixou no aparelho.
-
-     A folha vai para o primeiro bloco antes de tudo: é a véspera da prova e
-     ela é a razão do dia. Rank 0 não bastava — a ordem desempata pelo id, e
-     os blocos do Medway nasceram antes dela —, então entra com -1, que é
-     sempre o primeiro, e o desafogar nunca a alcança. Os dois simulados
-     gerais do dia 19 ganham rank 0 pelo mesmo motivo: são a preparação
-     desenhada para a véspera, e tinham caído para o fim da fila.
-     O resto se distribui pelos dias que ainda faltam. */
-  mover:[{titulo:"Folha de última hora: números que mais caem",
-          para:"2026-10-20", rank:-1},
-         {comeca:"Simulado geral — ", para:"2026-10-19", rank:0}],
-  desafogar:{de:"2026-10-19", ate:"2026-10-20"}},
-
- {id:"epidemiologia-do-hugo-no-dia-8",
-  diz:"a matéria das duas aulas do prof. Hugo entrou no dia 8",
-  /* Prof. Hugo deu Epidemiologia parte 1 na quarta e parte 2 na quinta, e o
-     conteúdo programático dessas duas aulas é exatamente testes
-     diagnósticos, sensibilidade e especificidade, valor preditivo e razão
-     de verossimilhança. Ela quer estudar isso no dia 8, com a aula fresca,
-     no lugar da videoaula de infectologia e do bloco de questões.
-
-     Os dois blocos estavam no dia 14 — o dia da viagem, onde não serviam
-     para nada. Vêm por "mover", não por trocar e tirar: mover leva a tarefa
-     que existe, então não há como duplicar título nem perder tema se o
-     aparelho dela estiver num arranjo diferente do meu. Rank 0 para terem
-     hora, e não "encaixar no dia".
-
-     A infectologia do dia 8 sai sem perda: a mesma videoaula está marcada
-     nos dias 9 a 13. O bloco de questões do dia também: ele nasce todo dia.
-     As trilhas de questões atrasadas eu não toco — essas ela quer fazer.
-
-     Os outros dois temas do Hugo, razão de verossimilhança e curva ROC,
-     ficam onde estão, dias 10 e 11, já na ordem certa. */
-  tirar:[{comeca:"Medway — aulas: Infectologia", data:"2026-10-08"},
-         {comeca:"Medway — questões do dia", data:"2026-10-08"}],
-  mover:[{titulo:"Tabela 2×2 · sensibilidade e especificidade", limite:1,
-          para:"2026-10-08", rank:0},
-         {titulo:"Valor preditivo positivo e negativo · efeito da prevalência",
-          limite:1, para:"2026-10-08", rank:0}],
-  desafogar:{de:"2026-10-08", ate:"2026-10-08"}},
-
- {id:"so-a-prova-e-o-congresso",
-  diz:"a trilha do Medway saiu do caminho: até a prova, só o que cai nela e o congresso",
-  /* A doze dias da prova e cinco da apresentação, o plano estava com 73
-     tarefas em 39 blocos — trinta e quatro sem hora. E o pior era quem
-     tinha hora: na véspera da prova, três dos quatro blocos eram videoaula
-     do Medway, enquanto a revisão de Adolescente e o bloco do caso do
-     congresso ficavam em "encaixar no dia".
-
-     Ela pediu foco no que cai na prova e no trabalho do congresso, e a
-     trilha do Medway não é nem um nem outro: é preparação para prova de
-     residência, com ementa muito maior que a do rodízio. Sai inteira daqui
-     até o dia 20 — videoaulas, questões do dia, trilhas atrasadas e o
-     simulado da semana. Ficam os 23 temas do plano de ensino, as revisões
-     espaçadas, os dois simulados gerais dos dez eixos, a folha de última
-     hora e os onze blocos do congresso e de cirurgia.
-
-     O que cai na prova por outra fonte não se perde: TB e hanseníase,
-     bioestatística, preventiva e os rastreamentos são eixos do plano de
-     ensino e já têm bloco próprio, com resumo escrito para a ementa dela.
-     E questão continua tendo lugar: os simulados gerais do dia 19, a curva
-     ROC com vinte questões e o fecho de cada revisão espaçada.
-
-     Isto é reversível de propósito: uma correção devolve a trilha se ela
-     quiser, e nada do Medway precisa do app para existir. */
-  tirar:[{comeca:"Medway — ", de:"2026-10-09"}],
-
-  /* E com o espaço que sobrou, o congresso ganha uma ordem que termina antes
-     de ela subir na mesa. O ensaio em voz alta estava no dia 19 — quatro
-     dias DEPOIS da apresentação, empurrado para lá pelo remanejamento, o
-     que é inútil. Os cinco blocos da preparação passam a ocupar o primeiro
-     horário de cada dia, de sábado à véspera do voo:
-
-       10/10  o caso: abdome aberto, TPN e fístula
-       11/10  o que a literatura diz, e o que a contraria
-       12/10  reconstruir a história e os exames
-       13/10  as perguntas que a mesa vai fazer
-       14/10  ensaiar em voz alta, cronometrada — o voo é às 18h
-
-     Os blocos de cirurgia geral dos dias 16 a 18 ficam onde estão: aqueles
-     são para acompanhar o congresso, não para preparar a apresentação. */
-  mover:[{titulo:"Congresso — abdome aberto, TPN e fístula enteroatmosférica",
-          para:"2026-10-10", rank:0},
-         {titulo:"Congresso — o caso: o que a literatura diz, e o que a contraria",
-          para:"2026-10-11", rank:0},
-         {titulo:"Congresso — o caso: reconstruir a história e os exames",
-          para:"2026-10-12", rank:0},
-         {titulo:"Congresso — as perguntas que a mesa vai fazer",
-          para:"2026-10-13", rank:0},
-         {titulo:"Congresso — ensaiar a apresentação em voz alta, cronometrada",
-          para:"2026-10-14", rank:0}],
-  desafogar:{de:"2026-10-09", ate:"2026-10-20"}},
-
- {id:"provas-antigas-do-drive",
-  diz:"as provas antigas entraram no plano, e a ordem do dia passou a seguir o que elas cobram",
-  /* Li as provas de MFC da pasta do Drive dela. Duas vêm com gabarito —
-     16/07/2020 e 05/11/2020 — e repetem treze enunciados entre si, alguns
-     palavra por palavra; conferi cada resposta do gabarito contra a medicina
-     e todas fecham. Isso muda duas coisas no plano.
-
-     A primeira é um buraco de conteúdo. Três das vinte questões são de
-     inferência — erro tipo I, IC 95% sem o valor p, viés de confusão — e é
-     exatamente o que o prof. Hugo deu no quadro, sem slide. Os resumos do app
-     cobriam 2×2, valor preditivo, verossimilhança e ROC, e não cobriam p, IC,
-     RR nem os erros do teste. Entra um bloco novo para isso, hoje, no
-     primeiro horário.
-
-     A segunda é a ordem. O que a prova cobra sem falhar — hanseníase e
-     tuberculose em caso clínico, notificação de caso suspeito, SESAI, as
-     questões clínicas de mama e colo, queda do idoso, velocidade de
-     crescimento — sobe para rank 0 e ganha hora de verdade. O detalhe de
-     portaria desce para 2: continua no plano, mas não ocupa mais o melhor
-     bloco do dia, porque nas duas provas com gabarito nenhuma questão pediu
-     número de portaria. É re-priorização, não corte: nada sai.
-
-     E o banco das questões que repetem entra como bloco próprio amanhã, com
-     método de questões. O resumo dele diz o que eu diria aqui: ler resposta
-     pronta não treina escolher entre quatro alternativas parecidas, então o
-     melhor uso do tempo é responder as duas provas inteiras na pasta do Drive
-     e só depois conferir. */
-  adicionar:[
-    {data:"2026-10-12", rank:-1, tipo:"eixo", eixo:"epi",
-     titulo:"Inferência: valor p, IC 95%, risco e os erros do teste"},
-    {data:"2026-10-13", rank:-1, tipo:"eixo", eixo:"epi",
-     titulo:"Provas antigas: as questões que repetem"}],
-  trocar:[
-    /* sobe: o que as duas provas com gabarito cobraram */
-    {de:"Definição de caso, epidemiologia e transmissão", rank:0},
-    {de:"Clínica dermatológica e neurológica · diagnóstico", rank:0},
-    {de:"PQT-U, critério de alta, incapacidades e contatos", rank:0},
-    {de:"Etiologia, transmissão, patogênese e história clínica", rank:0},
-    {de:"Baciloscopia, TRM-TB, cultura e prova tuberculínica", rank:0},
-    {de:"Esquema básico, DOTS/TDO e reações adversas", rank:0},
-    {de:"Contatos, BCG, tratamento da ILTB e notificação", rank:0},
-    {de:"Rastreamento de mama e condutas pela mamografia", rank:0},
-    {de:"Doenças benignas da mama e exame clínico", rank:0},
-    {de:"Colo do útero: lesões precursoras e rastreamento", rank:0},
-    {de:"Planejamento reprodutivo e métodos contraceptivos", rank:0},
-    {de:"Crescimento: curvas da OMS e escore-z", rank:0},
-    {de:"Alimentação por faixa, obesidade e violência contra a criança", rank:0},
-    {de:"Cognição, funcionalidade (AVD e AIVD), quedas e mobilidade", rank:0},
-    {de:"Suporte familiar, violência intrafamiliar e assistência domiciliar", rank:0},
-    {comeca:"Notificação compulsória e preenchimento da ficha", rank:0},
-    {de:"Sistema Nacional de Vigilância Epidemiológica: origem e conceitos", rank:0},
-    {de:"SESAI, subsistema no SUS, DSEI e organização da rede", rank:0},
-    /* desce: o número da portaria, que nenhum gabarito pediu */
-    {de:"NOAS 2001 e 2002", rank:2},
-    {de:"Pacto pela Saúde — Portaria 399/2006", rank:2},
-    {de:"Portarias 3.252/2009, 1.378/2013 e 204/2016 · Resolução 588/2017", rank:2},
-    {de:"PNASPI, legislação, financiamento e principais desafios", rank:2}],
-
-  /* O remanejamento tinha deixado dois blocos da apresentação no dia 20 —
-     cinco dias depois de ela subir na mesa. Preparação para falar dia 15 tem
-     de acontecer antes do dia 15, então os dois voltam para a véspera e a
-     antevéspera do voo, na frente de tudo: rank -2, que é o primeiro horário.
-
-     E saem os três blocos de cirurgia geral que ficaram presos no dia 19. Eles
-     existiam para ela acompanhar o congresso; depois da volta não servem mais
-     a isso, e não caem na prova de Saúde Coletiva. Os dois que estão nas
-     noites do Rio, abdome agudo e o vocabulário do centro cirúrgico, ficam. */
-  mover:[{titulo:"Congresso — abdome aberto, TPN e fístula enteroatmosférica",
-          para:"2026-10-13", rank:-3},
-         {titulo:"Congresso — as perguntas que a mesa vai fazer",
-          para:"2026-10-13", rank:-2},
-         {titulo:"Congresso — o caso: o que a literatura diz, e o que a contraria",
-          para:"2026-10-14", rank:-3},
-         {titulo:"Congresso — ensaiar a apresentação em voz alta, cronometrada",
-          para:"2026-10-14", rank:-2}],
-  /* Sem recorte de data, de propósito: o desafogar roda depois do tirar, e com
-     filtro de dia estes três escapavam no dia 13 e reapareciam no 19. */
-  tirar:[{titulo:"Cirurgia — pré-operatório: risco, jejum e profilaxias"},
-         {titulo:"Cirurgia — pós-operatório: as complicações no tempo"},
-         {titulo:"Cirurgia — parede abdominal: hérnia incisional, perda de domínio e compartimental"}],
-  desafogar:{de:"2026-10-12", ate:"2026-10-20"}}
 ];
 
-/* A escala das práticas na UBS e os compromissos avulsos são dados de quem
+/* A escala das práticas e os compromissos avulsos são dados de quem
    usa, não do programa: ficam no aparelho, editados pelo botão "ajustar o
    dia", e nunca no código. Um arquivo meus-dados.js ao lado pode trazer uma
    primeira carga — é opcional, e onde ele não existe o app começa em branco.
 
    escala[data]      = {turno:"manha"|"tarde"|"folga", com, outras}
    compromissos[data]= [{h, txt, curto}]
-   Dia "folga" é dia sem UBS: rende cinco blocos de estudo, como a sexta. */
+   Dia "folga" é dia sem prática: rende cinco blocos de estudo. */
 const SEMENTE=(typeof DADOS_INICIAIS!=="undefined"&&DADOS_INICIAIS)||{};
 let ESCALA=SEMENTE.escala||{};
-let COMPROMISSOS=SEMENTE.compromissos||{};
-let UBS=SEMENTE.ubs||"UBS";      /* o nome da unidade também é dado de quem usa */
+let COMPROMISSOS=(function(){      /* os do rodízio, mais os dela por cima */
+  const o={};
+  for(const d in EVENTOS) o[d]=EVENTOS[d].slice();
+  const meus=SEMENTE.compromissos||{};
+  for(const d in meus) o[d]=(o[d]||[]).concat(meus[d]);
+  return o;
+})();
+let UBS=SEMENTE.ubs||"Prática";  /* o nome do serviço também é dado de quem usa */
 
 /* A previsão vem do Open-Meteo, que não pede cadastro nem chave. Cobre uns
    dezesseis dias; os dias além disso simplesmente não mostram nada. É um
@@ -1466,7 +991,7 @@ const label=s=>{const d=toDate(s);return `${DIAS[d.getDay()]}, ${d.getDate()} de
 const curto=s=>{const d=toDate(s);return `${p2(d.getDate())}/${p2(d.getMonth()+1)}`};
 const extenso=s=>{const d=toDate(s);return `${d.getDate()} de ${MES_EXT[d.getMonth()]}`};
 function hoje(){const t=toStr(new Date());return t<START?START:(t>FIM?FIM:t)}
-function tipoDia(d){const w=toDate(d).getDay();return w===0?"domingo":w===6?"sabado":w===5?"sexta":"ubs"}
+function tipoDia(d){const w=toDate(d).getDay();return w===0?"domingo":w===6?"sabado":"semana"}
 /* A escala fala em turnos: m e t valem "ubs", "aula" ou "folga". A forma
    antiga, com um turno só, continua lida — quem já tem dado guardado não
    perde nada. */
@@ -1495,26 +1020,24 @@ function slotsDe(d,m){
     if(manha&&tarde) return SLOTS.integral;   /* sobra a noite */
     if(manha) return SLOTS.manha;
     if(tarde) return SLOTS.tarde;
-    return SLOTS.sexta;                       /* dia livre */
+    return SLOTS.livre;                       /* dia livre */
   }
-  if(e&&e.folga) return SLOTS.sexta;
-  if(FERIADOS[d]) return SLOTS.sexta;
+  if(e&&e.folga) return SLOTS.livre;
+  if(FERIADOS[d]) return SLOTS.livre;
   const t=tipoDia(d);
-  return t==="ubs"?SLOTS[m==="tarde"?"tarde":"manha"]:SLOTS[t];
+  return t==="semana"?SLOTS[m==="tarde"?"tarde":"manha"]:SLOTS[t];
 }
-function temaMedway(d){return MEDWAY[Math.min(Math.floor(range(START,d).length/7),MEDWAY.length-1)]}
 
 /* Que método vale para cada tarefa. O título é o que distingue as tarefas de
    um mesmo tipo — simulado, folha e revisão de eixo são todas "revisao". */
 function metodoDe(x){
   const t=x.titulo||"";
-  if(t.startsWith("Congresso — ")) return "caso";
-  if(t.startsWith("Cirurgia — ")) return "eixo";
+  if(x.tipo==="osce") return "osce";
   if(t.startsWith("Simulado geral")||t==="Medway — simulado da semana") return "simulado";
   if(t.startsWith("Folha de última hora")) return "folha";
-  if(t.startsWith("Medway — aulas")) return "videoaulas";
-  /* depois das aulas, porque "Revisão dirigida e questões" é aula */
-  if(/quest(ões|ão)/i.test(t)||/trilha/i.test(t)) return "questoes";
+  if(t.startsWith("Medway — videoaulas")) return "videoaulas";
+  /* depois das videoaulas, porque elas também falam em questões */
+  if(/quest(ões|ão)/i.test(t)||/trilha/i.test(t)||/provas antigas/i.test(t)) return "questoes";
   if(x.tipo==="revisao") return "revisao";
   if(x.tipo==="eixo") return "eixo";
   return null;
@@ -1554,38 +1077,63 @@ function montarPlano(){
   /* plano novo começa hoje: reconstruir no meio do rodízio não deve encher
      de tarefa vencida os dias que já passaram */
   const dias=range(hoje()>START?hoje():START,LAST), T=[]; let id=1;
+
+  /* O Medway entra nos dias que têm folga de verdade — três blocos ou mais.
+     Nas segundas, quintas e sextas sobra a noite, e a noite é do conteúdo.
+     Sem nome de aula: a trilha de GO entra aqui quando o material chegar. */
   dias.forEach(d=>{
     const t=tipoDia(d);
-    if(t==="ubs"||t==="sexta"){
-      T.push({id:id++,tipo:"medway",rank:0,data:d,eixo:null,titulo:"Medway — aulas: "+temaMedway(d),status:"pendente"});
-      T.push({id:id++,tipo:"medway",rank:2,data:d,eixo:null,titulo:"Medway — questões do dia",status:"pendente"});
+    if(t==="sabado"){
+      T.push({id:id++,tipo:"medway",rank:0,data:d,eixo:null,
+              titulo:"Medway — simulado da semana",status:"pendente"});
+    }else if(t==="semana"&&slotsDe(d,"manha").length>=3){
+      T.push({id:id++,tipo:"medway",rank:2,data:d,eixo:null,
+              titulo:"Medway — questões do dia",status:"pendente"});
     }
-    if(t==="sabado") T.push({id:id++,tipo:"medway",rank:0,data:d,eixo:null,titulo:"Medway — simulado da semana",status:"pendente"});
   });
-  const cap={ubs:2,sexta:3,sabado:1,domingo:0}; let i=0;
-  for(const d of dias){
-    if(i>=CONTEUDO.length) break;
-    const vagas=Math.min(cap.sexta, Math.max(0, slotsDe(d,"manha").length-2));
-    for(let k=0;k<vagas&&i<CONTEUDO.length;k++){
+
+  /* Os quatro blocos de OSCE já têm dia marcado no calendário do grupo:
+     ficam onde o calendário os pôs, no começo do dia. */
+  for(const o of OSCES){
+    if(o.data>=dias[0]&&o.data<=LAST)
+      T.push({id:id++,tipo:"osce",rank:0,data:o.data,eixo:"osce",
+              titulo:o.titulo,status:"pendente"});
+  }
+
+  /* O conteúdo vai até a véspera do OSCE. Depois dele, a semana que sobra é
+     toda de revisão para a teórica.
+
+     Um tema por dia, e só então um segundo em quem ainda tem vaga. Enfiar
+     tudo o que cabe no primeiro dia que aparece acabaria o conteúdo três
+     semanas antes da prova e deixaria o resto do rodízio vazio — o plano
+     fica melhor distribuído se cada dia leva um, de ponta a ponta. */
+  const ATE=addDays(OSCE,-1);
+  const diasConteudo=dias.filter(d=>d<=ATE);
+  const cabe=d=>T.filter(x=>x.data===d).length<slotsDe(d,"manha").length;
+  let i=0;
+  for(let volta=0; i<CONTEUDO.length; volta++){
+    let colocou=false;
+    for(const d of diasConteudo){
+      if(i>=CONTEUDO.length) break;
+      if(!cabe(d)) continue;
       const[e,t]=CONTEUDO[i++];
       T.push({id:id++,tipo:"eixo",rank:1,data:d,eixo:e,titulo:t,status:"pendente"});
+      colocou=true;
     }
+    if(!colocou) break;
   }
   /* Num aparelho que instala o app com o rodízio já em curso não há dia para
-     todos os 29 temas: o laço acima para quando os dias acabam e o resto
-     ficava de fora — num plano montado em 5 de outubro entravam 18, e
-     adolescente, mulher, idoso, hanseníase, tuberculose e saúde indígena
-     simplesmente não existiam. Matéria de prova desaparecendo sem aviso, e o
-     app parecendo em ordem.
-
-     O que sobra se reparte pelos dias que há, um em cada, do primeiro ao
-     último e de volta ao começo. Fora os dias fora de casa, e sem passar da
-     véspera da viagem enquanto houver onde. O dia fica apertado, e apertado
-     aparece com "encaixar no dia" — que é melhor do que não existir. */
+     todos os temas: o laço acima para quando os dias acabam e o resto ficaria
+     de fora — matéria de prova desaparecendo sem aviso, e o app parecendo em
+     ordem. O que sobra se reparte pelos dias que há, um em cada, do primeiro
+     ao último e de volta ao começo. Fora os dias fora de casa. O dia fica
+     apertado, e apertado aparece com "encaixar no dia" — que é melhor do que
+     não existir. */
   if(i<CONTEUDO.length){
     const emCasa=d=>{const e=diaEscala(d); return !(e&&e.fora)};
     const vesp=vesperaDaViagem(dias[0]);
-    let pool=dias.filter(d=>emCasa(d)&&(!vesp||d<=vesp));
+    let pool=dias.filter(d=>d<=ATE&&emCasa(d)&&(!vesp||d<=vesp));
+    if(!pool.length) pool=dias.filter(d=>d<=ATE&&emCasa(d));
     if(!pool.length) pool=dias.filter(emCasa);
     if(!pool.length) pool=dias.slice();
     for(let v=0;i<CONTEUDO.length&&pool.length;v++){
@@ -1593,23 +1141,36 @@ function montarPlano(){
       T.push({id:id++,tipo:"eixo",rank:1,data:d,eixo:e,titulo:t,status:"pendente"});
     }
   }
-  const rev=Object.keys(EIXOS).map(e=>({e,t:"Revisão espaçada: "+EIXOS[e].n}));
-  rev.push({e:null,t:"Simulado geral — 40 questões dos 10 eixos"});
-  rev.push({e:null,t:"Simulado geral — 40 questões + revisão dos erros"});
-  rev.push({e:null,t:"Folha de última hora: números que mais caem"});
-  const alvos=dias.filter(d=>tipoDia(d)==="domingo"||d>="2026-10-15"); let r=0;
-  for(const d of alvos){
-    if(r>=rev.length) break;
-    const livre=slotsDe(d,"manha").length-T.filter(x=>x.data===d).length;
-    for(let k=0;k<livre&&r<rev.length;k++){
+
+  /* A revisão vai nos domingos e, sobretudo, na semana entre as duas provas:
+     do dia do OSCE até a véspera da teórica. */
+  const rev=Object.keys(EIXOS).filter(e=>e!=="osce")
+    .map(e=>({e,t:"Revisão espaçada: "+EIXOS[e].n}));
+  rev.push({e:null,t:"Provas antigas — as questões que mais repetem"});
+  rev.push({e:null,t:"Simulado geral — 20 questões no tempo da prova, e os erros"});
+  rev.push({e:null,t:"Folha de última hora: doses e números que mais caem"});
+  /* A revisão vem depois do conteúdo dela, nunca antes — por isso só começa
+     quando o último tema já tem dia. Na prática é a semana entre o OSCE e a
+     teórica, que é exatamente para isso. O dia do OSCE fica de fora. */
+  const fimConteudo=T.filter(x=>x.tipo==="eixo").reduce((m,x)=>x.data>m?x.data:m,START);
+  const alvos=dias.filter(d=>d>fimConteudo&&d!==OSCE); let r=0;
+  for(let volta=0; r<rev.length; volta++){
+    let colocou=false;
+    for(const d of alvos){
+      if(r>=rev.length) break;
+      if(!cabe(d)) continue;
       const it=rev[r++];
       T.push({id:id++,tipo:"revisao",rank:1,data:d,eixo:it.e,titulo:it.t,status:"pendente"});
+      colocou=true;
     }
+    if(!colocou) break;
   }
+  /* se nem assim couber, o que sobrou vai para a véspera da teórica: dia
+     apertado aparece com "encaixar no dia", e isso é melhor do que sumir */
   while(r<rev.length){const it=rev[r++];
     T.push({id:id++,tipo:"revisao",rank:1,data:LAST,eixo:it.e,titulo:it.t,status:"pendente"});}
   return {v:1,tarefas:T,modos:{},treinoAtual:0,treinosFeitos:[],
-          lembretes:(SEMENTE.lembretes||[]).slice(),
+          lembretes:LEMBRETES.concat(SEMENTE.lembretes||[]),
           escala:ESCALA,compromissos:COMPROMISSOS};
 }
 
@@ -1769,7 +1330,7 @@ if(!S.escala) S.escala=ESCALA; else ESCALA=S.escala;
 if(!S.compromissos) S.compromissos=COMPROMISSOS; else COMPROMISSOS=S.compromissos;
 if(!S.ubs) S.ubs=UBS; else UBS=S.ubs;
 if(!S.aulas) S.aulas={};        /* o horário de cada aula, anotado por ela */
-if(!Array.isArray(S.lembretes)) S.lembretes=(SEMENTE.lembretes||[]).slice();
+if(!Array.isArray(S.lembretes)) S.lembretes=LEMBRETES.concat(SEMENTE.lembretes||[]);
 salvar();
 
 /* remanejar atrasadas na abertura */
@@ -1811,13 +1372,17 @@ function render(){
   arco.style.strokeDashoffset=C*(1-pc/100);
   arco.style.strokeLinecap=pc>0?"round":"butt";
   document.getElementById("rosca").setAttribute("aria-label",pc+" por cento do plano concluído");
-  const hj=hoje(), faltam=range(hj,PROVA).length-1;
+  /* a contagem é sempre para a prova mais próxima: o OSCE primeiro, a
+     teórica depois dele */
+  const hj=hoje();
+  const alvo=hj<=OSCE?OSCE:PROVA, nome=alvo===OSCE?"o OSCE":"a prova";
+  const faltam=range(hj,alvo).length-1;
   document.getElementById("contagem").textContent=
-    hj>PROVA ? (hj===VISTA?"Vista de prova":"Último dia do rodízio")
-    : faltam>0 ? faltam+(faltam>1?" dias até a prova":" dia até a prova")
-    : "Dia da prova";
+    hj>PROVA ? "Rodízio até "+curto(FIM)
+    : faltam>0 ? faltam+(faltam>1?" dias até "+nome:" dia até "+nome)
+    : (alvo===OSCE?"Dia do OSCE":"Dia da prova");
   document.getElementById("capa-sub").textContent=
-    `Prova em ${extenso(PROVA)} · ${ok} de ${tot} tarefas feitas`;
+    `OSCE em ${extenso(OSCE)}, teórica em ${extenso(PROVA)} · ${ok} de ${tot} tarefas feitas`;
   document.getElementById("recado").innerHTML=recado
     ? `<button class="aviso" onclick="fecharRecado()"><span>${esc(recado)}</span><b>fechar</b></button>` : "";
   document.querySelectorAll(".barra button").forEach(b=>{
@@ -1865,30 +1430,31 @@ function viewDia(){
            stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 5.5L16 12l-6.5 6.5"/></svg>
     </button></div>${faixaTempo(d)}`;
 
+  if(d===OSCE){
+    return h+`<div class="tarefa" style="--c:var(--alerta)">
+      <div class="t-topo"><span class="t-hora">OSCE · manhã</span></div>
+      <p class="t-tit">Peso 2. Laboratórios práticos da UNIVAG. Jaleco, crachá, adorno zero.</p></div>`;
+  }
   if(d===PROVA){
     return h+`<div class="tarefa" style="--c:var(--perigo)">
-      <div class="t-topo"><span class="t-hora">Prova de Saúde Coletiva</span></div>
-      <p class="t-tit">Vale 60% da média. Antes: 30 minutos só na folha de última hora.</p></div>`;
-  }
-  if(d===VISTA){
-    return h+`<div class="tarefa" style="--c:var(--alerta)">
-      <div class="t-topo"><span class="t-hora">Vista de prova</span></div>
-      <p class="t-tit">Anote o que caiu e onde errou — e confira a nota questão a questão.</p></div>`;
+      <div class="t-topo"><span class="t-hora">Prova teórica · à tarde</span></div>
+      <p class="t-tit">Peso 6. Levar as folhas de nota prática das semanas 4 e 7. Antes:
+      30 minutos só na folha de última hora.</p></div>`;
   }
   if(d===FIM){
     return h+`<div class="tarefa" style="--c:var(--verde)">
       <div class="t-topo"><span class="t-hora">Último dia do rodízio</span></div>
-      <p class="t-tit">Fecha a ficha de desempenho com a preceptora — são os outros 40% da
-      média.</p></div>`;
+      <p class="t-tit">Lista de frequência completa, carimbada e assinada, em PDF para o líder —
+      prazo 20/12 às 22h. Sem isso a nota de atividade não fecha.</p></div>`;
   }
 
   /* com escala os turnos já estão decididos; sem escala, ela escolhe no alternador */
   const escalaDia=diaEscala(d), feriado=FERIADOS[d];
   const temTurnos=escalaDia&&(escalaDia.m||escalaDia.t);
   if(t==="ubs"&&!feriado&&!temTurnos&&!(escalaDia&&escalaDia.folga)){
-    h+=`<div class="turno" role="group" aria-label="Turno na UBS">
-      <button aria-pressed="${modo==="manha"}" onclick="setModo('manha')">UBS de manhã</button>
-      <button aria-pressed="${modo==="tarde"}" onclick="setModo('tarde')">UBS de tarde</button></div>`;
+    h+=`<div class="turno" role="group" aria-label="Turno de prática">
+      <button aria-pressed="${modo==="manha"}" onclick="setModo('manha')">prática de manhã</button>
+      <button aria-pressed="${modo==="tarde"}" onclick="setModo('tarde')">prática de tarde</button></div>`;
   }
 
   const treino=`Academia — ${TREINOS[S.treinoAtual].n}: ${esc(TREINOS[S.treinoAtual].f)}`;
@@ -1905,10 +1471,15 @@ function viewDia(){
     txtM=escalaDia.mTxt||""; txtT=escalaDia.tTxt||"";
   }else if(feriado){ manha=tarde="feriado"; }
   else if(escalaDia&&escalaDia.folga){ manha=tarde=""; }
-  else if(t==="ubs"){ if(modo==="tarde") tarde="ubs"; else manha="ubs"; }
+  else if(t==="semana"){ if(modo==="tarde") tarde="ubs"; else manha="ubs"; }
 
-  const qual=(v,txt)=>v==="ubs"?naUbs:v==="aula"?("Aula teórica"+(txt?" — "+esc(txt):" na UNIVAG")):
-              v==="folga"?"Folga semanal":v==="feriado"?esc(feriado)+" — sem UBS e sem aula":"";
+  /* O cronograma do grupo já descreve o turno por extenso — plantão, qual
+     ambulatório, com quem e a que horas. Onde ele descreve, é o que aparece. */
+  const qual=(v,txt)=> txt?esc(txt)
+    : v==="ubs"?naUbs
+    : v==="aula"?"Aula teórica na UNIVAG"
+    : v==="folga"?"Folga semanal"
+    : v==="feriado"?esc(feriado)+" — sem prática e sem aula":"";
   /* academia se encaixa na brecha que o dia deixar */
   const horaGym=ocupado(manha)&&ocupado(tarde)?"11h30–12h45"
     :ocupado(manha)?"12h30–13h45":ocupado(tarde)?"11h30–12h45":"12h00–13h30";
@@ -1930,15 +1501,16 @@ function viewDia(){
     fixas.push([7.5, linha("o dia todo", esc(fora), "compromisso")]);
   }
   else if(diaTodoLivre){
-    fixas.push([7.5, linha("sem UBS", (outras?outras+" na escala — ":"")+"o dia todo é de estudo")]);
+    fixas.push([7.5, linha("sem prática", (outras?outras+" na escala — ":"")+"o dia todo é de estudo")]);
   }
   else if(manha==="folga") fixas.push([7.5, linha("manhã","Folga semanal")]);
-  else if(manha==="livre") fixas.push([7.5, linha("07h30–11h30",
-    (outras?outras+" na UBS — ":"")+"sua manhã está livre")]);
-  else if(manha) fixas.push([7.5, linha("07h30–11h30", qual(manha,txtM), manha==="aula"?"compromisso":"")]);
-  else if(outras&&ocupado(tarde)) fixas.push([7.5, linha("07h30–11h30", outras+" na UBS — sua manhã está livre")]);
-  else if(!ocupado(tarde)&&(t==="sexta"||(escalaDia&&escalaDia.folga)))
-    fixas.push([7.5, linha("manhã","sem UBS — dia de estudo")]);
+  else if(manha==="livre") fixas.push([7.5, linha("manhã",
+    (outras?outras+" na escala — ":"")+"sua manhã está livre")]);
+  else if(manha) fixas.push([7.5, linha(txtM?"manhã":"07h00–13h00", qual(manha,txtM),
+    manha==="aula"?"compromisso":"")]);
+  else if(outras&&ocupado(tarde)) fixas.push([7.5, linha("manhã", outras+" na escala — sua manhã está livre")]);
+  else if(!ocupado(tarde)&&escalaDia&&escalaDia.folga)
+    fixas.push([7.5, linha("manhã","sem prática — dia de estudo")]);
 
   /* fora de casa não há academia: o treino espera a volta */
   if(!fora) fixas.push([horaGym==="12h30–13h45"?12.5:horaGym==="11h30–12h45"?11.5:12,
@@ -1946,11 +1518,11 @@ function viewDia(){
 
   if(fora||diaTodoLivre){ /* a linha única da manhã já falou pelo dia inteiro */ }
   else if(tarde==="folga") fixas.push([13, linha("tarde","folga semanal")]);
-  else if(tarde==="livre") fixas.push([13, linha("13h00–17h00",
-    (outras?outras+" na UBS — ":"")+"sua tarde está livre")]);
-  else if(tarde) fixas.push([13, linha("13h00–17h00", qual(tarde,txtT), tarde==="aula"?"compromisso":"")]);
-  else if(outras&&ocupado(manha)) fixas.push([13, linha("13h00–17h00", outras+" na UBS — sua tarde está livre")]);
-  else if(toDate(d).getDay()===4) fixas.push([13, linha("tarde","descanso semanal, pelo plano de ensino")]);
+  else if(tarde==="livre") fixas.push([13, linha("tarde",
+    (outras?outras+" na escala — ":"")+"sua tarde está livre")]);
+  else if(tarde) fixas.push([13, linha(txtT?"tarde":"13h00–17h00", qual(tarde,txtT),
+    tarde==="aula"?"compromisso":"")]);
+  else if(outras&&ocupado(manha)) fixas.push([13, linha("tarde", outras+" na escala — sua tarde está livre")]);
 
   fixas.sort((a,b)=>a[0]-b[0]).forEach(x=>{h+=x[1]});
   h+=`</div>`;
@@ -2027,8 +1599,8 @@ function marcaEscala(d){
   if(e.m==="aula"||e.t==="aula")
     selos.push(`<span class="chip" style="--c:var(--verde)">aula teórica</span>`);
   const ubs=[e.m==="ubs"&&"manhã", e.t==="ubs"&&"tarde"].filter(Boolean);
-  if(ubs.length) selos.push(`<span class="chip neutro">UBS ${ubs.join(" e ")}</span>`);
-  else if(!selos.length&&(e.folga||(!e.m&&!e.t&&e.outras))) selos.push(`<span class="chip neutro">sem UBS</span>`);
+  if(ubs.length) selos.push(`<span class="chip neutro">prática ${ubs.join(" e ")}</span>`);
+  else if(!selos.length&&(e.folga||(!e.m&&!e.t&&e.outras))) selos.push(`<span class="chip neutro">sem prática</span>`);
   if(e.t==="folga") selos.push(`<span class="chip neutro">folga à tarde</span>`);
   return selos.join("");
 }
@@ -2038,7 +1610,7 @@ function selosCompromisso(d){
     .map(c=>`<span class="chip" style="--c:var(--alerta)">${esc(c.curto||c.txt)}</span>`).join("");
 }
 
-/* O painel onde ela mesma diz como é o dia: turno na UBS, com quem, e os
+/* O painel onde ela mesma diz como é o dia: turno de prática, com quem, e os
    compromissos que não são nem plantão nem estudo. Fica fechado até pedirem. */
 function painelAjuste(d,e){
   if(ajustando!==d)
@@ -2048,13 +1620,13 @@ function painelAjuste(d,e){
      estudo leem — m e t. O que aparece selecionado é o que ela mesma pôs
      aqui; sem nada posto, fica "como está no cronograma", e a linha abaixo
      diz o que o cronograma manda naquele dia. */
-  const opc=[["","como está no cronograma"],["ubs","UBS"],["aula","aula teórica na UNIVAG"],
+  const opc=[["","como está no cronograma"],["ubs","prática"],["aula","aula teórica na UNIVAG"],
              ["folga","folga"],["livre","livre — o turno é da outra dupla"]];
   const meu=ESCALA[d]||{};
   const sel=(id,atual)=>`<select id="${id}">${opc.map(([v,r])=>
     `<option value="${v}" ${(atual||"")===v?"selected":""}>${r}</option>`).join("")}</select>`;
   const base=CRONOGRAMA[d];
-  const rotulo=v=>({ubs:"UBS",aula:"aula teórica",folga:"folga",livre:"livre"})[v]||"nada marcado";
+  const rotulo=v=>({ubs:"prática",aula:"aula teórica",folga:"folga",livre:"livre"})[v]||"nada marcado";
   return `<div class="ajuste">
     <label class="campo"><span>Manhã</span>${sel("aj-manha",meu.m)}</label>
     <label class="campo"><span>Tarde</span>${sel("aj-tarde",meu.t)}</label>
@@ -2063,12 +1635,12 @@ function painelAjuste(d,e){
     <label class="campo"><span>Com quem</span>
       <input id="aj-com" type="text" maxlength="60" autocomplete="off"
              value="${e&&e.com?esc(e.com):""}" placeholder="nome da dupla"></label>
-    <label class="campo"><span>Quem fica na UBS no seu turno livre</span>
+    <label class="campo"><span>Quem fica na prática no seu turno livre</span>
       <input id="aj-outras" type="text" maxlength="60" autocomplete="off"
              value="${e&&e.outras?esc(e.outras):""}" placeholder="quem está na escala"></label>
     <label class="campo"><span>Nome da unidade, para todos os dias</span>
       <input id="aj-ubs" type="text" maxlength="40" autocomplete="off"
-             value="${esc(UBS)}" placeholder="UBS"></label>
+             value="${esc(UBS)}" placeholder="HSH"></label>
 
     <p class="ajuste-tit">Compromissos do dia</p>
     ${c.length?`<ul class="lembretes" style="margin-bottom:12px">${c.map((x,i)=>
@@ -2127,12 +1699,12 @@ function viewSemana(){
   range(diaAtivo,addDays(diaAtivo,6)).filter(d=>d<=FIM).forEach(d=>{
     const l=S.tarefas.filter(x=>x.data===d).sort((a,b)=>a.rank-b.rank||a.id-b.id);
     const pend=l.filter(x=>x.status==="pendente").length;
-    const cont=d===PROVA?"prova":d===VISTA?"vista de prova":d===FIM?"último dia"
+    const cont=d===PROVA?"teórica":d===OSCE?"OSCE":d===FIM?"último dia"
       :pend?pend+" pendente"+(pend>1?"s":""):l.length?"tudo feito":"dia livre";
     h+=`<button class="dia" onclick="abrirDia('${d}')">
       <div class="dia-topo"><span class="dia-nome">${label(d)}</span>
       ${marcaEscala(d)}${selosCompromisso(d)}
-      <span class="dia-cont ${pend||d>=PROVA?"":"limpo"}">${cont}</span></div>
+      <span class="dia-cont ${pend||d>=OSCE?"":"limpo"}">${cont}</span></div>
       ${selinhoTempo(d)?`<div class="linha-item" style="padding-bottom:5px">${selinhoTempo(d)}</div>`:""}`;
     l.slice(0,4).forEach(x=>{
       h+=`<div class="linha-item ${x.status==="feita"?"risco":""}"
@@ -2143,7 +1715,7 @@ function viewSemana(){
     h+=`</button>`;
   });
   h+=`</div>
-  <h2 class="sec" style="margin-top:24px">A semana padrão do plano de ensino</h2>
+  <h2 class="sec" style="margin-top:24px">A semana padrão do calendário</h2>
   <table class="padrao"><tr><td></td><th>manhã</th><th>tarde</th></tr>`;
   SEMANA_PADRAO.forEach(([dia,m,t])=>{
     h+=`<tr><th class="d">${dia}</th><td>${m}</td><td>${t}</td></tr>`;
@@ -2235,9 +1807,9 @@ function barraEixo(k){
 }
 
 function viewAulas(){
-  let h=`<h2 class="sec">As aulas do plano de ensino</h2>
-  <p class="nota">São pela manhã, na UNIVAG, nas terças e quartas que o cronograma marcar. O plano
-  não fixa a hora de cada uma — anote a sua quando souber, no próprio cartão.</p>
+  let h=`<h2 class="sec">As aulas teóricas do rodízio</h2>
+  <p class="nota">São nas quintas, das 14h às 18h, seis ao todo. A sala sai perto da data —
+  anote no próprio cartão quando souber.</p>
   <div class="pilha">`;
 
   AULAS.forEach(a=>{
@@ -2283,9 +1855,9 @@ function viewAulas(){
   <section class="rodape">
     <h2 class="sec">Como estudar</h2>
     <p class="nota">O plano diz o que cai em cada bloco; isto diz como se faz. Cada tarefa do
-    dia também abre o método que é dela, no botão <b>como fazer esta tarefa</b>. Os seis seguem
+    dia também abre o método que é dela, no botão <b>como fazer esta tarefa</b>. Todos seguem
     a mesma regra: <b>tentar lembrar vale mais que reler</b>, e o erro é o material de estudo.</p>
-    ${["eixo","questoes","revisao","simulado","videoaulas","caso","folha"].map(k=>{
+    ${["eixo","questoes","revisao","simulado","videoaulas","osce","folha"].map(k=>{
       const m=METODOS[k], aberto=metodoNaAba===k;
       return `<div class="caso">
         <button class="caso-topo" onclick="verMetodoNaAba('${k}')" aria-expanded="${aberto}">
@@ -2295,16 +1867,12 @@ function viewAulas(){
       </div>`;
     }).join("")}
 
-    <h2 class="sec" style="margin-top:22px">A apostila</h2>
-    <p class="nota">Os ${CONTEUDO.filter(([,t])=>TEMRESUMO[t]).length} resumos do plano de ensino,
-    num PDF só, com margem larga para
-    grifar e escrever à mão.</p>
-    <a class="btn-larga" style="display:block;text-align:center;text-decoration:none"
-       href="./resumos.pdf" target="_blank" rel="noopener">Abrir os resumos em PDF</a>
-
     <h2 class="sec" style="margin-top:22px">Avaliação</h2>
-    <p class="nota">Prova teórica objetiva, peso 60% da média, e ficha de desempenho individual,
-    preenchida pela preceptora toda semana, peso 40%.</p>
+    <p class="nota">Prova teórica, peso 6; OSCE, peso 2; presença nas práticas, peso 2.
+    Média mínima 7,0 e não existe exame final no internato. A folha de nota prática sai nas
+    semanas 4 e 7, e a teórica pede as duas.</p>
+    <p class="nota">Frequência 100% obrigatória. Falta só se justifica com atestado protocolado
+    no CAE em 48h. Tolerância de atraso de 15 minutos, adorno zero, jaleco e crachá.</p>
 
     <h2 class="sec" style="margin-top:22px">No celular</h2>
     <p class="nota">Na tela de início, o rodízio abre com um toque. Instalado a partir do endereço
@@ -2402,7 +1970,7 @@ function salvarQuando(id){
 function lerCampos(){
   const d=diaAtivo;
   const nome=document.getElementById("aj-ubs").value.trim();
-  UBS=S.ubs=nome||"UBS";
+  UBS=S.ubs=nome||"Prática";
   const m=document.getElementById("aj-manha").value;
   const t=document.getElementById("aj-tarde").value;
   const com=document.getElementById("aj-com").value.trim();
@@ -2650,7 +2218,7 @@ function moverTarefas(lista){
     let alvos=S.tarefas.filter(x=>x.status!=="feita"
       &&(m.comeca?x.titulo.startsWith(m.comeca):x.titulo===m.titulo)
       /* sem recorte de data, um "comeca" apanharia o título em todos os dias
-         em que ele aparece — e "Medway — aulas" aparece em quase todos */
+         em que ele aparece — e "Medway — questões do dia" aparece em quase todos */
       &&(m.data?x.data===m.data:true)
       &&(m.de?x.data>=m.de:true)&&(m.ate?x.data<=m.ate:true)
       /* adiada separa o bloco que a varredura já empurrou do que ainda está
