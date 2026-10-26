@@ -734,6 +734,7 @@ const METODOS={
   n:"Aulas do Medway", curto:"vídeo só conta com anotação",
   ideia:"Vídeo é entrada de conteúdo, e conteúdo que só entrou não fica. A aula só conta como estudada quando virou anotação sua e questão respondida.",
   passos:[
+   "O título do bloco é o tema do dia: <b>procure por ele na Play</b> e escolha a aula que cobrir o assunto. Se houver mais de uma, comece pela mais curta.",
    "Assista em velocidade que ainda deixe você <b>pausar para escrever</b> — em geral 1,25× ou 1,5×.",
    "Não copie o slide. Anote <b>só</b> o que o professor disse e não está escrito: número, critério, pegadinha de prova.",
    "No fim, feche o caderno e <b>diga em voz alta</b> as três ideias centrais da aula.",
@@ -1035,8 +1036,8 @@ function metodoDe(x){
   if(x.tipo==="osce") return "osce";
   if(t.startsWith("Simulado geral")||t==="Medway — simulado da semana") return "simulado";
   if(t.startsWith("Folha de última hora")) return "folha";
-  if(t.startsWith("Medway — videoaulas")) return "videoaulas";
-  /* depois das videoaulas, porque elas também falam em questões */
+  if(t.startsWith("Medway — aula")) return "videoaulas";
+  /* depois da aula, porque o título dela é o tema e pode falar em questões */
   if(/quest(ões|ão)/i.test(t)||/trilha/i.test(t)||/provas antigas/i.test(t)) return "questoes";
   if(x.tipo==="revisao") return "revisao";
   if(x.tipo==="eixo") return "eixo";
@@ -1078,18 +1079,12 @@ function montarPlano(){
      de tarefa vencida os dias que já passaram */
   const dias=range(hoje()>START?hoje():START,LAST), T=[]; let id=1;
 
-  /* O Medway entra nos dias que têm folga de verdade — três blocos ou mais.
-     Nas segundas, quintas e sextas sobra a noite, e a noite é do conteúdo.
-     Sem nome de aula: a trilha de GO entra aqui quando o material chegar. */
+  /* O simulado do sábado é o bloco de Medway do fim de semana. A aula de
+     cada dia útil entra mais abaixo, depois que o tema do dia já tem lugar. */
   dias.forEach(d=>{
-    const t=tipoDia(d);
-    if(t==="sabado"){
+    if(tipoDia(d)==="sabado")
       T.push({id:id++,tipo:"medway",rank:0,data:d,eixo:null,
               titulo:"Medway — simulado da semana",status:"pendente"});
-    }else if(t==="semana"&&slotsDe(d,"manha").length>=3){
-      T.push({id:id++,tipo:"medway",rank:2,data:d,eixo:null,
-              titulo:"Medway — questões do dia",status:"pendente"});
-    }
   });
 
   /* Os quatro blocos de OSCE já têm dia marcado no calendário do grupo:
@@ -1110,12 +1105,17 @@ function montarPlano(){
   const ATE=addDays(OSCE,-1);
   const diasConteudo=dias.filter(d=>d<=ATE);
   const cabe=d=>T.filter(x=>x.data===d).length<slotsDe(d,"manha").length;
+  /* nos dias de dois blocos ou mais fica uma vaga guardada para a aula do
+     Medway, que vem do tema do próprio dia; no sábado quem guarda é o
+     simulado, que já está lá */
+  const reserva=d=>(tipoDia(d)==="sabado"||slotsDe(d,"manha").length<2)?0:1;
+  const cabeTema=d=>T.filter(x=>x.data===d).length+reserva(d)<slotsDe(d,"manha").length;
   let i=0;
   for(let volta=0; i<CONTEUDO.length; volta++){
     let colocou=false;
     for(const d of diasConteudo){
       if(i>=CONTEUDO.length) break;
-      if(!cabe(d)) continue;
+      if(!cabeTema(d)) continue;
       const[e,t]=CONTEUDO[i++];
       T.push({id:id++,tipo:"eixo",rank:1,data:d,eixo:e,titulo:t,status:"pendente"});
       colocou=true;
@@ -1140,6 +1140,17 @@ function montarPlano(){
       const d=pool[v%pool.length], [e,t]=CONTEUDO[i++];
       T.push({id:id++,tipo:"eixo",rank:1,data:d,eixo:e,titulo:t,status:"pendente"});
     }
+  }
+
+  /* A aula do Medway é o tema do dia: ela procura pelo nome na Play e
+     assiste antes de abrir o assunto. Só onde há tema — num dia de um bloco
+     só, a vaga é do assunto, e nos dias sem conteúdo a vaga é da revisão. */
+  for(const d of diasConteudo){
+    if(tipoDia(d)==="sabado"||!cabe(d)) continue;
+    const tema=T.find(x=>x.data===d&&x.tipo==="eixo");
+    if(!tema) continue;
+    T.push({id:id++,tipo:"medway",rank:0,data:d,eixo:tema.eixo,
+            titulo:"Medway — aula: "+tema.titulo,status:"pendente"});
   }
 
   /* A revisão vai nos domingos e, sobretudo, na semana entre as duas provas:
